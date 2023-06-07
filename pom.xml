@@ -5,6 +5,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>conjuerer-shell</module>
+		<module>conjuerer-common</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -21,9 +22,21 @@
 		<reversion>0.0.1-SNAPSHOT</reversion>
 		<java.version>17</java.version>
 		<picocli.version>4.7.0</picocli.version>
+		<jackson.version>2.15.2</jackson.version>
+		<lombok.version>1.18.28</lombok.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>tao.dong</groupId>
+				<artifactId>conjuerer-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-yaml</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>info.picocli</groupId>
 				<artifactId>picocli-spring-boot-starter</artifactId>
@@ -32,6 +45,7 @@
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
 				<optional>true</optional>
 			</dependency>
 		</dependencies>

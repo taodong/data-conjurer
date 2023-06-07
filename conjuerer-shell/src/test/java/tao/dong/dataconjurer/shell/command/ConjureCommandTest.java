@@ -20,8 +20,8 @@ public class ConjureCommandTest {
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 
-        String schema = getFilePathForClassPathResource("schema.toml");
-        String plan = getFilePathForClassPathResource("plan.toml");
+        String schema = getFilePathForClassPathResource("schema.yaml");
+        String plan = getFilePathForClassPathResource("plan.yaml");
 
         int exitCode = cmd.execute(schema, plan);
         assertEquals(0, exitCode);
