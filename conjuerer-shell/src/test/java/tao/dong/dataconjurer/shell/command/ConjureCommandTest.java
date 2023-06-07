@@ -2,6 +2,7 @@ package tao.dong.dataconjurer.shell.command;
 
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
+import tao.dong.dataconjurer.shell.service.YamlFileService;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,6 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class ConjureCommandTest {
 
@@ -16,7 +18,9 @@ public class ConjureCommandTest {
 
     @Test
     void testConjureCommand() throws URISyntaxException {
-        var conjureCommand = new ConjureCommand();
+        YamlFileService yamlFileService = mock(YamlFileService.class);
+
+        var conjureCommand = new ConjureCommand(yamlFileService);
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 
