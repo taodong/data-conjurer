@@ -1,1 +1,2 @@
-title: "Sample Schema File"
+name: "Sample Schema File"
+dialect: "MYSQL"

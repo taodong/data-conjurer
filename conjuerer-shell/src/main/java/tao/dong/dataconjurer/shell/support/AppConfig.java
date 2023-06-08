@@ -1,6 +1,9 @@
 package tao.dong.dataconjurer.shell.support;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +13,10 @@ public class AppConfig {
 
     @Bean
     public ObjectMapper yamlMapper() {
-        var objectMapper = new ObjectMapper(new YAMLFactory());
-        return objectMapper;
+        return JsonMapper.builder(new YAMLFactory())
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
+                .build();
     }
 
 }
