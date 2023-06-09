@@ -1,4 +1,6 @@
 package tao.dong.dataconjurer.common.model;
 
-public record DataSchema(String name, Dialect dialect) {
+import java.util.Set;
+
+public record DataSchema(String name, Dialect dialect, Set<DataEntity> entities) {
 }
