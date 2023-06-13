@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class ConjureCommandTest {
+class ConjureCommandTest {
 
     private final PrintWriter printWriter = new PrintWriter(new StringWriter());
 

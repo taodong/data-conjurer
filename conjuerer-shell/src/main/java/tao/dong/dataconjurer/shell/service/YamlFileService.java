@@ -2,10 +2,10 @@ package tao.dong.dataconjurer.shell.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Service
 public class YamlFileService {
@@ -18,5 +18,9 @@ public class YamlFileService {
 
     public DataSchema parseSchemaFile(String content) throws IOException {
         return yamlMapper.readValue(content, DataSchema.class);
+    }
+
+    public DataPlan parsePlanFile(String content) throws IOException {
+        return yamlMapper.readValue(content, DataPlan.class);
     }
 }

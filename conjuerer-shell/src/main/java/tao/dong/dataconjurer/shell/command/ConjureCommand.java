@@ -38,11 +38,12 @@ public class ConjureCommand  implements Callable<Integer> {
         try {
             var schemaYaml = Files.readString(this.schema.toPath(), StandardCharsets.UTF_8);
 
-            var schema = yamlFileService.parseSchemaFile(schemaYaml);
-            LOG.info("Schema: {}", schema);
+            var dataSchema = yamlFileService.parseSchemaFile(schemaYaml);
+            LOG.info("Schema: {}", dataSchema);
 
-            var dataPlan = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
-            System.out.println(dataPlan);
+            var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
+            var dataPlan = yamlFileService.parsePlanFile(planYaml);
+            LOG.info("Plan: {}", dataPlan);
         } catch (IOException ioe) {
             LOG.error("Invalid input", ioe);
             exitCode = USAGE;

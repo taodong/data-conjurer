@@ -3,6 +3,7 @@ package tao.dong.dataconjurer.common.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 @Getter
@@ -16,7 +17,7 @@ public enum PropertyType {
     private final Class targetClass;
 
     PropertyType(String name, Class targetClass) {
-        this(name, targetClass, (dialect -> dialect != null));
+        this(name, targetClass, (Objects::nonNull));
     }
 
     PropertyType(String name, Class targetClass, Predicate<Dialect> support) {
