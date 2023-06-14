@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 	<modules>
-		<module>conjuerer-shell</module>
-		<module>conjuerer-common</module>
+		<module>conjurer-shell</module>
+		<module>conjurer-common</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -29,7 +29,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>tao.dong</groupId>
-				<artifactId>conjuerer-common</artifactId>
+				<artifactId>conjurer-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

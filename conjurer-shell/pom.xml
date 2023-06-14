@@ -11,7 +11,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>conjuerer-shell</artifactId>
+    <artifactId>conjurer-shell</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>tao.dong</groupId>
-            <artifactId>conjuerer-common</artifactId>
+            <artifactId>conjurer-common</artifactId>
         </dependency>
         <dependency>
             <groupId>info.picocli</groupId>

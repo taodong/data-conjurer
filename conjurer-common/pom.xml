@@ -11,7 +11,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>conjuerer-common</artifactId>
+    <artifactId>conjurer-common</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
