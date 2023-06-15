@@ -6,6 +6,7 @@
 	<modules>
 		<module>conjurer-shell</module>
 		<module>conjurer-common</module>
+		<module>conjurer-engine</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -30,6 +31,11 @@
 			<dependency>
 				<groupId>tao.dong</groupId>
 				<artifactId>conjurer-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>tao.dong</groupId>
+				<artifactId>conjurer-engine</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
