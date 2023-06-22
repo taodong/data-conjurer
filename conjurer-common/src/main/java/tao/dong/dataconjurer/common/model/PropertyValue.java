@@ -1,11 +1,12 @@
 package tao.dong.dataconjurer.common.model;
 
-public abstract class PropertyValue {
+import java.util.function.Supplier;
+
+public abstract class PropertyValue implements Supplier<String> {
     private Object value;
     protected Class type;
 
-    @Override
-    public String toString() {
+    public String get() {
         return String.valueOf(value);
     }
 }
