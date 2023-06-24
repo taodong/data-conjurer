@@ -1,6 +1,7 @@
-package tao.dong.dataconjurer.engine.database;
+package tao.dong.dataconjurer.engine.database.service;
 
 import org.junit.jupiter.api.Test;
+import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 
 import java.util.List;
 import java.util.function.Supplier;
