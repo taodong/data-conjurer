@@ -1,10 +1,14 @@
 package tao.dong.dataconjurer.common.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.function.Supplier;
 
-public abstract class PropertyValue implements Supplier<String> {
-    private Object value;
-    protected Class type;
+@Getter
+@AllArgsConstructor
+public abstract class PropertyValue<T> implements Supplier<String> {
+    protected final T value;
 
     public String get() {
         return String.valueOf(value);
