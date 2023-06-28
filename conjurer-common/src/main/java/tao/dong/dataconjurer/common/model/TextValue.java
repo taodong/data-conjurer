@@ -3,7 +3,7 @@ package tao.dong.dataconjurer.common.model;
 import lombok.Getter;
 
 @Getter
-public class TextValue extends PropertyValue<String> {
+public class TextValue extends StringValueSupplier<String> {
 
     public TextValue(String value) {
         super(value);

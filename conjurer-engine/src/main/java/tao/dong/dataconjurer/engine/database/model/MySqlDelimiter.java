@@ -16,4 +16,8 @@ public enum MySqlDelimiter {
 
     private final char delimiter;
 
+    @Override
+    public String toString() {
+        return String.valueOf(delimiter);
+    }
 }

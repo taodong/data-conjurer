@@ -1,11 +1,9 @@
 package tao.dong.dataconjurer.engine.database.service;
 
 import jakarta.validation.constraints.NotNull;
-import tao.dong.dataconjurer.common.model.PropertyValue;
+import tao.dong.dataconjurer.common.model.StringValueSupplier;
 
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.GROUP_END;
 import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.GROUP_START;
@@ -17,31 +15,34 @@ public class MySQLInsertStatementService implements InsertStatementService{
     private static final String INSERT_STATEMENT = "INSERT INTO";
     private static final String VALUE_STATEMENT = "VALUES";
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings("rawtypes")
     @Override
-    public StringBuilder generateInsertStatement(@NotNull String entity, @NotNull List<String> properties, @NotNull List<List<PropertyValue>> values) {
+    public StringBuilder generateInsertStatement(@NotNull String entity, @NotNull List<String> properties, @NotNull List<List<StringValueSupplier>> values) {
         StringBuilder queryBuilder = new StringBuilder(100 * values.size());
         queryBuilder
                 .append(INSERT_STATEMENT)
                 .append(SPACE.getDelimiter())
                 .append(entity)
-                .append(SPACE.getDelimiter())
-                .append(VALUE_STATEMENT)
-                .append(SPACE.getDelimiter())
                 .append(GROUP_START.getDelimiter())
                 .append(
                         joinValues(VALUE_DELIMITER.getDelimiter(),
                                    properties.stream()
                                            .map(this::routeToStringMethod)
-                                           .collect(Collectors.toList()))
+                                           .toList())
                 )
-                .append(GROUP_END.getDelimiter());
+                .append(GROUP_END.getDelimiter())
+                .append(SPACE.getDelimiter())
+                .append(VALUE_STATEMENT)
+        ;
 
-        for (var row : values) {
+        for (var i = 0 ; i < values.size(); i++) {
             queryBuilder.append(SPACE.getDelimiter())
                     .append(GROUP_START)
-                    .append(joinValues(VALUE_DELIMITER.getDelimiter(), (List<? extends Supplier<String>>) row))
+                    .append(joinValues(VALUE_DELIMITER.getDelimiter(), values.get(i)))
                     .append(GROUP_END.getDelimiter());
+            if (i < values.size() -1) {
+                queryBuilder.append(VALUE_DELIMITER.getDelimiter());
+            }
         }
 
         queryBuilder.append(QUERY_DELIMITER.getDelimiter());

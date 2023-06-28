@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 @Getter
 @AllArgsConstructor
-public abstract class PropertyValue<T> implements Supplier<String> {
+public abstract class StringValueSupplier<T> implements Supplier<String> {
     protected final T value;
 
     public String get() {
