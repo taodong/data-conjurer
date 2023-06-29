@@ -25,6 +25,7 @@
 		<picocli.version>4.7.0</picocli.version>
 		<jackson.version>2.15.2</jackson.version>
 		<lombok.version>1.18.28</lombok.version>
+		<commons.text.version>1.10.0</commons.text.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -59,6 +60,12 @@
 				<version>${lombok.version}</version>
 				<optional>true</optional>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-text</artifactId>
+				<version>${commons.text.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
