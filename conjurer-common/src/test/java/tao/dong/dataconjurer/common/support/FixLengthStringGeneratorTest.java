@@ -1,20 +1,23 @@
 package tao.dong.dataconjurer.common.support;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FixLengthStringGeneratorTest {
 
-    @Test
-    void testGenerate() {
-        var generator = new FixLengthStringGenerator(10);
-        assertEquals(10, generator.generate().length());
+    @ParameterizedTest
+    @ValueSource(ints = {1, 5, 25, 33})
+    void testGenerate(int length) {
+        var generator = new FixLengthStringGenerator(length);
+        assertEquals(length, generator.generate().length());
     }
 
-    @Test
-    void testGenerate_InvalidLength() {
-        assertThrows(IllegalArgumentException.class, () -> new FixLengthStringGenerator(0));
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    void testGenerate_InvalidLength(int length) {
+        assertThrows(IllegalArgumentException.class, () -> new FixLengthStringGenerator(length));
     }
 }
