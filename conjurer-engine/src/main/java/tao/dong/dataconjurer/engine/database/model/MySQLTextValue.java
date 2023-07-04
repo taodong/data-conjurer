@@ -6,6 +6,6 @@ public class MySQLTextValue extends TextValue {
 
 
     public MySQLTextValue(String value) {
-        super(MySqlDelimiter.QUOTE + value + MySqlDelimiter.QUOTE);
+        super(MySQLDelimiter.QUOTE + value + MySQLDelimiter.QUOTE);
     }
 }

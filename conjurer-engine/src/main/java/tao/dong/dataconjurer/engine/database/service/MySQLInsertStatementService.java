@@ -5,11 +5,11 @@ import tao.dong.dataconjurer.common.model.StringValueSupplier;
 
 import java.util.List;
 
-import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.GROUP_END;
-import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.GROUP_START;
-import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.QUERY_DELIMITER;
-import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.SPACE;
-import static tao.dong.dataconjurer.engine.database.model.MySqlDelimiter.VALUE_DELIMITER;
+import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.GROUP_END;
+import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.GROUP_START;
+import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.QUERY_DELIMITER;
+import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.SPACE;
+import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.VALUE_DELIMITER;
 
 public class MySQLInsertStatementService implements InsertStatementService{
     private static final String INSERT_STATEMENT = "INSERT INTO";

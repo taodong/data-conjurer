@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MySqlDelimiter {
+public enum MySQLDelimiter {
 
     GROUP_START('('),
     GROUP_END(')'),

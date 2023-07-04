@@ -8,7 +8,7 @@ public final class RangeLengthStringGenerator extends RandomStringValueGenerator
     private final int maxLength;
 
     public RangeLengthStringGenerator(int minLengthInclude, int maxLengthExclude) {
-        this(minLengthInclude, minLengthInclude, DEFAULT_CHARSET);
+        this(minLengthInclude, maxLengthExclude, DEFAULT_CHARSET);
     }
 
     public RangeLengthStringGenerator(int minLengthInclude, int maxLengthExclude, CharacterPredicate... characterPredicates) {
