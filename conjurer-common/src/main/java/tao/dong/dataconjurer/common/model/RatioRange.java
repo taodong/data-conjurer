@@ -1,17 +1,16 @@
 package tao.dong.dataconjurer.common.model;
 
-import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Nonnull;
 
 /**
  * Ratio range is between (0, 1]
  */
 public class RatioRange extends ValueRange<Double> {
 
-    public RatioRange(Double min, Double max) {
+    public RatioRange(@Nonnull Double min, @Nonnull Double max) {
         super(min, max, false, true);
     }
 
-    @PostConstruct
     @Override
     protected void validate() {
         if (min < 0 || max > 1) {
