@@ -4,9 +4,8 @@ import java.util.random.RandomGenerator;
 
 public class RandomIndexGenerator implements IndexValueGenerator {
 
+    private static final RandomGenerator randomGenerator = RandomGenerator.getDefault();
     private final int size;
-    private final RandomGenerator randomGenerator = RandomGenerator.getDefault();
-
 
     public RandomIndexGenerator(int size) {
         this.size = size;
