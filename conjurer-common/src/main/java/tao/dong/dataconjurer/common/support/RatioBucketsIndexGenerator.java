@@ -21,10 +21,10 @@ public class RatioBucketsIndexGenerator implements IndexValueGenerator{
     private static final RandomGenerator randomGenerator = RandomGenerator.getDefault();
     private final List<IndexedBucket> buckets;
 
-    public RatioBucketsIndexGenerator(@Nonnull List<RatioRange> ranges) {
+    public RatioBucketsIndexGenerator(@Nonnull RatioRange... ranges) {
         this.buckets = new ArrayList<>();
-        for (var i = 0; i < ranges.size(); i++) {
-            this.buckets.add(new IndexedBucket(i, ranges.get(i)));
+        for (var i = 0; i < ranges.length; i++) {
+            this.buckets.add(new IndexedBucket(i, ranges[i]));
             Collections.sort(this.buckets, Comparator.comparingDouble(bucket -> bucket.getRange().getMin()));
         }
     }
