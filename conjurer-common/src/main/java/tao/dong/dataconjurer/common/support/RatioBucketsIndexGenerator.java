@@ -17,7 +17,7 @@ import java.util.random.RandomGenerator;
  */
 public class RatioBucketsIndexGenerator implements IndexValueGenerator{
 
-    private static final int defaultIndex = -1;
+    private static final int DEFAULT_INDEX = -1;
     private static final RandomGenerator randomGenerator = RandomGenerator.getDefault();
     private final List<IndexedBucket> buckets;
 
@@ -35,7 +35,7 @@ public class RatioBucketsIndexGenerator implements IndexValueGenerator{
     }
 
     int matchBucket(final double key) {
-        var matched = defaultIndex;
+        var matched = DEFAULT_INDEX;
         if (!this.buckets.isEmpty()) {
             var low = 0;
             var high = this.buckets.size() - 1;

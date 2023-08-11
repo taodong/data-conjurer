@@ -10,8 +10,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SequenceGeneratorTest {
-
+class SequenceGeneratorTest {
 
     private static Stream<Arguments> testGenerate() {
         return Stream.of(

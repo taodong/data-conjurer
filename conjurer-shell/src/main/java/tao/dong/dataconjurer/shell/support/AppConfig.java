@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +19,12 @@ public class AppConfig {
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
                 .build();
+    }
+
+    @Bean
+    public Validator validator() {
+        return Validation.buildDefaultValidatorFactory()
+                .getValidator();
     }
 
 }

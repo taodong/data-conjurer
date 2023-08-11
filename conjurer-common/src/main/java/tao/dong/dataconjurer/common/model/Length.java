@@ -13,6 +13,7 @@ public class Length extends ValueRange<Long> {
         super(0L, max, false, true);
     }
 
+    @Override
     protected void validate() {
         if (max < 1L) {
             throw new IllegalArgumentException("Invalid length " + max);

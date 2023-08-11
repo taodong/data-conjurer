@@ -1,4 +1,7 @@
 package tao.dong.dataconjurer.common.model;
 
-public record Reference(String entity, String property) {
+import jakarta.validation.constraints.NotBlank;
+
+public record Reference(@NotBlank(message = "Reference entity is required") String entity,
+                        @NotBlank(message = "Reference property is required") String property) {
 }
