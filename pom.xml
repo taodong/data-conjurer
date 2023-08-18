@@ -26,6 +26,7 @@
 		<jackson.version>2.15.2</jackson.version>
 		<lombok.version>1.18.28</lombok.version>
 		<commons.text.version>1.10.0</commons.text.version>
+		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
 	</properties>
 	<dependencyManagement>
@@ -70,6 +71,11 @@
 				<groupId>org.glassfish.expressly</groupId>
 				<artifactId>expressly</artifactId>
 				<version>${unified.el.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-collections4</artifactId>
+				<version>${commons.collections.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
