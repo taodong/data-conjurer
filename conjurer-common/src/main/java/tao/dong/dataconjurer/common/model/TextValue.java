@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.model;
 
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 public class TextValue extends StringValueSupplier<String> {
@@ -12,5 +13,10 @@ public class TextValue extends StringValueSupplier<String> {
     @Override
     public String get() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof TextValue) && StringUtils.equals(((TextValue) obj).get(), this.value);
     }
 }

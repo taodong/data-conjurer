@@ -13,4 +13,6 @@ public abstract class StringValueSupplier<T> implements Supplier<String> {
     public String get() {
         return String.valueOf(value);
     }
+
+
 }
