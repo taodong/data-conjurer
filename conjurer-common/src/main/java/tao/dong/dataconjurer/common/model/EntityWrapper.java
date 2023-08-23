@@ -32,9 +32,9 @@ class EntityWrapper {
         this.entity = entity;
         this.count = data.count();
         this.initSize = this.count > 1000 ? 1000 : (int)this.count;
-        var deps = entity.getProperties()
+        var deps = entity.properties()
                 .stream()
-                .map(EntityProperty::getReference)
+                .map(EntityProperty::reference)
                 .filter(Objects::nonNull)
                 .map(Reference::entity)
                 .collect(Collectors.toSet());
