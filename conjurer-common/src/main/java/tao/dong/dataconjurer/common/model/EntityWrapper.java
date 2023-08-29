@@ -1,8 +1,10 @@
 package tao.dong.dataconjurer.common.model;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.set.ListOrderedSet;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,7 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
-class EntityWrapper {
+@Getter
+public class EntityWrapper {
     private final DataEntity entity;
     private final Set<String> dependencies = new HashSet<>();
     /**
@@ -24,11 +27,13 @@ class EntityWrapper {
      */
     private final AtomicInteger status = new AtomicInteger(0);
     private final long count;
+    private final String entityName;
 
     private final Map<String, Set<TextValue>> references = new HashMap<>();
 
     public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
         this.entity = entity;
+        this.entityName = entity.name();
         this.count = data.count();
         var deps = entity.properties()
                 .stream()
@@ -88,5 +93,10 @@ class EntityWrapper {
             LOG.debug("Index calculation error found", e);
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof EntityWrapper) && StringUtils.equals(entityName, ((EntityWrapper) obj).getEntityName());
     }
 }
