@@ -5,9 +5,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
+import tao.dong.dataconjurer.common.support.ValueGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -30,6 +33,9 @@ public class EntityWrapper {
     private final String entityName;
 
     private final Map<String, Set<TextValue>> references = new HashMap<>();
+    private final List<List<StringValueSupplier>> values = new ArrayList<>();
+    private final Map<String, ValueGenerator> generators = new HashMap<>();
+    private final List<String> properties = new ArrayList<>();
 
     public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
         this.entity = entity;
@@ -44,6 +50,15 @@ public class EntityWrapper {
         if (!deps.isEmpty()) {
             dependencies.addAll(deps);
         }
+        for (var property : entity.properties()) {
+            properties.add(property.name());
+            generators.put(property.name(), matchValueGenerator(property));
+        }
+    }
+
+    protected ValueGenerator matchValueGenerator(EntityProperty property) {
+
+        return null;
     }
 
     public int getStatus() {
