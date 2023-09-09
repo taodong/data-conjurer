@@ -5,6 +5,7 @@ import tao.dong.dataconjurer.common.model.StringValueSupplier;
 import tao.dong.dataconjurer.common.model.TextValue;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public interface InsertStatementService {
@@ -15,7 +16,7 @@ public interface InsertStatementService {
     }
 
     default StringBuilder joinValues(@NotNull char delimiter, @NotNull List<? extends StringValueSupplier> values) {
-        return values.stream().map(Supplier::get).collect(
+        return values.stream().filter(Objects::nonNull).map(Supplier::get).collect(
                 StringBuilder::new,
                 (sb, el) -> sb.append(delimiter).append(el),
                 StringBuilder::append).deleteCharAt(0);

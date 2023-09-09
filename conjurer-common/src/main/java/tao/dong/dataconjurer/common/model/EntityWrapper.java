@@ -32,8 +32,8 @@ public class EntityWrapper {
     private final long count;
     private final String entityName;
 
-    private final Map<String, Set<TextValue>> references = new HashMap<>();
-    private final List<List<StringValueSupplier>> values = new ArrayList<>();
+    private final Map<String, TypedValue> references = new HashMap<>();
+    private final List<List<Object>> values = new ArrayList<>();
     private final Map<String, ValueGenerator> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
 
@@ -76,38 +76,21 @@ public class EntityWrapper {
     public void createReference(String... properties) {
         if (properties != null) {
             for (var prop : properties) {
-                references.computeIfAbsent(prop, ignore -> new ListOrderedSet<>());
+                references.computeIfAbsent(prop, this::createReferenceTypedValue);
             }
         }
     }
 
-    public void saveReference(@NotNull Map<String, TextValue> refs) {
-        for (var entry : refs.entrySet()) {
-            if (references.containsKey(entry.getKey())) {
-                references.get(entry.getKey()).add(entry.getValue());
-            } else {
-                LOG.debug("Save unknown reference value {}.{}", entity.name(), entry.getKey());
-            }
-        }
+    private TypedValue createReferenceTypedValue(String propName) {
+        return entity.properties().stream().filter(property -> StringUtils.equals(propName, property.name()))
+                .findFirst().map(p -> new TypedValue(p.type())).orElseThrow(() -> new IllegalArgumentException("Property " + propName + " isn't defined in " + entityName));
     }
 
-    public int getReferenceSize(String name) {
+    public TypedValue getReference(String name) {
         if (references.containsKey(name)) {
-            return references.get(name).size();
+            return references.get(name);
         }
-        return 0;
-    }
-
-    public TextValue getReferenceValue(String name, int index) {
-        try {
-            if (references.containsKey(name)) {
-                return ((ListOrderedSet<TextValue>) references.get(name)).get(index);
-            }
-            return null;
-        } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Index calculation error found", e);
-            return null;
-        }
+        return null;
     }
 
     @Override

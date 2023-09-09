@@ -1,25 +1,24 @@
 package tao.dong.dataconjurer.common.support;
 
 import jakarta.validation.constraints.NotEmpty;
-import tao.dong.dataconjurer.common.model.TextValue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ElectedTextValueGenerator implements ValueGenerator<TextValue>{
+public abstract class ElectedTextValueGenerator<T> implements ValueGenerator{
 
     private final IndexValueGenerator indexValueGenerator;
-    private final List<TextValue> candidates = new ArrayList<>();
+    private final List<T> candidates = new ArrayList<T>();
 
-    public ElectedTextValueGenerator(IndexValueGenerator indexValueGenerator, @NotEmpty Set<TextValue> candidates) {
+    public ElectedTextValueGenerator(IndexValueGenerator indexValueGenerator, @NotEmpty Set<T> candidates) {
         this.indexValueGenerator = indexValueGenerator;
         this.candidates.addAll(candidates);
     }
 
 
     @Override
-    public TextValue generate() {
+    public T generate() {
         var index = indexValueGenerator.generate();
         return candidates.get(index);
     }

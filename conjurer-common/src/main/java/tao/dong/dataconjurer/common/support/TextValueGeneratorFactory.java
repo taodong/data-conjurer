@@ -29,6 +29,6 @@ public class TextValueGeneratorFactory extends ValueGeneratorFactory<TextValue> 
     }
 
     private ValueGenerator createElectionGenerator(Set<TextValue> candidates) {
-        return new ElectedTextValueGenerator(new RandomIndexGenerator(candidates.size()), candidates);
+        return null;
     }
 }

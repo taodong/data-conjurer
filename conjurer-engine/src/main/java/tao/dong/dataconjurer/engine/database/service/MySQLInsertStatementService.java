@@ -3,7 +3,9 @@ package tao.dong.dataconjurer.engine.database.service;
 import jakarta.validation.constraints.NotNull;
 import tao.dong.dataconjurer.common.model.StringValueSupplier;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.GROUP_END;
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.GROUP_START;
@@ -19,35 +21,51 @@ public class MySQLInsertStatementService implements InsertStatementService{
     @Override
     public StringBuilder generateInsertStatement(@NotNull String entity, @NotNull List<String> properties, @NotNull List<List<StringValueSupplier>> values) {
         StringBuilder queryBuilder = new StringBuilder(100 * values.size());
-        queryBuilder
-                .append(INSERT_STATEMENT)
-                .append(SPACE.getDelimiter())
-                .append(entity)
-                .append(GROUP_START.getDelimiter())
-                .append(
-                        joinValues(VALUE_DELIMITER.getDelimiter(),
-                                   properties.stream()
-                                           .map(this::routeToStringMethod)
-                                           .toList())
-                )
-                .append(GROUP_END.getDelimiter())
-                .append(SPACE.getDelimiter())
-                .append(VALUE_STATEMENT)
-        ;
+        for (var rowNum = 0; rowNum < values.size(); rowNum++) {
+            var row = values.get(rowNum);
+            var skippedIndex = lookupSkippedProperties(row);
+            List<String> selectedProperties;
+            if (skippedIndex.length > 0) {
+                selectedProperties = IntStream.range(0, properties.size())
+                        .filter(i -> Arrays.stream(skippedIndex).noneMatch(j -> j == i))
+                        .mapToObj(properties::get)
+                        .toList();
+            } else {
+                selectedProperties = properties;
+            }
 
-        for (var i = 0 ; i < values.size(); i++) {
+            queryBuilder
+                    .append(INSERT_STATEMENT)
+                    .append(SPACE.getDelimiter())
+                    .append(entity)
+                    .append(GROUP_START.getDelimiter())
+                    .append(
+                            joinValues(VALUE_DELIMITER.getDelimiter(),
+                                       selectedProperties.stream()
+                                               .map(this::routeToStringMethod)
+                                               .toList())
+                    )
+                    .append(GROUP_END.getDelimiter())
+                    .append(SPACE.getDelimiter())
+                    .append(VALUE_STATEMENT)
+            ;
+
             queryBuilder.append(SPACE.getDelimiter())
                     .append(GROUP_START)
-                    .append(joinValues(VALUE_DELIMITER.getDelimiter(), values.get(i)))
-                    .append(GROUP_END.getDelimiter());
-            if (i < values.size() -1) {
-                queryBuilder.append(VALUE_DELIMITER.getDelimiter());
+                    .append(joinValues(VALUE_DELIMITER.getDelimiter(), row))
+                    .append(GROUP_END.getDelimiter())
+                    .append(QUERY_DELIMITER.getDelimiter());
+
+            if (rowNum < values.size() - 1) {
+                queryBuilder.append(SPACE.getDelimiter());
             }
         }
 
-        queryBuilder.append(QUERY_DELIMITER.getDelimiter());
-
         return queryBuilder;
+    }
+
+    private int[] lookupSkippedProperties(List<StringValueSupplier> row) {
+        return IntStream.range(0, row.size()).filter(i -> row.get(i) == null).toArray();
     }
 
 
