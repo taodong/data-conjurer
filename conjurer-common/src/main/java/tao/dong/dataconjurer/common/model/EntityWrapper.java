@@ -41,16 +41,14 @@ public class EntityWrapper {
         this.entity = entity;
         this.entityName = entity.name();
         this.count = data.count();
-        var deps = entity.properties()
-                .stream()
-                .map(EntityProperty::reference)
-                .filter(Objects::nonNull)
-                .map(Reference::entity)
-                .collect(Collectors.toSet());
-        if (!deps.isEmpty()) {
-            dependencies.addAll(deps);
-        }
         for (var property : entity.properties()) {
+            // List Reference
+            if (property.reference() != null) {
+                dependencies.add(property.reference().entity());
+            }
+            // Handle index
+
+            // Create generators
             properties.add(property.name());
             generators.put(property.name(), matchValueGenerator(property));
         }
