@@ -30,12 +30,12 @@ class DataSchemaTest {
     private static Stream<Arguments> testValidate() {
         return Stream.of(
               Arguments.of(new DataSchema("  ", MYSQL,
-                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, false, null, null))))), false),
+                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, -1, null, null))))), false),
               Arguments.of(new DataSchema("abc", null,
-                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, false, null, null))))), false),
+                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, -1, null, null))))), false),
               Arguments.of(new DataSchema("abc", MYSQL, Collections.emptySet()), false),
               Arguments.of(new DataSchema("abc", MYSQL,
-                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, false, null, null))))), true)
+                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, -1, null, null))))), true)
         );
     }
 

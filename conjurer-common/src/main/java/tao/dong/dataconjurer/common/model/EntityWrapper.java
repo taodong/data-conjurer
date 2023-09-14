@@ -47,6 +47,9 @@ public class EntityWrapper {
                 dependencies.add(property.reference().entity());
             }
             // Handle index
+            if (property.idIndex() > -1) {
+
+            }
 
             // Create generators
             properties.add(property.name());

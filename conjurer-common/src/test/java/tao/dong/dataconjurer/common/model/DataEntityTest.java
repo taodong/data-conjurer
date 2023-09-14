@@ -29,8 +29,8 @@ class DataEntityTest {
         return Stream.of(
                 Arguments.of(new DataEntity(" ", null), false),
                 Arguments.of(new DataEntity("abc", Collections.emptySet()), false),
-                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty(null, null, false, false, null, null))), false),
-                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty("abc", TEXT, false, false, null, null))), true)
+                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty(null, null, false, -1, null, null))), false),
+                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty("abc", TEXT, false, -1, null, null))), true)
         );
     }
 
