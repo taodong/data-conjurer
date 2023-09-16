@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,24 +37,40 @@ public class EntityWrapper {
     private final List<List<Object>> values = new ArrayList<>();
     private final Map<String, ValueGenerator> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
+    private final List<IndexedValue> indexes = new ArrayList<>();
 
     public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
         this.entity = entity;
         this.entityName = entity.name();
         this.count = data.count();
+        var propIndex = 0;
+        var indexedProps = new HashMap<Integer, Set<Integer>>();
+
+        BiFunction<Integer, Set<Integer>, Set<Integer>> insertIndex = (i, v) -> { if (v == null) {v = new HashSet<>();} v.add(i); return v;};
+
         for (var property : entity.properties()) {
             // List Reference
             if (property.reference() != null) {
                 dependencies.add(property.reference().entity());
             }
-            // Handle index
+            // extract indexed properties
             if (property.idIndex() > -1) {
-
+                indexedProps.compute(propIndex, insertIndex);
             }
 
             // Create generators
             properties.add(property.name());
             generators.put(property.name(), matchValueGenerator(property));
+            propIndex++;
+        }
+
+        // Create indexes
+        if (!indexedProps.isEmpty()) {
+            for (var ii : indexedProps.values()) {
+                indexes.add(new IndexedValue(
+                        ii.stream().mapToInt(Integer::intValue).toArray()
+                ));
+            }
         }
     }
 
