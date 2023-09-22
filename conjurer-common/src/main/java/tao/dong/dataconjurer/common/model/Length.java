@@ -15,10 +15,10 @@ public class Length extends ValueRange<Long> {
 
     @Override
     protected void validate() {
+        super.validate();
         if (max < 1L) {
             throw new IllegalArgumentException("Invalid length " + max);
         }
-        super.validate();
     }
 
     @Override

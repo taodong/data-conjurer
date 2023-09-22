@@ -8,10 +8,10 @@ import tao.dong.dataconjurer.common.model.TextValue;
 import java.util.List;
 import java.util.Set;
 
-public class TextValueGeneratorFactory extends ValueGeneratorFactory<TextValue> {
+public class TextValueGeneratorFactory extends ValueGeneratorFactory<String> {
 
     @Override
-    protected ValueGenerator createValueGenerator(EntityProperty property, Set<TextValue> candidates) {
+    protected ValueGenerator createValueGenerator(EntityProperty property, Set<String> candidates) {
         if (CollectionUtils.isEmpty(candidates)) {
             switch (property.type()) {
                 case TEXT -> {return null;}
@@ -24,11 +24,11 @@ public class TextValueGeneratorFactory extends ValueGeneratorFactory<TextValue> 
         return null;
     }
 
-    private SequenceGenerator createSequenceGenerator(boolean id, List<Constraint> constraints) {
+    private SequenceGenerator createSequenceGenerator(List<Constraint> constraints) {
         return null;
     }
 
-    private ValueGenerator createElectionGenerator(Set<TextValue> candidates) {
+    private ValueGenerator createElectionGenerator(Set<String> candidates) {
         return null;
     }
 }

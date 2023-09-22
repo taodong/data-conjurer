@@ -13,9 +13,9 @@ public class RatioRange extends ValueRange<Double> {
 
     @Override
     protected void validate() {
+        super.validate();
         if (min < 0 || max > 1) {
             throw new IllegalArgumentException("Invalid ratio range. min " + min + " max: " + max);
         }
-        super.validate();
     }
 }

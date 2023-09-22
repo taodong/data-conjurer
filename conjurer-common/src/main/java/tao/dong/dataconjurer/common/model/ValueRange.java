@@ -33,6 +33,9 @@ public abstract class ValueRange<T extends Comparable> implements Constraint<T>{
     }
 
     protected void validate() {
+        if (min == null || max == null) {
+            throw new IllegalArgumentException("Null value found for required values");
+        }
         if (min.compareTo(max) > 0) {
             throw new IllegalArgumentException("Invalid value range. min: " + min + " max: " + max);
         }
