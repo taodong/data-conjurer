@@ -9,4 +9,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface Constraint<T> {
     boolean isMet(T val);
+    String getType();
 }

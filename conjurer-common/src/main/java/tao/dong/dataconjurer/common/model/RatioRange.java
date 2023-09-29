@@ -2,6 +2,8 @@ package tao.dong.dataconjurer.common.model;
 
 import jakarta.annotation.Nonnull;
 
+import static tao.dong.dataconjurer.common.model.ConstraintType.RATIO_RANGE;
+
 /**
  * Ratio range is between (0, 1]
  */
@@ -17,5 +19,10 @@ public class RatioRange extends ValueRange<Double> {
         if (min < 0 || max > 1) {
             throw new IllegalArgumentException("Invalid ratio range. min " + min + " max: " + max);
         }
+    }
+
+    @Override
+    public String getType() {
+        return RATIO_RANGE.name();
     }
 }

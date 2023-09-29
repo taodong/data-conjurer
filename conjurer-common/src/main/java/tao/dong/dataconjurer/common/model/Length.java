@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.annotation.Nonnull;
 
+import static tao.dong.dataconjurer.common.model.ConstraintType.LENGTH;
+
 @JsonTypeName("length")
 @JsonIgnoreProperties({"min", "includeMin", "includeMax"})
 public class Length extends ValueRange<Long> {
@@ -24,5 +26,10 @@ public class Length extends ValueRange<Long> {
     @Override
     public String toString() {
         return "Length{" + "max=" + max + '}';
+    }
+
+    @Override
+    public String getType() {
+        return LENGTH.name();
     }
 }
