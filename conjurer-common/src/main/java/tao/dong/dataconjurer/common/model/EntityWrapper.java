@@ -3,8 +3,8 @@ package tao.dong.dataconjurer.common.model;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
+import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
 
 import java.util.ArrayList;
@@ -12,11 +12,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -35,7 +33,7 @@ public class EntityWrapper {
 
     private final Map<String, TypedValue> references = new HashMap<>();
     private final List<List<Object>> values = new ArrayList<>();
-    private final Map<String, ValueGenerator> generators = new HashMap<>();
+    private final Map<String, ValueGenerator<?>> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
     private final List<IndexedValue> indexes = new ArrayList<>();
 
@@ -74,9 +72,8 @@ public class EntityWrapper {
         }
     }
 
-    protected ValueGenerator matchValueGenerator(EntityProperty property) {
-
-        return null;
+    protected ValueGenerator<?> matchValueGenerator(EntityProperty property) {
+        return TypedValueGenerator.matchDefaultGeneratorByType(property);
     }
 
     public int getStatus() {

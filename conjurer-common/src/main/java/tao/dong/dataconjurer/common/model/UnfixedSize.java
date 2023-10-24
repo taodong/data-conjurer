@@ -4,7 +4,11 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.SIZE;
 
 public class UnfixedSize extends ValueRange<Long> {
 
-    protected UnfixedSize(Long min, Long max) {
+    public UnfixedSize(Long max) {
+        this(0L, max);
+    }
+
+    public UnfixedSize(Long min, Long max) {
         super(min, max, true, true);
         validate();
     }

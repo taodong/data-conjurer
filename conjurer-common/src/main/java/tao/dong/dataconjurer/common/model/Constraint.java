@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Length.class, name = "length")
+        @JsonSubTypes.Type(value = Length.class, name = "length"),
+        @JsonSubTypes.Type(value = UnfixedSize.class, name = "size")
 })
 public interface Constraint<T> {
     boolean isMet(T val);
