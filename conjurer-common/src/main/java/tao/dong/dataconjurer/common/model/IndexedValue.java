@@ -4,9 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,10 +21,10 @@ public class IndexedValue {
         }
     };
 
-    private final Set<String> values = new HashSet<>();
+    private final LinkedHashSet<String> values = new LinkedHashSet<>();
     private final int[] indexOrders;
 
-    boolean addValue(@NotNull final List<Object> properties) {
+    public boolean addValue(@NotNull final List<Object> properties) {
 
         try {
             var val = Arrays.stream(indexOrders)
@@ -37,6 +36,9 @@ public class IndexedValue {
         } catch (IndexOutOfBoundsException e) {
             return false;
         }
+    }
 
+    public void removeLastValue() {
+        values.iterator().remove();
     }
 }
