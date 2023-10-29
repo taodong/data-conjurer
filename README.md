@@ -4,4 +4,4 @@ A tool to generate data
 conjure schema.yaml plan.yaml
 
 schema.yaml defines data structure
-plan.yaml defines data generation plan
+plan.yaml defines data generation plan such as rows
