@@ -27,13 +27,18 @@ class DataGenerateTaskTest {
         var config = DataGenerateConfig.builder().build();
         var data = new EntityData("t1", 10L);
         var wrapper = createTestEntityWrapper(data);
-//        Map<String, List<TypedValue>> references = Map.of(
-//                "p0", List.of(1L, 2L, 3L, 4L, 5L)
-//        );
+        TypedValue ref1 = new TypedValue(SEQUENCE);
+        for (long l = 1L; l < 6L; l++) {
+            ref1.addValue(l);
+        }
+        Map<Reference, TypedValue> referenced = Map.of(
+                new Reference("t2", "p0"), ref1
+        );
         var task = DataGenerateTask.builder()
                 .countDownLatch(countDownLatch)
                 .entityWrapper(wrapper)
                 .config(config)
+                .referenced(referenced)
                 .build();
         var result = task.call();
         assertEquals(10, result.getValues().size());
@@ -47,7 +52,6 @@ class DataGenerateTaskTest {
                    new EntityProperty("p3", TEXT, true, -1, List.of(new Length(10L)), null)
            )
         );
-        var wrapper = new EntityWrapper(entity, data);
-        return wrapper;
+        return new EntityWrapper(entity, data);
     }
 }

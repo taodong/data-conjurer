@@ -31,7 +31,8 @@ public class EntityWrapper {
     private final long count;
     private final String entityName;
 
-    private final Map<String, TypedValue> references = new HashMap<>();
+    private final Map<String, TypedValue> referenced = new HashMap<>();
+    private final Map<String, Reference> references = new HashMap<>();
     private final List<List<Object>> values = new ArrayList<>();
     private final Map<String, ValueGenerator<?>> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
@@ -50,6 +51,7 @@ public class EntityWrapper {
             // List Reference
             if (property.reference() != null) {
                 dependencies.add(property.reference().entity());
+                references.put(property.name(), property.reference());
             }
             // extract indexed properties
             if (property.idIndex() > -1) {
@@ -91,7 +93,7 @@ public class EntityWrapper {
     public void createReference(String... properties) {
         if (properties != null) {
             for (var prop : properties) {
-                references.computeIfAbsent(prop, this::createReferenceTypedValue);
+                referenced.computeIfAbsent(prop, this::createReferenceTypedValue);
             }
         }
     }
@@ -102,8 +104,8 @@ public class EntityWrapper {
     }
 
     public TypedValue getReference(String name) {
-        if (references.containsKey(name)) {
-            return references.get(name);
+        if (referenced.containsKey(name)) {
+            return referenced.get(name);
         }
         return null;
     }

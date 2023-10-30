@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
+import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.TypedValue;
 
 import java.util.ArrayList;
@@ -24,9 +25,9 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
     private final CountDownLatch countDownLatch;
     private final DataGenerateConfig config;
     @Builder.Default
-    private Map<String, List<TypedValue>> references = new HashMap<>();
+    private Map<Reference, TypedValue> referenced = new HashMap<>();
     @Builder.Default
-    private Map<String, Boolean> referenceReady = new HashMap<>();
+    private Map<Reference, Boolean> referenceReady = new HashMap<>();
 
     @Override
     public EntityWrapper call() {
@@ -42,7 +43,7 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
         Map<String, IndexValueGenerator> referenceIndexTracker = new HashMap<>();
         var recordNum = 0L;
         var collision = 0;
-        while (recordNum < entityWrapper.getCount() || collision < config.getMaxIndexCollision()) {
+        while (recordNum < entityWrapper.getCount() && collision < config.getMaxIndexCollision()) {
             var dataRow = generateRecord(referenceIndexTracker);
             if (isValidRecord(dataRow)) {
                 entityWrapper.getValues().add(dataRow);
@@ -54,7 +55,7 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
             }
         }
 
-        if (collision >= config.getMaxIndexCollision() && !config.isPartialResult()) {
+        if (collision >= config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
             throw new DataGenerateException(INDEX,
                                             String.format("Failed to generate unique index for %s. Collision number: %d, row number: %d",
                                                           entityWrapper.getEntityName(), collision, recordNum)
@@ -88,13 +89,14 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
         for (String propertyName : entityWrapper.getProperties()) {
             Object val;
             if (entityWrapper.getReferences().containsKey(propertyName)) {
-                var ready = referenceReady.computeIfAbsent(propertyName, this::isReferenceReady);
+                var reference = entityWrapper.getReferences().get(propertyName);
+                var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);
                 if (Boolean.FALSE.equals(ready)) {
                     throw new DataGenerateException(REFERENCE,
                                                     String.format("No reference is available for %s.%s", entityWrapper.getEntityName(), propertyName));
                 }
-                var indexGen = referenceIndexTracker.computeIfAbsent(propertyName, k -> new RandomIndexGenerator(references.get(k).size()));
-                val = references.get(propertyName).get(indexGen.generate());
+                var indexGen = referenceIndexTracker.computeIfAbsent(propertyName, k -> new RandomIndexGenerator(referenced.get(reference).getOrderedValues().size()));
+                val = referenced.get(reference).getOrderedValues().get(indexGen.generate());
             } else {
                 val = entityWrapper.getGenerators().get(propertyName).generate();
             }
@@ -104,8 +106,8 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
         return dataRow;
     }
 
-    private boolean isReferenceReady(String key) {
-        return CollectionUtils.isNotEmpty(references.get(key));
+    private boolean isReferenceReady(Reference key) {
+        return CollectionUtils.isNotEmpty(referenced.get(key).getOrderedValues());
     }
 
 }
