@@ -19,7 +19,7 @@ import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.REFER
 
 @Builder
 @Slf4j
-public class DataGenerateTask implements Callable<EntityWrapper> {
+public class DataGenerateTask implements Callable<Integer> {
 
     private final EntityWrapper entityWrapper;
     private final CountDownLatch countDownLatch;
@@ -30,10 +30,12 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
     private Map<Reference, Boolean> referenceReady = new HashMap<>();
 
     @Override
-    public EntityWrapper call() {
+    public Integer call() {
         try {
+            entityWrapper.updateStatus(1);
             generateData();
-            return entityWrapper;
+            entityWrapper.updateStatus(2);
+            return entityWrapper.getStatus();
         } finally {
             countDownLatch.countDown();
         }
@@ -99,6 +101,9 @@ public class DataGenerateTask implements Callable<EntityWrapper> {
                 val = referenced.get(reference).getOrderedValues().get(indexGen.generate());
             } else {
                 val = entityWrapper.getGenerators().get(propertyName).generate();
+            }
+            if (entityWrapper.getReferenced().containsKey(propertyName)) {
+                entityWrapper.getReferenced().get(propertyName).addValue(val);
             }
             dataRow.add(val);
         }

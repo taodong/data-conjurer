@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
@@ -41,7 +42,9 @@ class DataGenerateTaskTest {
                 .referenced(referenced)
                 .build();
         var result = task.call();
-        assertEquals(10, result.getValues().size());
+        assertEquals(2, result);
+        assertEquals(10, wrapper.getValues().size());
+        assertFalse(wrapper.getReferenced().get("p1").getValues().isEmpty());
     }
 
     private EntityWrapper createTestEntityWrapper(EntityData data) {
@@ -52,6 +55,9 @@ class DataGenerateTaskTest {
                    new EntityProperty("p3", TEXT, true, -1, List.of(new Length(10L)), null)
            )
         );
-        return new EntityWrapper(entity, data);
+
+        var wrapper =  new EntityWrapper(entity, data);
+        wrapper.createReferenced("p1");
+        return wrapper;
     }
 }

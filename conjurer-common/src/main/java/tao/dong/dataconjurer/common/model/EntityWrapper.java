@@ -26,6 +26,7 @@ public class EntityWrapper {
      *  0 - unprocessed
      *  1 - in process
      *  2 - completed
+     *  -1 - completed with error
      */
     private final AtomicInteger status = new AtomicInteger(0);
     private final long count;
@@ -90,7 +91,7 @@ public class EntityWrapper {
         return !dependencies.isEmpty();
     }
 
-    public void createReference(String... properties) {
+    public void createReferenced(String... properties) {
         if (properties != null) {
             for (var prop : properties) {
                 referenced.computeIfAbsent(prop, this::createReferenceTypedValue);
