@@ -3,7 +3,7 @@ package tao.dong.dataconjurer.engine.database.service;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
-import tao.dong.dataconjurer.engine.database.support.DataGenerateConfig;
+import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

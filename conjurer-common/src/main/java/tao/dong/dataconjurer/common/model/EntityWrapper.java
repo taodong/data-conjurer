@@ -38,6 +38,7 @@ public class EntityWrapper {
     private final Map<String, ValueGenerator<?>> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
     private final List<IndexedValue> indexes = new ArrayList<>();
+    private String msg;
 
     public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
         this.entity = entity;
@@ -83,8 +84,15 @@ public class EntityWrapper {
         return status.get();
     }
 
-    public boolean updateStatus(int targetStatus) {
-        return targetStatus - 1 >= 0 && status.compareAndSet(targetStatus - 1, targetStatus);
+    public void updateStatus(int targetStatus) {
+        if (targetStatus - 1 >= 0) {
+            status.compareAndSet(targetStatus - 1, targetStatus);
+        }
+    }
+
+    public void failProcess(String message) {
+        msg = message;
+        status.set(-1);
     }
 
     public boolean hasDependencies() {
@@ -104,11 +112,16 @@ public class EntityWrapper {
                 .findFirst().map(p -> new TypedValue(p.type())).orElseThrow(() -> new IllegalArgumentException("Property " + propName + " isn't defined in " + entityName));
     }
 
-    public TypedValue getReference(String name) {
-        if (referenced.containsKey(name)) {
-            return referenced.get(name);
+    public Map<Reference, TypedValue> getReferenced(String... properties) {
+        Map<Reference, TypedValue> rs = new HashMap<>();
+        if (properties != null) {
+            for (var prop : properties) {
+                if (referenced.containsKey(prop)) {
+                    rs.put(new Reference(entityName, prop), referenced.get(prop));
+                }
+            }
         }
-        return null;
+        return rs;
     }
 
     @Override
