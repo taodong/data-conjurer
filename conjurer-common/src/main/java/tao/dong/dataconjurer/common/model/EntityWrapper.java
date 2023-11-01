@@ -112,7 +112,7 @@ public class EntityWrapper {
                 .findFirst().map(p -> new TypedValue(p.type())).orElseThrow(() -> new IllegalArgumentException("Property " + propName + " isn't defined in " + entityName));
     }
 
-    public Map<Reference, TypedValue> getReferenced(String... properties) {
+    public Map<Reference, TypedValue> getReferencedByProperties(String... properties) {
         Map<Reference, TypedValue> rs = new HashMap<>();
         if (properties != null) {
             for (var prop : properties) {

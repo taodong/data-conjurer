@@ -42,7 +42,7 @@ class DataGenerateTaskTest {
                 .referenced(referenced)
                 .build();
         var result = task.call();
-        assertEquals(2, result);
+        assertEquals(2, result.status());
         assertEquals(10, wrapper.getValues().size());
         assertFalse(wrapper.getReferenced().get("p1").getValues().isEmpty());
     }

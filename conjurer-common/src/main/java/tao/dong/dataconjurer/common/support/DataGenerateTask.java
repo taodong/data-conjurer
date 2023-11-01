@@ -3,6 +3,7 @@ package tao.dong.dataconjurer.common.support;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.TypedValue;
@@ -14,12 +15,11 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.INDEX;
-import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.REFERENCE;
+import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.*;
 
 @Builder
 @Slf4j
-public class DataGenerateTask implements Callable<Integer> {
+public class DataGenerateTask implements Callable<EntityProcessResult> {
 
     private final EntityWrapper entityWrapper;
     private final CountDownLatch countDownLatch;
@@ -30,12 +30,16 @@ public class DataGenerateTask implements Callable<Integer> {
     private Map<Reference, Boolean> referenceReady = new HashMap<>();
 
     @Override
-    public Integer call() {
+    public EntityProcessResult call() {
         try {
             entityWrapper.updateStatus(1);
             generateData();
             entityWrapper.updateStatus(2);
-            return entityWrapper.getStatus();
+            return new EntityProcessResult(entityWrapper.getEntityName(), entityWrapper.getStatus());
+        } catch (DataGenerateException dge) {
+            throw dge;
+        } catch (Exception e) {
+            throw new DataGenerateException(MISC, String.format("Failed to generate data for %s", entityWrapper.getEntityName()), entityWrapper.getEntityName(), e);
         } finally {
             countDownLatch.countDown();
         }
@@ -60,7 +64,8 @@ public class DataGenerateTask implements Callable<Integer> {
         if (collision >= config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
             throw new DataGenerateException(INDEX,
                                             String.format("Failed to generate unique index for %s. Collision number: %d, row number: %d",
-                                                          entityWrapper.getEntityName(), collision, recordNum)
+                                                          entityWrapper.getEntityName(), collision, recordNum),
+                                            entityWrapper.getEntityName()
             );
         }
     }
@@ -95,7 +100,7 @@ public class DataGenerateTask implements Callable<Integer> {
                 var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);
                 if (Boolean.FALSE.equals(ready)) {
                     throw new DataGenerateException(REFERENCE,
-                                                    String.format("No reference is available for %s.%s", entityWrapper.getEntityName(), propertyName));
+                                                    String.format("No reference is available for %s.%s", entityWrapper.getEntityName(), propertyName), entityWrapper.getEntityName());
                 }
                 var indexGen = referenceIndexTracker.computeIfAbsent(propertyName, k -> new RandomIndexGenerator(referenced.get(reference).getOrderedValues().size()));
                 val = referenced.get(reference).getOrderedValues().get(indexGen.generate());
