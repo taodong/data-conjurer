@@ -11,9 +11,13 @@ public class DataGenerateConfig {
     @Builder.Default
     private int handlerCount = 1; // Threads to generate data
     @Builder.Default
-    private Duration timeOut = Duration.ofMinutes(10); // Data generation timeout
+    private Duration entityGenTimeOut = Duration.ofMinutes(5); // Data generation timeout for single entity
     @Builder.Default
     private int maxIndexCollision = 100; // Max occurrence of generated records has none unique index per entity
     @Builder.Default
     private boolean partialResult = true; // If return generated data when operation failed
+    @Builder.Default
+    private Duration dataGenCheckInterval = Duration.ofSeconds(10); // Wait interval of data generation service to check entity status updates
+    @Builder.Default
+    private Duration dataGenTimeOut = Duration.ofMinutes(15); // Overall time out for data generating process
 }

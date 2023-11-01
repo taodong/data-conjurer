@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
@@ -25,6 +26,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     private final CountDownLatch countDownLatch;
     private final DataGenerateConfig config;
     @Builder.Default
+    @Getter
     private Map<Reference, TypedValue> referenced = new HashMap<>();
     @Builder.Default
     private Map<Reference, Boolean> referenceReady = new HashMap<>();

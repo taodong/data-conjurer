@@ -15,7 +15,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.DEPENDENCE;
@@ -32,20 +31,42 @@ public class DataGenerateService {
     }
 
     public void generateData(@NotEmpty Set<EntityWrapper> entities) {
-
         validate(entities);
-        generateEntityData(entities);
+        var entityMap = createEntityMapWithReference(entities);
+        generateEntityData(entityMap);
     }
 
-    private void generateEntityData(Set<EntityWrapper> entities) {
+    Map<String, EntityWrapper> createEntityMapWithReference(Set<EntityWrapper> entities) {
+        var entityMap = new HashMap<String, EntityWrapper>();
+        var refs = new HashMap<String, Set<String>>();
+        for (var entity : entities) {
+            entityMap.put(entity.getEntityName(), entity);
+            for (var ref : entity.getReferences().values()) {
+                refs.compute(ref.entity(), (k, v) -> {
+                    if (v == null) {
+                        v = new HashSet<>();
+                    }
+                    v.add(ref.property());
+                    return v;
+                });
+            }
+        }
+        for (var entry : refs.entrySet()) {
+            entityMap.get(entry.getKey()).createReferenced(entry.getValue().toArray(String[]::new));
+        }
+        return entityMap;
+    }
+
+    private void generateEntityData(Map<String, EntityWrapper> entityMap) {
         var pool = Executors.newFixedThreadPool(config.getHandlerCount());
-        var entityMap = entities.stream().collect(Collectors.toMap(EntityWrapper::getEntityName, Function.identity()));
         try {
             var processed = 0;
-            while (processed <= entities.size() - 1) {
-                var candidates = findReadyEntities(entities, entityMap);
-                var runners = removeDropouts(candidates);
-                processed += (candidates.size() - runners.size());
+            var timeout = System.currentTimeMillis() + config.getDataGenTimeOut().toMillis();
+            while (processed <= entityMap.size() - 1 && System.currentTimeMillis() < timeout) {
+                var runners = findReadyEntities(entityMap);
+                var candidateSize = runners.size();
+                removeDropouts(runners, entityMap);
+                processed += (candidateSize - runners.size());
                 if (!runners.isEmpty()) {
                     var cleanup = false;
                     try {
@@ -55,7 +76,7 @@ public class DataGenerateService {
                                         .map(pool::submit)
                                         .toList();
 
-                        var lrs = latch.await(config.getTimeOut().getSeconds(), TimeUnit.SECONDS);
+                        var lrs = latch.await(config.getEntityGenTimeOut().getSeconds(), TimeUnit.SECONDS);
                         if (lrs) {
                             for (var future : futures) {
                                 try {
@@ -78,26 +99,35 @@ public class DataGenerateService {
                         failDataGeneration(runners, "Data generation failed");
                     }
                     processed += runners.size();
+                } else {
+                    try {
+                        TimeUnit.SECONDS.sleep(config.getDataGenCheckInterval().getSeconds());
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
+            }
+            if (processed < entityMap.size()) {
+                failDataGeneration(entityMap.values(), "Data generation timeout after " + config.getDataGenTimeOut().toSeconds() + " seconds.");
             }
         } finally {
             pool.shutdown();
         }
     }
 
-    private void failDataGeneration(Collection<EntityWrapper> wrappers, String message) {
+    void failDataGeneration(Collection<EntityWrapper> wrappers, String message) {
         for (var wrapper : wrappers) {
             failEntityGeneration(wrapper, message);
         }
     }
 
     private void failEntityGeneration(EntityWrapper wrapper, String message) {
-        if (wrapper.getStatus() != 2) {
+        if (wrapper.getStatus() != 2 && wrapper.getStatus() != -1) {
             wrapper.failProcess(message);
         }
     }
 
-    private DataGenerateTask createDataGenerateTask(EntityWrapper target, Map<String, EntityWrapper> data, CountDownLatch latch) {
+   DataGenerateTask createDataGenerateTask(EntityWrapper target, Map<String, EntityWrapper> data, CountDownLatch latch) {
         var referenceValues = getReferencedValues(target, data);
         return DataGenerateTask.builder()
                 .config(config)
@@ -130,24 +160,29 @@ public class DataGenerateService {
         return referencedValues;
     }
 
-    private Set<EntityWrapper> findReadyEntities(Set<EntityWrapper> entityWrappers, Map<String, EntityWrapper> entityMap) {
+    Set<EntityWrapper> findReadyEntities(Map<String, EntityWrapper> entityMap) {
         Set<EntityWrapper> candidates = new HashSet<>();
-        for (var wrapper : entityWrappers) {
-            if (wrapper.getStatus() == 0 && wrapper.getDependencies().stream().map(entityMap::get).noneMatch(en -> en.getStatus() != -1 || en.getStatus() != 2)) {
+        for (var wrapper : entityMap.values()) {
+            if (wrapper.getStatus() == 0 && wrapper.getDependencies().stream().map(entityMap::get).noneMatch(en -> en.getStatus() != -1 && en.getStatus() != 2)) {
                 candidates.add(wrapper);
             }
         }
         return candidates;
     }
 
-    private Set<EntityWrapper> removeDropouts(Set<EntityWrapper> entityWrappers) {
-        return entityWrappers.stream()
-                .filter(wrapper -> wrapper.getStatus() != -1)
-                .collect(Collectors.toSet());
+    void removeDropouts(Set<EntityWrapper> entityWrappers, Map<String, EntityWrapper> entityMap) {
+        var it = entityWrappers.iterator();
+        while (it.hasNext()) {
+            var cur = it.next();
+            if (cur.getDependencies().stream().map(entityMap::get).anyMatch(en -> en.getStatus() == -1)) {
+                entityMap.get(cur.getEntityName()).failProcess("Dependency generation failed");
+                it.remove();
+            }
+        }
     }
 
 
-    private void validate(Set<EntityWrapper> wrappers) {
+    void validate(Set<EntityWrapper> wrappers) {
         if (hasCircularDependencies(wrappers)) {
             throw new DataGenerateException(DEPENDENCE, "Circular dependencies found among entities");
         }

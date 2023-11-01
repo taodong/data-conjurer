@@ -95,10 +95,6 @@ public class EntityWrapper {
         status.set(-1);
     }
 
-    public boolean hasDependencies() {
-        return !dependencies.isEmpty();
-    }
-
     public void createReferenced(String... properties) {
         if (properties != null) {
             for (var prop : properties) {
