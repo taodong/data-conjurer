@@ -33,6 +33,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
     @Override
     public EntityProcessResult call() {
+        Thread.currentThread().setName("data-gen-" + entityWrapper.getEntityName());
         try {
             entityWrapper.updateStatus(1);
             generateData();
