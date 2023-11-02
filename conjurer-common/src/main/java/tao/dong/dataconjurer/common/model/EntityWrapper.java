@@ -91,8 +91,10 @@ public class EntityWrapper {
     }
 
     public void failProcess(String message) {
-        msg = message;
-        status.set(-1);
+        if (status.get() != 2) {
+            msg = message;
+            status.set(-1);
+        }
     }
 
     public void createReferenced(String... properties) {
