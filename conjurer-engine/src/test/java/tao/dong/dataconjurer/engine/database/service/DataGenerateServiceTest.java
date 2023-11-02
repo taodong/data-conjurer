@@ -26,6 +26,23 @@ class DataGenerateServiceTest {
     private final CircularDependencyChecker circularDependencyChecker = mock(CircularDependencyChecker.class);
 
     @Test
+    void testGenerateData() {
+        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
+        CircularDependencyChecker checker = new CircularDependencyChecker();
+        DataGenerateService service = new DataGenerateService(dataGenerateConfig, checker);
+        var entityMap = createTestEntityMap();
+        Set<EntityWrapper> entities = new HashSet<>(entityMap.values());
+        service.generateData(entities);
+        assertEquals(10, entityMap.get("t1").getValues().size());
+        assertEquals(5, entityMap.get("t2").getValues().size());
+        assertEquals(5, entityMap.get("t3").getValues().size());
+        assertEquals(5, entityMap.get("t4").getValues().size());
+        for (var entity : entities) {
+            assertEquals(2, entity.getStatus());
+        }
+    }
+
+    @Test
     void testFailDataGeneration() {
         var wrapper1 = mockWrapperWithStatus(1);
         var wrapper2 = mockWrapperWithStatus(2);

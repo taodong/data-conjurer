@@ -48,6 +48,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     private void generateData() {
+        LOG.info("Generating data for entity {}", entityWrapper.getEntityName());
         Map<String, IndexValueGenerator> referenceIndexTracker = new HashMap<>();
         var recordNum = 0L;
         var collision = 0;
