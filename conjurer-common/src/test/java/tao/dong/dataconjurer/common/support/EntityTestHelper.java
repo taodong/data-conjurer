@@ -23,4 +23,8 @@ public class EntityTestHelper {
         return new EntityData(entityName == null ? "t1" : entityName,
                 count == null ? 10L : count);
     }
+
+    public EntityData createSimpleDataWithId(String entityName, Long count, int id) {
+        return new EntityData(entityName == null ? "t1" : entityName, id, count == null ? 10L : count);
+    }
 }

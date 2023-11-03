@@ -19,6 +19,7 @@ import java.util.function.BiFunction;
 @Slf4j
 @Getter
 public class EntityWrapper {
+    private final EntityWrapperId id;
     private final DataEntity entity;
     private final Set<String> dependencies = new HashSet<>();
     /**
@@ -30,7 +31,6 @@ public class EntityWrapper {
      */
     private final AtomicInteger status = new AtomicInteger(0);
     private final long count;
-    private final String entityName;
 
     private final Map<String, TypedValue> referenced = new HashMap<>();
     private final Map<String, Reference> references = new HashMap<>();
@@ -42,8 +42,8 @@ public class EntityWrapper {
 
     public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
         this.entity = entity;
-        this.entityName = entity.name();
         this.count = data.count();
+        this.id = new EntityWrapperId(entity.name(), data.dataId());
         var propIndex = 0;
         var indexedProps = new HashMap<Integer, Set<Integer>>();
 
@@ -107,7 +107,7 @@ public class EntityWrapper {
 
     private TypedValue createReferenceTypedValue(String propName) {
         return entity.properties().stream().filter(property -> StringUtils.equals(propName, property.name()))
-                .findFirst().map(p -> new TypedValue(p.type())).orElseThrow(() -> new IllegalArgumentException("Property " + propName + " isn't defined in " + entityName));
+                .findFirst().map(p -> new TypedValue(p.type())).orElseThrow(() -> new IllegalArgumentException("Property " + propName + " isn't defined in " + id.entityName()));
     }
 
     public Map<Reference, TypedValue> getReferencedByProperties(String... properties) {
@@ -115,15 +115,22 @@ public class EntityWrapper {
         if (properties != null) {
             for (var prop : properties) {
                 if (referenced.containsKey(prop)) {
-                    rs.put(new Reference(entityName, prop), referenced.get(prop));
+                    rs.put(new Reference(id.entityName(), prop), referenced.get(prop));
                 }
             }
         }
         return rs;
     }
 
+    public String getEntityName() {
+        return id.entityName();
+    }
+
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof EntityWrapper) && StringUtils.equals(entityName, ((EntityWrapper) obj).getEntityName());
+        if (obj instanceof EntityWrapper other) {
+            return id.equals(other.getId());
+        }
+        return false;
     }
 }

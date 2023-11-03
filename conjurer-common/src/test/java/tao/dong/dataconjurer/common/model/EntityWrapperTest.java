@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EntityWrapperTest {
 
-    private final EntityTestHelper testHelper = new EntityTestHelper();
+    private static final EntityTestHelper testHelper = new EntityTestHelper();
 
     @Test
     void testUpdateStatus() {
@@ -47,6 +47,27 @@ class EntityWrapperTest {
         }
         test.failProcess("negative test");
         assertEquals(expected, test.getStatus());
+    }
+
+    private static Stream<Arguments> testEquals() {
+        return Stream.of(
+                Arguments.of(
+                        new EntityWrapper(testHelper.createSimpleEntity(), testHelper.createSimpleData(null, null)),
+                        new EntityWrapper(testHelper.createSimpleEntity(), testHelper.createSimpleData(null, null)),
+                        true
+                ),
+                Arguments.of(
+                        new EntityWrapper(testHelper.createSimpleEntity(), testHelper.createSimpleData(null, null)),
+                        new EntityWrapper(testHelper.createSimpleEntity(), testHelper.createSimpleDataWithId(null, null, 1)),
+                        false
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testEquals(EntityWrapper obj1, EntityWrapper obj2, boolean expected) {
+        assertEquals(expected, obj1.equals(obj2));
     }
 
 }

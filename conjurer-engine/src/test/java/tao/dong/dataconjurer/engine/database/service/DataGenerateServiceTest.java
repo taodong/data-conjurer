@@ -2,10 +2,18 @@ package tao.dong.dataconjurer.engine.database.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import tao.dong.dataconjurer.common.model.*;
+import tao.dong.dataconjurer.common.model.DataEntity;
+import tao.dong.dataconjurer.common.model.EntityData;
+import tao.dong.dataconjurer.common.model.EntityProperty;
+import tao.dong.dataconjurer.common.model.EntityWrapper;
+import tao.dong.dataconjurer.common.model.EntityWrapperId;
+import tao.dong.dataconjurer.common.model.Interval;
+import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.support.CircularDependencyChecker;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataGenerateException;
+import tao.dong.dataconjurer.common.support.DataHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,9 +22,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.DEPENDENCE;
@@ -27,16 +43,18 @@ class DataGenerateServiceTest {
 
     @Test
     void testGenerateData() {
+        Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
         CircularDependencyChecker checker = new CircularDependencyChecker();
         DataGenerateService service = new DataGenerateService(dataGenerateConfig, checker);
-        var entityMap = createTestEntityMap();
+        createTestEntityMap(entityMap, idMap);
         Set<EntityWrapper> entities = new HashSet<>(entityMap.values());
         service.generateData(entities);
-        assertEquals(10, entityMap.get("t1").getValues().size());
-        assertEquals(5, entityMap.get("t2").getValues().size());
-        assertEquals(5, entityMap.get("t3").getValues().size());
-        assertEquals(5, entityMap.get("t4").getValues().size());
+        assertEquals(10, entityMap.get(createEntityWrapperIdNoOrder("t1")).getValues().size());
+        assertEquals(5, entityMap.get(createEntityWrapperIdNoOrder("t2")).getValues().size());
+        assertEquals(5, entityMap.get(createEntityWrapperIdNoOrder("t3")).getValues().size());
+        assertEquals(5, entityMap.get(createEntityWrapperIdNoOrder("t4")).getValues().size());
         for (var entity : entities) {
             assertEquals(2, entity.getStatus());
         }
@@ -64,20 +82,22 @@ class DataGenerateServiceTest {
 
     @Test
     void testCreateDataGenerateTask() {
-        var data = mockDataForCreateDataGenerationTaskTest();
+        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        mockDataForCreateDataGenerationTaskTest(data, idMap);
         CountDownLatch latch = new CountDownLatch(1);
         DataGenerateService service = new DataGenerateService(config, circularDependencyChecker);
-        var task = service.createDataGenerateTask(data.get("t1"), data, latch);
+        var task = service.createDataGenerateTask(data.get(createEntityWrapperIdNoOrder("t1")), data, idMap, latch);
         assertEquals(2, task.getReferenced().size());
     }
 
-    private Map<String, EntityWrapper> mockDataForCreateDataGenerationTaskTest() {
-        var data = createTestEntityMap();
-        var t2 = data.get("t2");
+    private void mockDataForCreateDataGenerationTaskTest(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
+        createTestEntityMap(data, idMap);
+        var t2 = data.get(createEntityWrapperIdNoOrder("t2"));
         t2.updateStatus(1);
         t2.updateStatus(2);
         t2.createReferenced("t2p0");
-        var t3 = data.get("t3");
+        var t3 = data.get(createEntityWrapperIdNoOrder("t3"));
         t3.updateStatus(1);
         t3.updateStatus(2);
         t3.createReferenced("t3p0");
@@ -85,23 +105,27 @@ class DataGenerateServiceTest {
             t2.getReferenced().get("t2p0").addValue((long)i);
             t3.getReferenced().get("t3p0").addValue((long)i);
         }
-        return data;
     }
 
     @Test
     void testCreateEntityMapWithReference() {
-        var raw = createTestEntityMap();
+        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        createTestEntityMap(data, idMap);
         DataGenerateService service = new DataGenerateService(config, circularDependencyChecker);
-        var processed = service.createEntityMapWithReference(new HashSet<>(raw.values()));
-        assertEquals(1, processed.get("t2").getReferenced().size());
-        assertEquals(1, processed.get("t3").getReferenced().size());
+        var processed = service.createEntityMapWithReference(new HashSet<>(data.values()), data, idMap);
+        assertEquals(1, processed.get(createEntityWrapperIdNoOrder("t2")).getReferenced().size());
+        assertEquals(1, processed.get(createEntityWrapperIdNoOrder("t3")).getReferenced().size());
     }
 
     @Test
     void testValidate() {
         when(circularDependencyChecker.hasCircular(anyMap())).thenReturn(false);
         DataGenerateService service = new DataGenerateService(config, circularDependencyChecker);
-        var raw = new HashSet<>(createTestEntityMap().values());
+        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        createTestEntityMap(data, idMap);
+        var raw = new HashSet<>(data.values());
         service.validate(raw);
         assertTrue(true);
     }
@@ -110,7 +134,10 @@ class DataGenerateServiceTest {
     void testValidate_ThrowException() {
         when(circularDependencyChecker.hasCircular(anyMap())).thenReturn(true);
         DataGenerateService service = new DataGenerateService(config, circularDependencyChecker);
-        var raw = new HashSet<>(createTestEntityMap().values());
+        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        createTestEntityMap(data, idMap);
+        var raw = new HashSet<>(data.values());
         DataGenerateException exception = assertThrows(DataGenerateException.class, () -> service.validate(raw));
         assertEquals(DEPENDENCE, exception.getErrorType());
     }
@@ -118,8 +145,10 @@ class DataGenerateServiceTest {
     @Test
     void testFindReadyEntities() {
         DataGenerateService service = new DataGenerateService(config, circularDependencyChecker);
-        var data = createTestDataForSelection();
-        var runners = service.findReadyEntities(data);
+        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        createTestDataForSelection(data, idMap);
+        var runners = service.findReadyEntities(data, idMap);
         assertEquals(2, runners.size());
         for (var en : runners) {
             assertTrue(StringUtils.endsWithAny(en.getEntityName(), "t2", "t4"));
@@ -129,31 +158,32 @@ class DataGenerateServiceTest {
     @Test
     void testRemoveDropouts() {
         DataGenerateService service = new DataGenerateService(config, circularDependencyChecker);
-        var data = createTestDataForSelection();
-        data.get("t4").failProcess("negative test");
+        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        createTestDataForSelection(data, idMap);
+        data.get(createEntityWrapperIdNoOrder("t4")).failProcess("negative test");
         var runners = new HashSet<EntityWrapper>();
-        runners.add(data.get("t2"));
-        runners.add(data.get("t3"));
-        service.removeDropouts(runners, data);
+        runners.add(data.get(createEntityWrapperIdNoOrder("t2")));
+        runners.add(data.get(createEntityWrapperIdNoOrder("t3")));
+        service.removeDropouts(runners, data, idMap);
         assertEquals(1, runners.size());
-        assertEquals(-1, data.get("t3").getStatus());
+        assertEquals(-1, data.get(createEntityWrapperIdNoOrder("t3")).getStatus());
     }
 
-    private Map<String, EntityWrapper> createTestDataForSelection() {
-        var data = createTestEntityMap();
-        var t2 = data.get("t2");
+    private void createTestDataForSelection(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
+        createTestEntityMap(data, idMap);
+        var t2 = data.get(createEntityWrapperIdNoOrder("t2"));
         t2.createReferenced("t2p0");
-        var t3 = data.get("t3");
+        var t3 = data.get(createEntityWrapperIdNoOrder("t3"));
         t3.createReferenced("t3p0");
-        var t4 = data.get("t4");
+        var t4 = data.get(createEntityWrapperIdNoOrder("t4"));
         t4.createReferenced("t4p0");
-        return data;
     }
 
-    Map<String, EntityWrapper> createTestEntityMap() {
-        Map<String, EntityWrapper> data = new HashMap<>();
+    private void createTestEntityMap(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
         var wrapper1 = getEntityWrapper1();
-        data.put("t1", wrapper1);
+        data.put(wrapper1.getId(), wrapper1);
+        DataHelper.appendToSetValueInMap(idMap, wrapper1.getEntityName(), wrapper1.getId());
 
         var entity2 = new DataEntity("t2",
                 Set.of(
@@ -162,7 +192,8 @@ class DataGenerateServiceTest {
                 )
         );
         var wrapper2 = new EntityWrapper(entity2, new EntityData("t2", 5L));
-        data.put("t2", wrapper2);
+        data.put(wrapper2.getId(), wrapper2);
+        DataHelper.appendToSetValueInMap(idMap, wrapper2.getEntityName(), wrapper2.getId());
 
         var entity3 = new DataEntity("t3",
                 Set.of(
@@ -171,7 +202,8 @@ class DataGenerateServiceTest {
                 )
         );
         var wrapper3 = new EntityWrapper(entity3, new EntityData("t3", 5L));
-        data.put("t3", wrapper3);
+        data.put(wrapper3.getId(), wrapper3);
+        DataHelper.appendToSetValueInMap(idMap, wrapper3.getEntityName(), wrapper3.getId());
 
         var entity4 = new DataEntity("t4",
                 Set.of(
@@ -179,8 +211,8 @@ class DataGenerateServiceTest {
                 )
         );
         var wrapper4 = new EntityWrapper(entity4, new EntityData("t4", 5L));
-        data.put("t4", wrapper4);
-        return data;
+        data.put(wrapper4.getId(), wrapper4);
+        DataHelper.appendToSetValueInMap(idMap, wrapper4.getEntityName(), wrapper4.getId());
     }
 
     private static EntityWrapper getEntityWrapper1() {
@@ -193,6 +225,10 @@ class DataGenerateServiceTest {
                 )
         );
         return new EntityWrapper(entity1, new EntityData("t1", 10L));
+    }
+
+    private static EntityWrapperId createEntityWrapperIdNoOrder(String entityName) {
+        return new EntityWrapperId(entityName, 0);
     }
 
 }

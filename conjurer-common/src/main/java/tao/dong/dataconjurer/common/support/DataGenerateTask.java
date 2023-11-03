@@ -33,23 +33,23 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
     @Override
     public EntityProcessResult call() {
-        Thread.currentThread().setName("data-gen-" + entityWrapper.getEntityName());
+        Thread.currentThread().setName("data-gen-" + entityWrapper.getId().getIdString());
         try {
             entityWrapper.updateStatus(1);
             generateData();
             entityWrapper.updateStatus(2);
-            return new EntityProcessResult(entityWrapper.getEntityName(), entityWrapper.getStatus());
+            return new EntityProcessResult(entityWrapper.getId(), entityWrapper.getStatus());
         } catch (DataGenerateException dge) {
             throw dge;
         } catch (Exception e) {
-            throw new DataGenerateException(MISC, String.format("Failed to generate data for %s", entityWrapper.getEntityName()), entityWrapper.getEntityName(), e);
+            throw new DataGenerateException(MISC, String.format("Failed to generate data for %s", entityWrapper.getId()), entityWrapper.getId().getIdString(), e);
         } finally {
             countDownLatch.countDown();
         }
     }
 
     private void generateData() {
-        LOG.info("Generating data for entity {}", entityWrapper.getEntityName());
+        LOG.info("Generating data for entity {}", entityWrapper.getId());
         Map<String, IndexValueGenerator> referenceIndexTracker = new HashMap<>();
         var recordNum = 0L;
         var collision = 0;
@@ -61,15 +61,15 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
             } else {
                 collision++;
                 LOG.warn("Index collision occurs for generated {} record. record number: {} collision number: {}",
-                         entityWrapper.getEntityName(), recordNum, collision);
+                         entityWrapper.getId(), recordNum, collision);
             }
         }
 
         if (collision >= config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
             throw new DataGenerateException(INDEX,
                                             String.format("Failed to generate unique index for %s. Collision number: %d, row number: %d",
-                                                          entityWrapper.getEntityName(), collision, recordNum),
-                                            entityWrapper.getEntityName()
+                                                          entityWrapper.getId(), collision, recordNum),
+                                            entityWrapper.getId().getIdString()
             );
         }
     }
@@ -104,7 +104,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                 var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);
                 if (Boolean.FALSE.equals(ready)) {
                     throw new DataGenerateException(REFERENCE,
-                                                    String.format("No reference is available for %s.%s", entityWrapper.getEntityName(), propertyName), entityWrapper.getEntityName());
+                                                    String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
                 }
                 var indexGen = referenceIndexTracker.computeIfAbsent(propertyName, k -> new RandomIndexGenerator(referenced.get(reference).getOrderedValues().size()));
                 val = referenced.get(reference).getOrderedValues().get(indexGen.generate());

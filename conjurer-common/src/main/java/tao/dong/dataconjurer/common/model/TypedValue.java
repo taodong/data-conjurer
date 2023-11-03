@@ -38,4 +38,12 @@ public class TypedValue {
         }
         return getOrderedValues();
     }
+
+    public void join(TypedValue tv) {
+        if (type != tv.getType()) {
+            throw new IllegalArgumentException("Can't join values of different types: " + type.getName() + " vs " + tv.getType().getName());
+        }
+        values.addAll(tv.getValues());
+        orderedValues.clear();
+    }
 }
