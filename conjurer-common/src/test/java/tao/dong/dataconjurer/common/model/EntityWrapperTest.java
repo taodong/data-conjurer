@@ -64,6 +64,23 @@ class EntityWrapperTest {
         );
     }
 
+    private static Stream<Arguments> testCreateReferenced() {
+        return Stream.of(
+                Arguments.of(new String[]{"t1p1"}, 1),
+                Arguments.of(new String[]{"t1p2"}, 1),
+                Arguments.of(new String[]{"t1p1", "t1p2"}, 2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testCreateReferenced(String[] props, int expected) {
+        var test = new EntityWrapper(testHelper.createSimpleEntity(), testHelper.createSimpleData(null, null));
+        test.createReferenced("t1p1", "t1p2");
+        var res = test.getReferencedByProperties(props);
+        assertEquals(expected, res.size());
+    }
+
     @ParameterizedTest
     @MethodSource
     void testEquals(EntityWrapper obj1, EntityWrapper obj2, boolean expected) {

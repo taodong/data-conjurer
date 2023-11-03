@@ -4,17 +4,22 @@ import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.Interval;
+import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.UnfixedSize;
 
 import java.util.List;
 import java.util.Set;
 
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
+import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
 public class EntityTestHelper {
     public DataEntity createSimpleEntity() {
         return new DataEntity("t1",
                 Set.of(
-                        new EntityProperty("t1p1", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null)
+                        new EntityProperty("t1p1", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t1p2", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t1p3", TEXT, false, -1, List.of(new UnfixedSize(15L)), null)
                 )
         );
     }
