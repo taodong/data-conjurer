@@ -61,6 +61,26 @@ class DataGenerateServiceTest {
     }
 
     @Test
+    void testGenerateData_MultiplePlan() {
+        Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
+        CircularDependencyChecker checker = new CircularDependencyChecker();
+        DataGenerateService service = new DataGenerateService(dataGenerateConfig, checker);
+        createTestEntityMapWithMultiplePlan(entityMap, idMap);
+        Set<EntityWrapper> entities = new HashSet<>(entityMap.values());
+        service.generateData(entities);
+        assertEquals(10, entityMap.get(createEntityWrapperIdNoOrder("t1")).getValues().size());
+        assertEquals(5, entityMap.get(createEntityWrapperIdNoOrder("t2")).getValues().size());
+        assertEquals(5, entityMap.get(createEntityWrapperIdNoOrder("t3")).getValues().size());
+        assertEquals(5, entityMap.get(createEntityWrapperIdNoOrder("t4")).getValues().size());
+        assertEquals(5, entityMap.get(new EntityWrapperId("t3", 1)).getValues().size());
+        for (var entity : entities) {
+            assertEquals(2, entity.getStatus());
+        }
+    }
+
+    @Test
     void testFailDataGeneration() {
         var wrapper1 = mockWrapperWithStatus(1);
         var wrapper2 = mockWrapperWithStatus(2);
@@ -178,6 +198,19 @@ class DataGenerateServiceTest {
         t3.createReferenced("t3p0");
         var t4 = data.get(createEntityWrapperIdNoOrder("t4"));
         t4.createReferenced("t4p0");
+    }
+
+    private void createTestEntityMapWithMultiplePlan(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
+        createTestEntityMap(data, idMap);
+        var entity5 = new DataEntity("t3",
+                Set.of(
+                        new EntityProperty("t3p0", SEQUENCE, true, 1, List.of(new Interval(1L, 6L)), null),
+                        new EntityProperty("t3p1", SEQUENCE, true, -1, null, new Reference("t4", "t4p0"))
+                )
+        );
+        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L));
+        data.put(wrapper5.getId(), wrapper5);
+        DataHelper.appendToSetValueInMap(idMap, wrapper5.getEntityName(), wrapper5.getId());
     }
 
     private void createTestEntityMap(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {

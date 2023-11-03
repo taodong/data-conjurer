@@ -215,7 +215,7 @@ public class DataGenerateService {
     }
 
     private boolean hasCircularDependencies(Set<EntityWrapper> wrappers) {
-        Map<String, Set<String>> nodes = wrappers.stream().collect(Collectors.toMap(EntityWrapper::getEntityName, EntityWrapper::getDependencies));
+        Map<String, Set<String>> nodes = wrappers.stream().collect(Collectors.toMap(EntityWrapper::getEntityName, EntityWrapper::getDependencies, (first, second) -> second));
         return circularDependencyChecker.hasCircular(nodes);
     }
 }
