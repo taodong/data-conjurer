@@ -1,4 +1,4 @@
-package tao.dong.dataconjurer.engine.database.service;
+package tao.dong.dataconjurer.common.service;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.extern.slf4j.Slf4j;
