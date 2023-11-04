@@ -39,9 +39,6 @@ public class DataPlanService {
             if (dataEntity != null) {
                 var wrapperId = new EntityWrapperId(dataEntity.name(), entityData.dataId());
                 if (!entityWrapperMap.containsKey(wrapperId)) {
-                    if (entityWrapperIdMap.containsKey(dataEntity.name())) {
-                        // TODO: ...
-                    }
                     DataHelper.appendToSetValueInMap(entityWrapperIdMap, dataEntity.name(), wrapperId);
                     entityWrapperMap.put(wrapperId, new EntityWrapper(dataEntity, entityData));
                 } else {
