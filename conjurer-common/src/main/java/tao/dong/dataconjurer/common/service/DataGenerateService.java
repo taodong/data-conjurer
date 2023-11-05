@@ -1,8 +1,10 @@
 package tao.dong.dataconjurer.common.service;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Reference;
@@ -38,38 +40,14 @@ public class DataGenerateService {
         this.circularDependencyChecker = circularDependencyChecker;
     }
 
-    public void generateData(@NotEmpty Set<EntityWrapper> entities) {
-        validate(entities);
-        var entityMap = new HashMap<EntityWrapperId, EntityWrapper>();
-        var entityIdMap = new HashMap<String, Set<EntityWrapperId>>();
-        createEntityMapWithReference(entities, entityMap, entityIdMap);
-        generateEntityData(entityMap, entityIdMap);
+    public void generateData(@NotNull DataBlueprint blueprint) {
+        validate(blueprint.getEntities().values());
+        generateEntityData(blueprint);
     }
 
-    Map<EntityWrapperId, EntityWrapper> createEntityMapWithReference(Set<EntityWrapper> entities,
-                                                                     Map<EntityWrapperId, EntityWrapper> entityMap,
-                                                                     Map<String, Set<EntityWrapperId>> entityIdMap) {
-        var refs = new HashMap<String, Set<String>>();
-        for (var entity : entities) {
-            entityMap.put(entity.getId(), entity);
-            DataHelper.appendToSetValueInMap(entityIdMap, entity.getEntityName(), entity.getId());
-            for (var ref : entity.getReferences().values()) {
-                DataHelper.appendToSetValueInMap(refs, ref.entity(), ref.property());
-            }
-        }
-        for (var entry : refs.entrySet()) {
-            var entityIds = entityIdMap.get(entry.getKey());
-            if (CollectionUtils.isNotEmpty(entityIds)) {
-                entityIds.forEach(
-                        id -> entityMap.get(id).createReferenced(entry.getValue().toArray(String[]::new))
-                );
-            }
-        }
-        return entityMap;
-    }
-
-    private void generateEntityData(Map<EntityWrapperId, EntityWrapper> entityMap,
-                                    Map<String, Set<EntityWrapperId>> entityIdMap) {
+    private void generateEntityData(DataBlueprint blueprint) {
+        var entityMap = blueprint.getEntities();
+        var entityIdMap = blueprint.getEntityWrapperIds();
         var pool = Executors.newFixedThreadPool(config.getHandlerCount());
         try {
             var processed = 0;
@@ -208,13 +186,13 @@ public class DataGenerateService {
     }
 
 
-    void validate(Set<EntityWrapper> wrappers) {
+    void validate(Collection<EntityWrapper> wrappers) {
         if (hasCircularDependencies(wrappers)) {
             throw new DataGenerateException(DEPENDENCE, "Circular dependencies found among entities");
         }
     }
 
-    private boolean hasCircularDependencies(Set<EntityWrapper> wrappers) {
+    private boolean hasCircularDependencies(Collection<EntityWrapper> wrappers) {
         Map<String, Set<String>> nodes = wrappers.stream().collect(Collectors.toMap(EntityWrapper::getEntityName, EntityWrapper::getDependencies, (first, second) -> second));
         return circularDependencyChecker.hasCircular(nodes);
     }
