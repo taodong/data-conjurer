@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
+import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.HashMap;
@@ -15,6 +16,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DataPlanServiceTest {
 
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
+
+    @Test
+    void testCreateDataBlueprint() {
+        var service = new DataPlanService();
+        var schema = TEST_HELPER.createSimpleTestSchema();
+        var plans = TEST_HELPER.createSimpleTestPlans();
+        var config = DataGenerateConfig.builder()
+                .maxIndexCollision(3)
+                .build();
+        var blueprint = service.createDataBlueprint(schema, config, plans);
+        assertEquals(5, blueprint.getEntities().size());
+    }
 
     @Test
     void testCreateEntityMapWithReference() {

@@ -16,7 +16,7 @@ class EntityWrapperTest {
 
     @Test
     void testUpdateStatus() {
-        var test = new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleData(null, null));
+        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null));
         assertEquals(0, test.getStatus());
         test.updateStatus(2);
         assertEquals(0, test.getStatus());
@@ -41,7 +41,7 @@ class EntityWrapperTest {
     @ParameterizedTest
     @MethodSource
     void testFailProcess(int[] sequence, int expected) {
-        var test = new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleData(null, null));
+        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null));
         for (var status : sequence) {
             test.updateStatus(status);
         }
@@ -52,13 +52,13 @@ class EntityWrapperTest {
     private static Stream<Arguments> testEquals() {
         return Stream.of(
                 Arguments.of(
-                        new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleData(null, null)),
-                        new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleData(null, null)),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null)),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null)),
                         true
                 ),
                 Arguments.of(
-                        new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleData(null, null)),
-                        new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleDataWithId(null, null, 1)),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null)),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleDataWithId(null, null, 1)),
                         false
                 )
         );
@@ -75,7 +75,7 @@ class EntityWrapperTest {
     @ParameterizedTest
     @MethodSource
     void testCreateReferenced(String[] props, int expected) {
-        var test = new EntityWrapper(TEST_HELPER.createSimpleEntity(), TEST_HELPER.createSimpleData(null, null));
+        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null));
         test.createReferenced("t1p1", "t1p2");
         var res = test.getReferencedByProperties(props);
         assertEquals(expected, res.size());

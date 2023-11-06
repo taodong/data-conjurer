@@ -7,7 +7,6 @@ import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
-import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
@@ -15,7 +14,6 @@ import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.SequenceGenerator;
 import tao.dong.dataconjurer.common.support.SequenceGeneratorDecorator;
 
-import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +28,7 @@ public class DataPlanService {
 
         for (var dataPlan : dataPlans) {
             if (StringUtils.equals(schema.name(), dataPlan.schema()))
-                initBlueprint(blueprint, entityDefinitions, dataPlan);
+                constructBlueprint(blueprint, entityDefinitions, dataPlan);
             else {
                 LOG.warn("Data plan {} is ignored due to target schema {} doesn't match current schema {}", dataPlan.name(), dataPlan.schema(), schema.name());
             }
@@ -92,7 +90,7 @@ public class DataPlanService {
         }
     }
 
-    private void initBlueprint(DataBlueprint blueprint, Map<String, DataEntity> entityDefinitions, DataPlan dataPlan) {
+    private void constructBlueprint(DataBlueprint blueprint, Map<String, DataEntity> entityDefinitions, DataPlan dataPlan) {
         var entityWrapperMap = blueprint.getEntities();
         var entityWrapperIdMap = blueprint.getEntityWrapperIds();
         for (var entityData : dataPlan.data()) {
