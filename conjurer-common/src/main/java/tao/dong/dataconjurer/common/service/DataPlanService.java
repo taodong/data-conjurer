@@ -7,10 +7,15 @@ import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
+import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
+import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
+import tao.dong.dataconjurer.common.support.SequenceGenerator;
+import tao.dong.dataconjurer.common.support.SequenceGeneratorDecorator;
 
+import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class DataPlanService {
-    public DataBlueprint createDataBlueprint(DataSchema schema, DataPlan... dataPlans) {
+    public DataBlueprint createDataBlueprint(DataSchema schema, DataGenerateConfig config, DataPlan... dataPlans) {
         var blueprint = new DataBlueprint();
         var entityDefinitions = extraEntityDefinitions(schema);
 
@@ -33,9 +38,41 @@ public class DataPlanService {
 
         if (!blueprint.getEntities().isEmpty()) {
             enableReferences(blueprint);
+            balanceIndex(blueprint, config);
         }
 
         return blueprint;
+    }
+
+    private void balanceIndex(DataBlueprint blueprint, DataGenerateConfig config) {
+        for (var wrapperIds : blueprint.getEntityWrapperIds().values()) {
+            if (wrapperIds.size() > 1) {
+                EntityWrapperId previous = null;
+                for (var current : wrapperIds) {
+                    if (previous != null) {
+                        updatePropertyGenerators(config, blueprint.getEntities().get(previous), blueprint.getEntities().get(current));
+                    }
+                    previous = current;
+                }
+            }
+        }
+    }
+
+    void updatePropertyGenerators(DataGenerateConfig config, EntityWrapper previous, EntityWrapper current) {
+        for (var property : previous.getEntity().properties()) {
+            if (property.idIndex() != -1) {
+                var generator = previous.getGenerators().get(property.name());
+                if (generator instanceof SequenceGeneratorDecorator prevGen) {
+                    ((SequenceGeneratorDecorator)(current.getGenerators().get(property.name())))
+                            .getGenerator()
+                            .setCurrent(calculateNewBase(prevGen.getGenerator(), previous.getCount() + config.getMaxIndexCollision()));
+                }
+            }
+        }
+    }
+
+    private long calculateNewBase(SequenceGenerator generator, long rounds) {
+        return generator.calculateGeneratedValue(rounds) + generator.getLeap();
     }
 
     void enableReferences(DataBlueprint blueprint) {

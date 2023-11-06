@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.Interval;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import static tao.dong.dataconjurer.common.model.ConstraintType.INTERVAL;
 
+@Getter
 public class SequenceGeneratorDecorator implements ValueGenerator<Long> {
 
     private final SequenceGenerator generator;
