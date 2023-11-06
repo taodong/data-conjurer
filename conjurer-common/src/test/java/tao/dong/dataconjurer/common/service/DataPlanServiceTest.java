@@ -2,12 +2,14 @@ package tao.dong.dataconjurer.common.service;
 
 import org.junit.jupiter.api.Test;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
+import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,6 +29,25 @@ class DataPlanServiceTest {
                 .build();
         var blueprint = service.createDataBlueprint(schema, config, plans);
         assertEquals(5, blueprint.getEntities().size());
+        assertEquals(11L, blueprint.getEntities().get(new EntityWrapperId("t3", 1)).getGenerators().get("t3p0").generate());
+    }
+
+    @Test
+    void testCreateDataBlueprint_IgnorePlanWithDuplicateId() {
+        var service = new DataPlanService();
+        var schema = TEST_HELPER.createSimpleTestSchema();
+        var plans = new DataPlan[]{
+                new DataPlan("plan1", "test1", List.of(
+                        TEST_HELPER.createSimpleData("t4", 10L)
+                )),
+                new DataPlan("plan2", "test1", List.of(
+                        TEST_HELPER.createSimpleData("t4", 10L)
+                ))
+        };
+        var config = DataGenerateConfig.builder()
+                .build();
+        var blueprint = service.createDataBlueprint(schema, config, plans);
+        assertEquals(1, blueprint.getEntities().size());
     }
 
     @Test
