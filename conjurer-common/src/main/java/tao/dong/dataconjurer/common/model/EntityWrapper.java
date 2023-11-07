@@ -37,8 +37,15 @@ public class EntityWrapper {
     private final List<List<Object>> values = new ArrayList<>();
     private final Map<String, ValueGenerator<?>> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
+    private final List<PropertyType> propertyTypes = new ArrayList<>();
     private final List<IndexedValue> indexes = new ArrayList<>();
     private String msg;
+    protected TypedValueGenerator typedValueGenerator = new TypedValueGenerator() {
+        @Override
+        public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property) {
+            return TypedValueGenerator.super.matchDefaultGeneratorByType(property);
+        }
+    };
 
     public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
         this.entity = entity;
@@ -62,6 +69,7 @@ public class EntityWrapper {
 
             // Create generators
             properties.add(property.name());
+            propertyTypes.add(property.type());
             generators.put(property.name(), matchValueGenerator(property));
             propIndex++;
         }
@@ -77,7 +85,7 @@ public class EntityWrapper {
     }
 
     protected ValueGenerator<?> matchValueGenerator(EntityProperty property) {
-        return TypedValueGenerator.matchDefaultGeneratorByType(property);
+        return typedValueGenerator.matchDefaultGeneratorByType(property);
     }
 
     public int getStatus() {

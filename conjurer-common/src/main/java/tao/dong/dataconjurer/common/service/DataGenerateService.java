@@ -1,9 +1,7 @@
 package tao.dong.dataconjurer.common.service;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
@@ -32,20 +30,18 @@ import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.DEPEN
 @Slf4j
 public class DataGenerateService {
 
-    private final DataGenerateConfig config;
     private final CircularDependencyChecker circularDependencyChecker;
 
-    public DataGenerateService(DataGenerateConfig config, CircularDependencyChecker circularDependencyChecker) {
-        this.config = config;
+    public DataGenerateService(CircularDependencyChecker circularDependencyChecker) {
         this.circularDependencyChecker = circularDependencyChecker;
     }
 
-    public void generateData(@NotNull DataBlueprint blueprint) {
+    public void generateData(@NotNull DataBlueprint blueprint, @NotNull DataGenerateConfig config) {
         validate(blueprint.getEntities().values());
-        generateEntityData(blueprint);
+        generateEntityData(blueprint, config);
     }
 
-    private void generateEntityData(DataBlueprint blueprint) {
+    private void generateEntityData(DataBlueprint blueprint, DataGenerateConfig config) {
         var entityMap = blueprint.getEntities();
         var entityIdMap = blueprint.getEntityWrapperIds();
         var pool = Executors.newFixedThreadPool(config.getHandlerCount());
@@ -62,7 +58,7 @@ public class DataGenerateService {
                     try {
                         final var latch = new CountDownLatch(runners.size());
                         var futures = runners.stream()
-                                        .map(target -> createDataGenerateTask(target, entityMap, entityIdMap, latch))
+                                        .map(target -> createDataGenerateTask(target, entityMap, entityIdMap, latch, config))
                                         .map(pool::submit)
                                         .toList();
 
@@ -118,7 +114,7 @@ public class DataGenerateService {
     }
 
    DataGenerateTask createDataGenerateTask(EntityWrapper target, Map<EntityWrapperId, EntityWrapper> data,
-                                           Map<String, Set<EntityWrapperId>> entityIdMap, CountDownLatch latch) {
+                                           Map<String, Set<EntityWrapperId>> entityIdMap, CountDownLatch latch, DataGenerateConfig config) {
         var referenceValues = getReferencedValues(target, data, entityIdMap);
         return DataGenerateTask.builder()
                 .config(config)

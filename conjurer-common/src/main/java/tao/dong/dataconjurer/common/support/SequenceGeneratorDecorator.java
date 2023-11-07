@@ -1,5 +1,9 @@
 package tao.dong.dataconjurer.common.support;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.Constraint;
@@ -12,20 +16,31 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.INTERVAL;
 @Getter
 public class SequenceGeneratorDecorator implements ValueGenerator<Long> {
 
-    private final SequenceGenerator generator;
+    final protected SequenceGenerator generator;
 
     public SequenceGeneratorDecorator(Set<Constraint> constraints) {
-        var current = 0L;
-        var leap = 1L;
+        this.generator = createSequenceGenerator(calculateCurrentAndLeap(constraints));
+    }
+
+    protected SequenceGenerator createSequenceGenerator(SequenceSpec spec) {
+        return new SequenceGenerator(spec.getCurrent(), spec.getLeap());
+    }
+
+    protected SequenceSpec calculateCurrentAndLeap(Set<Constraint> constraints) {
         for (var constraint : constraints) {
             if (StringUtils.equals(INTERVAL.name(), constraint.getType())) {
                 var interval = (Interval)constraint;
-                current = interval.getBase();
-                leap = interval.getLeap();
-                break;
+                return new SequenceSpec(interval.getBase(), interval.getLeap());
             }
         }
-        this.generator = new SequenceGenerator(current, leap);
+        return new SequenceSpec(0L, 1L);
+    }
+
+    @Data
+    @AllArgsConstructor
+    protected static class SequenceSpec {
+        long current;
+        long leap;
     }
 
     @Override
