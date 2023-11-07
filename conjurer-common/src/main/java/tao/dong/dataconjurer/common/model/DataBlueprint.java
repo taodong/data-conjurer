@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
 
 @Data
 public class DataBlueprint {
@@ -33,22 +32,24 @@ public class DataBlueprint {
     }
 
     private void checkDependent(List<EntityWrapper> ordered, Set<String> checked, String entityName) {
-        var wrapperIds = entityWrapperIds.get(entityName);
-        for (var id : wrapperIds) {
-            var wrapper = entities.get(id);
-            Optional<String> unchecked;
-            while ((unchecked = getUncheckedDependent(wrapper, checked)).isPresent()) {
-                checkDependent(ordered, checked, unchecked.get());
+        if (!checked.contains(entityName)) {
+            var wrapperIds = entityWrapperIds.get(entityName);
+            for (var id : wrapperIds) {
+                var wrapper = entities.get(id);
+                Optional<String> unchecked;
+                while ((unchecked = getUncheckedDependent(wrapper, checked)).isPresent()) {
+                    checkDependent(ordered, checked, unchecked.get());
+                }
+                if (wrapper.getStatus() == 2) {
+                    ordered.add(wrapper);
+                }
             }
-            if (wrapper.getStatus() == 2) {
-                ordered.add(wrapper);
-            }
+            checked.add(entityName);
         }
-        checked.add(entityName);
     }
 
     private Optional<String> getUncheckedDependent(EntityWrapper wrapper, Set<String> checked) {
-        return wrapper.getDependencies().stream().filter(checked::contains).findFirst();
+        return wrapper.getDependencies().stream().filter(name -> !checked.contains(name)).findFirst();
     }
 
 }
