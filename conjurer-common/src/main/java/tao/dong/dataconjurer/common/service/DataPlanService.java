@@ -7,6 +7,7 @@ import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
+import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
@@ -99,7 +100,7 @@ public class DataPlanService {
                 var wrapperId = new EntityWrapperId(dataEntity.name(), entityData.dataId());
                 if (!entityWrapperMap.containsKey(wrapperId)) {
                     DataHelper.appendToSetValueInMap(entityWrapperIdMap, dataEntity.name(), wrapperId);
-                    entityWrapperMap.put(wrapperId, new EntityWrapper(dataEntity, entityData));
+                    entityWrapperMap.put(wrapperId, createEntityWrapper(dataEntity, entityData));
                 } else {
                     LOG.warn("Duplicated id found for plan {} entity {}", dataPlan.name(), entityData.entity());
                 }
@@ -111,6 +112,10 @@ public class DataPlanService {
 
     private Map<String, DataEntity> extraEntityDefinitions(DataSchema schema) {
         return schema.entities().stream().collect(Collectors.toMap(DataEntity::name, Function.identity()));
+    }
+
+    protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData) {
+        return new EntityWrapper(dataEntity, entityData);
     }
 
 }
