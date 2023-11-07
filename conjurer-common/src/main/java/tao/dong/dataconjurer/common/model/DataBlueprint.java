@@ -22,7 +22,30 @@ public class DataBlueprint {
         this.entityWrapperIds.putAll(entityWrapperIds);
     }
 
-    public List<EntityWrapper> sortEntityByDependencies() {
+    public List<EntityDataOutput> outputGeneratedData() {
+        var entityOrders = new HashMap<String, Integer>();
+        var current = 0;
+        var results = new ArrayList<EntityDataOutput>();
+
+        var processed = sortEntityByDependencies();
+        for (var wrapper : processed) {
+            var entityName = wrapper.getEntityName();
+            var index = entityOrders.get(entityName);
+            EntityDataOutput result;
+            if (index == null) {
+                result = new EntityDataOutput(entityName, wrapper.getPropertyTypes());
+                entityOrders.put(entityName, current++);
+                results.add(result);
+            } else {
+                result = results.get(index);
+            }
+            result.addValues(wrapper.getValues());
+
+        }
+        return results;
+    }
+
+    List<EntityWrapper> sortEntityByDependencies() {
         var ordered = new ArrayList<EntityWrapper>();
         var checked = new HashSet<String>();
         for (var entityName : entityWrapperIds.keySet()) {

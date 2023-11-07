@@ -16,7 +16,7 @@ public class MySQLEntityWrapper extends EntityWrapper {
 
     @Override
     protected ValueGenerator<?> matchValueGenerator(EntityProperty property) {
-        if (property.type() == SEQUENCE && property.idIndex() > -1) {
+        if (property.type() == SEQUENCE && property.idIndex() == 0) {
             return new MySQLSequenceGeneratorDecorator(property.getPropertyConstraints());
         } else {
             return super.matchValueGenerator(property);
