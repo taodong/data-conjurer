@@ -59,7 +59,7 @@ public class DataPlanService {
 
     void updatePropertyGenerators(DataGenerateConfig config, EntityWrapper previous, EntityWrapper current) {
         for (var property : previous.getEntity().properties()) {
-            if (property.idIndex() != -1) {
+            if (property.idIndex() != 0) {
                 var generator = previous.getGenerators().get(property.name());
                 if (generator instanceof SequenceGeneratorDecorator prevGen) {
                     ((SequenceGeneratorDecorator)(current.getGenerators().get(property.name())))

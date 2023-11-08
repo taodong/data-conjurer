@@ -15,8 +15,10 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
 
     private static final BiFunction<Object, PropertyType, StringValueSupplier<String>> CONVERT_TO_STRING_SUPPLIER = (value, property) -> {
         switch (property) {
-            case SEQUENCE -> new MySQLNumberValue(value);
-            case TEXT -> {
+            case SEQUENCE:
+                return new MySQLNumberValue(value);
+            case TEXT:
+            default:
                 String pv = (String)value;
                 if (pv == null) {
                     return new MySQLNullValue();
@@ -25,9 +27,7 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
                 } else {
                     return new MySQLTextValue(pv);
                 }
-            }
         }
-        throw new IllegalArgumentException("Invalid property type: " + property);
     };
 
 

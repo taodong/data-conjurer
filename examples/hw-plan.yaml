@@ -1,0 +1,7 @@
+name: "hw-plan"
+schema: "test"
+data:
+  - entity: "country"
+    count: 10
+  - entity: "city"
+    count: 100

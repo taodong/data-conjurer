@@ -63,7 +63,7 @@ public class EntityWrapper {
                 references.put(property.name(), property.reference());
             }
             // extract indexed properties
-            if (property.idIndex() > -1) {
+            if (property.idIndex() > 0) {
                 indexedProps.compute(propIndex, insertIndex);
             }
 

@@ -1,0 +1,39 @@
+name: test
+dialect: MYSQL
+entities:
+  - name: country
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 0
+      - name: "name"
+        type: "text"
+        required: true
+        constraints:
+          - type: size
+            min: 5
+            max: 20
+      - name: "code"
+        type: "text"
+        required: true
+        constraints:
+          - type: length
+            max: 2
+  - name: city
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 0
+      - name: "name"
+        type: "text"
+        required: true
+        constraints:
+          - type: size
+            min: 5
+            max: 100
+      - name: "country"
+        type: "sequence"
+        required: true
+        reference:
+          entity: "country"
+          property: "id"

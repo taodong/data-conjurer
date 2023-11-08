@@ -8,13 +8,14 @@ import org.springframework.util.CollectionUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
+import tao.dong.dataconjurer.common.support.DataGenerateConfig;
+import tao.dong.dataconjurer.engine.database.service.SqlService;
 import tao.dong.dataconjurer.shell.service.YamlFileService;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -35,10 +36,14 @@ public class ConjureCommand  implements Callable<Integer> {
 
     private final YamlFileService yamlFileService;
     private final Validator validator;
+    private final SqlService sqlService;
+    private final DataGenerateConfig dataGenerateConfig;
 
-    public ConjureCommand(YamlFileService yamlFileService, Validator validator) {
+    public ConjureCommand(YamlFileService yamlFileService, Validator validator, SqlService sqlService, DataGenerateConfig dataGenerateConfig) {
         this.yamlFileService = yamlFileService;
         this.validator = validator;
+        this.sqlService = sqlService;
+        this.dataGenerateConfig = dataGenerateConfig;
     }
 
     @Override
@@ -57,6 +62,10 @@ public class ConjureCommand  implements Callable<Integer> {
             var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
             var dataPlan = yamlFileService.parsePlanFile(planYaml);
             LOG.info("Plan: {}", dataPlan);
+            var sqls = sqlService.generateSQLs(dataSchema, dataGenerateConfig, dataPlan);
+            for (var sql : sqls) {
+                LOG.info("Entity {}_{}: {}", sql.getEntity(), sql.getOrder(), sql.getQueries().toString());
+            }
         } catch (IOException ioe) {
             LOG.error("Invalid input", ioe);
             exitCode = USAGE;

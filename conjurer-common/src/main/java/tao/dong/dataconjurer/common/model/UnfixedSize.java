@@ -1,5 +1,8 @@
 package tao.dong.dataconjurer.common.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import static tao.dong.dataconjurer.common.model.ConstraintType.SIZE;
 
 public class UnfixedSize extends ValueRange<Long> {
@@ -8,7 +11,8 @@ public class UnfixedSize extends ValueRange<Long> {
         this(1L, max);
     }
 
-    public UnfixedSize(Long min, Long max) {
+    @JsonCreator
+    public UnfixedSize(@JsonProperty("min") Long min, @JsonProperty("max") Long max) {
         super(min, max, true, true);
         validate();
     }
