@@ -33,7 +33,7 @@ public class DataBlueprint {
             var index = entityOrders.get(entityName);
             EntityDataOutput result;
             if (index == null) {
-                result = new EntityDataOutput(entityName, wrapper.getPropertyTypes());
+                result = new EntityDataOutput(entityName, wrapper.getPropertyTypes(), wrapper.getProperties());
                 entityOrders.put(entityName, current++);
                 results.add(result);
             } else {

@@ -17,9 +17,8 @@ public class MySQLInsertStatementService implements InsertStatementService{
     private static final String INSERT_STATEMENT = "INSERT INTO";
     private static final String VALUE_STATEMENT = "VALUES";
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public StringBuilder generateInsertStatement(@NotNull String entity, @NotNull List<String> properties, @NotNull List<List<StringValueSupplier>> values) {
+    public StringBuilder generateInsertStatement(@NotNull String entity, @NotNull List<String> properties, @NotNull List<List<StringValueSupplier<String>>> values) {
         StringBuilder queryBuilder = new StringBuilder(100 * values.size());
         for (var rowNum = 0; rowNum < values.size(); rowNum++) {
             var row = values.get(rowNum);
@@ -64,7 +63,7 @@ public class MySQLInsertStatementService implements InsertStatementService{
         return queryBuilder;
     }
 
-    private int[] lookupSkippedProperties(List<StringValueSupplier> row) {
+    private int[] lookupSkippedProperties(List<StringValueSupplier<String>> row) {
         return IntStream.range(0, row.size()).filter(i -> row.get(i) == null).toArray();
     }
 

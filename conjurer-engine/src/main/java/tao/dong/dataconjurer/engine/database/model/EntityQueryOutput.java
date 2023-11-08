@@ -7,5 +7,6 @@ import lombok.Getter;
 @Getter
 public class EntityQueryOutput {
     private String entity;
+    private int order;
     private StringBuilder queries;
 }

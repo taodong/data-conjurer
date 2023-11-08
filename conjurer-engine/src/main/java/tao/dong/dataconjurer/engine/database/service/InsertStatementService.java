@@ -9,13 +9,13 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public interface InsertStatementService {
-    StringBuilder generateInsertStatement(String entity, List<String> properties, List<List<StringValueSupplier>> values);
+    StringBuilder generateInsertStatement(String entity, List<String> properties, List<List<StringValueSupplier<String>>> values);
 
     default TextValue routeToStringMethod(@NotNull Object o) {
         return new TextValue(o.toString());
     }
 
-    default StringBuilder joinValues(@NotNull char delimiter, @NotNull List<? extends StringValueSupplier> values) {
+    default StringBuilder joinValues(@NotNull char delimiter, @NotNull List<? extends StringValueSupplier<String>> values) {
         return values.stream().filter(Objects::nonNull).map(Supplier::get).collect(
                 StringBuilder::new,
                 (sb, el) -> sb.append(delimiter).append(el),

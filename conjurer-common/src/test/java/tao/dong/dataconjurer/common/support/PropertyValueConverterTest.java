@@ -16,7 +16,7 @@ class PropertyValueConverterTest {
 
     @Test
     void testCovertEntityProperties_NonMatchSize() {
-        assertThrows(IllegalArgumentException.class, () -> converter.covertEntityProperties(
+        assertThrows(IllegalArgumentException.class, () -> converter.convertEntityProperties(
                 List.of("abc", "efg"), List.of(TEXT)
         ));
     }

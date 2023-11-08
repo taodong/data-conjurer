@@ -1,1 +1,11 @@
+spring:
+  main:
+    web-application-type: none
 
+data:
+  handler-count: 2
+  entity-gen-timeout: PT5M
+  max-index-collision: 50
+  partial-result: false
+  data-gen-check-in-interval: PT30S
+  data-gen-timeout: PT15M

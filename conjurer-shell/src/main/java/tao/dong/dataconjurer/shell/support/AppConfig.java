@@ -9,6 +9,14 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tao.dong.dataconjurer.common.service.DataGenerateService;
+import tao.dong.dataconjurer.common.service.DataPlanService;
+import tao.dong.dataconjurer.common.support.CircularDependencyChecker;
+import tao.dong.dataconjurer.common.support.DataGenerateConfig;
+import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
+import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
+import tao.dong.dataconjurer.engine.database.service.MySQLInsertStatementService;
+import tao.dong.dataconjurer.engine.database.service.SqlService;
 
 @Configuration
 public class AppConfig {
@@ -27,4 +35,40 @@ public class AppConfig {
                 .getValidator();
     }
 
+    @Bean
+    public DataGenerateConfig dataGenerateConfig(DataGenerationProperties dataGenerationProperties) {
+        return DataGenerateConfig.builder()
+                .handlerCount(dataGenerationProperties.getHandlerCount())
+                .entityGenTimeOut(dataGenerationProperties.getEntityGenTimeOut())
+                .maxIndexCollision(dataGenerationProperties.getMaxIndexCollision())
+                .partialResult(dataGenerationProperties.isPartialResult())
+                .dataGenCheckInterval(dataGenerationProperties.getDataGenCheckInterval())
+                .dataGenTimeOut(dataGenerationProperties.getEntityGenTimeOut())
+                .build();
+    }
+
+    @Bean
+    public DataPlanService dataPlanService() {
+        return new MySQLDataPlanService();
+    }
+
+    @Bean
+    public CircularDependencyChecker circularDependencyChecker() {
+        return new CircularDependencyChecker();
+    }
+
+    @Bean
+    public DataGenerateService dataGenerateService(CircularDependencyChecker circularDependencyChecker) {
+        return new DataGenerateService(circularDependencyChecker);
+    }
+
+    @Bean
+    public InsertStatementService insertStatementService() {
+        return new MySQLInsertStatementService();
+    }
+
+    @Bean
+    public SqlService sqlService(DataPlanService dataPlanService, DataGenerateService dataGenerateService, InsertStatementService insertStatementService) {
+        return new SqlService(dataPlanService, dataGenerateService, insertStatementService);
+    }
 }

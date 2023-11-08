@@ -37,10 +37,9 @@ class MySQLInsertStatementServiceTest {
         );
     }
 
-    @SuppressWarnings("rawtypes")
     @ParameterizedTest
     @MethodSource
-    void testGenerateInsertStatement(String entity, List<String> properties, List<List<StringValueSupplier>> values, String expected) {
+    void testGenerateInsertStatement(String entity, List<String> properties, List<List<StringValueSupplier<String>>> values, String expected) {
         assertEquals(expected, service.generateInsertStatement(entity, properties, values).toString());
     }
 }

@@ -11,29 +11,44 @@ import tao.dong.dataconjurer.engine.database.model.EntityQueryOutput;
 import tao.dong.dataconjurer.engine.database.support.MySQLPropertyValueConverter;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class SqlService {
 
     private final DataPlanService dataPlanService;
     private final DataGenerateService dataGenerateService;
+    private final InsertStatementService insertStatementService;
     private final PropertyValueConverter<StringValueSupplier<String>> converter = new MySQLPropertyValueConverter();
 
-    public SqlService(DataPlanService dataPlanService, DataGenerateService dataGenerateService) {
+    public SqlService(DataPlanService dataPlanService, DataGenerateService dataGenerateService, InsertStatementService insertStatementService) {
         this.dataPlanService = dataPlanService;
         this.dataGenerateService = dataGenerateService;
+        this.insertStatementService = insertStatementService;
     }
 
 
     public List<EntityQueryOutput> generateSQLs(DataSchema schema, DataGenerateConfig config, DataPlan dataPlan) {
         
-        return null;
+        return createInsertStatements(schema, config, dataPlan);
     }
 
     private List<EntityQueryOutput> createInsertStatements(DataSchema schema, DataGenerateConfig config, DataPlan dataPlan) {
         var blueprint = dataPlanService.createDataBlueprint(schema, config, dataPlan);
         dataGenerateService.generateData(blueprint, config);
-//        var entities = blueprint.sortEntityByDependencies();
-        return null;
+        var generated = blueprint.outputGeneratedData();
+        return IntStream.range(0, generated.size())
+                .mapToObj(i -> EntityQueryOutput.builder()
+                        .order(i)
+                        .entity(generated.get(i).getEntityName())
+                        .queries(
+                             insertStatementService.generateInsertStatement(
+                                     generated.get(i).getEntityName(),
+                                     generated.get(i).getProperties(),
+                                     converter.convertRecords(generated.get(i).getValues(), generated.get(i).getPropertyTypes())
+                             )
+                        )
+                        .build()
+                )
+                .toList();
     }
-
 }
