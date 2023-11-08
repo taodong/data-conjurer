@@ -16,4 +16,9 @@ public class MySQLSequenceGeneratorDecorator extends SequenceGeneratorDecorator 
     protected SequenceGenerator createSequenceGenerator(SequenceSpec spec) {
         return new MySQLSequenceGenerator(spec.getCurrent(), spec.getLeap());
     }
+
+    @Override
+    protected SequenceSpec getDefaultSpec() {
+        return new SequenceSpec(1L, 1L);
+    }
 }

@@ -33,6 +33,10 @@ public class SequenceGeneratorDecorator implements ValueGenerator<Long> {
                 return new SequenceSpec(interval.getBase(), interval.getLeap());
             }
         }
+        return getDefaultSpec();
+    }
+
+    protected SequenceSpec getDefaultSpec() {
         return new SequenceSpec(0L, 1L);
     }
 
