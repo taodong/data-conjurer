@@ -3,6 +3,8 @@ package tao.dong.dataconjurer.shell.command;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
+import tao.dong.dataconjurer.common.model.DataPlan;
+import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
 import tao.dong.dataconjurer.shell.service.FileOutputService;
@@ -16,6 +18,8 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +34,6 @@ class ConjureCommandTest {
     @Test
     void testConjureCommand() throws URISyntaxException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
-        when(validator.validate(any())).thenReturn(Collections.emptySet());
 
         var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         var cmd = new CommandLine(conjureCommand);
@@ -38,6 +41,10 @@ class ConjureCommandTest {
 
         String schema = getFilePathForClassPathResource("schema.yaml");
         String plan = getFilePathForClassPathResource("plan.yaml");
+
+        when(validator.validate(any(DataSchema.class))).thenReturn(Collections.emptySet());
+        when(sqlService.generateSQLs(any(DataSchema.class), any(DataGenerateConfig.class), any(DataPlan.class))).thenReturn(Collections.emptyList());
+        doNothing().when(fileOutputService).generateSQLFiles(anyList());
 
         int exitCode = cmd.execute(schema, plan);
         assertEquals(0, exitCode);

@@ -26,13 +26,13 @@ class MySQLInsertStatementServiceTest {
                              List.of("name", "country"),
                              List.of(List.of(new MySQLTextValue("new york"), new MySQLTextValue("usa")),
                                      List.of(new MySQLTextValue("dc"), new MySQLTextValue("usa"))),
-                             "INSERT INTO city(name,country) VALUES ('new york','usa'); INSERT INTO city(name,country) VALUES ('dc','usa');"
+                             "INSERT INTO city(name,country) VALUES ('new york','usa');\nINSERT INTO city(name,country) VALUES ('dc','usa');"
                 ),
                 Arguments.of("city",
                              List.of("name", "country"),
                              List.of(List.of(new MySQLTextValue("new york"), new MySQLTextValue("usa")),
                                      Arrays.asList(new MySQLTextValue("dc"), null)),
-                                     "INSERT INTO city(name,country) VALUES ('new york','usa'); INSERT INTO city(name) VALUES ('dc');"
+                                     "INSERT INTO city(name,country) VALUES ('new york','usa');\nINSERT INTO city(name) VALUES ('dc');"
                 )
         );
     }

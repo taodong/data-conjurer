@@ -18,7 +18,6 @@ import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 class DataEntityTest {
     private static Validator validator;
 
-    @SuppressWarnings("resource")
     @BeforeAll
     public static void setUpValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -29,8 +28,8 @@ class DataEntityTest {
         return Stream.of(
                 Arguments.of(new DataEntity(" ", null), false),
                 Arguments.of(new DataEntity("abc", Collections.emptySet()), false),
-                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty(null, null, false, -1, null, null))), false),
-                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty("abc", TEXT, false, -1, null, null))), true)
+                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty(null, null, false, 0, null, null))), false),
+                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty("abc", TEXT, false, 0, null, null))), true)
         );
     }
 

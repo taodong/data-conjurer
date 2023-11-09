@@ -1,1 +1,5 @@
 title: "Sample Plan File"
+schema: "test-schema"
+data:
+  - entity: "t1"
+    count: 1

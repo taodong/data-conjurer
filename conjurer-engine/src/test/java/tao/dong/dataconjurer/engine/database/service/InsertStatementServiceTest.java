@@ -7,10 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.spy;
 
 class InsertStatementServiceTest {
-    private final InsertStatementService insertStatementService = spy(InsertStatementService.class);
+    private final InsertStatementService insertStatementService = (entity, properties, values) -> null;
 
     @Test
     void testJoinValues() {

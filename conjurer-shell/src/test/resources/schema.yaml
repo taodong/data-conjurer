@@ -1,2 +1,8 @@
-name: "Sample Schema File"
+name: "test-schema"
 dialect: "MYSQL"
+entities:
+  - name: t1
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1

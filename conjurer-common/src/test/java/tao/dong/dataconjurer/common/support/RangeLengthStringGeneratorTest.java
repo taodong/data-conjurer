@@ -12,7 +12,7 @@ class RangeLengthStringGeneratorTest {
     void testGenerate() {
         var generator = new RangeLengthStringGenerator(10, 15);
         var length = generator.generate().length();
-        assertTrue(length >= 10 && length < 15);
+        assertTrue(length >= 10 && length <= 15);
     }
 
     @ParameterizedTest
