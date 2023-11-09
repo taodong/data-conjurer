@@ -12,7 +12,8 @@ public enum MySQLDelimiter {
     VALUE_DELIMITER(','),
     QUERY_DELIMITER(';'),
     SPACE(' '),
-    QUOTE('\'');
+    QUOTE('\''),
+    NEW_LINE('\n');
 
     private final char delimiter;
 

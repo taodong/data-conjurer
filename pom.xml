@@ -22,13 +22,15 @@
 	<properties>
 		<reversion>0.0.1-SNAPSHOT</reversion>
 		<java.version>17</java.version>
+		<maven.compiler.release>17</maven.compiler.release>
 		<picocli.version>4.7.0</picocli.version>
 		<jackson.version>2.15.2</jackson.version>
-		<lombok.version>1.18.28</lombok.version>
+		<lombok.version>1.18.30</lombok.version>
 		<commons.text.version>1.10.0</commons.text.version>
 		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
 		<jgrapht.version>1.5.2</jgrapht.version>
+		<maven.complier.plugin.version>3.11.0</maven.complier.plugin.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -83,24 +85,31 @@
 				<artifactId>jgrapht-core</artifactId>
 				<version>${jgrapht.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.complier.plugin.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+							</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

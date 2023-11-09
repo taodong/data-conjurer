@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.GROUP_END;
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.GROUP_START;
+import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.NEW_LINE;
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.QUERY_DELIMITER;
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.SPACE;
 import static tao.dong.dataconjurer.engine.database.model.MySQLDelimiter.VALUE_DELIMITER;
@@ -56,7 +57,7 @@ public class MySQLInsertStatementService implements InsertStatementService{
                     .append(QUERY_DELIMITER.getDelimiter());
 
             if (rowNum < values.size() - 1) {
-                queryBuilder.append(SPACE.getDelimiter());
+                queryBuilder.append(NEW_LINE.getDelimiter());
             }
         }
 

@@ -10,6 +10,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
+import tao.dong.dataconjurer.shell.service.FileOutputService;
 import tao.dong.dataconjurer.shell.service.YamlFileService;
 
 import java.io.File;
@@ -29,8 +30,10 @@ import static picocli.CommandLine.ExitCode.USAGE;
 @Slf4j
 public class ConjureCommand  implements Callable<Integer> {
 
+    @SuppressWarnings("unused")
     @Parameters(index = "0", description = "Data schema file")
     private File schema;
+    @SuppressWarnings("unused")
     @Parameters(index = "1", description = "Data generation plan")
     private File plan;
 
@@ -38,12 +41,14 @@ public class ConjureCommand  implements Callable<Integer> {
     private final Validator validator;
     private final SqlService sqlService;
     private final DataGenerateConfig dataGenerateConfig;
+    private final FileOutputService fileOutputService;
 
-    public ConjureCommand(YamlFileService yamlFileService, Validator validator, SqlService sqlService, DataGenerateConfig dataGenerateConfig) {
+    public ConjureCommand(YamlFileService yamlFileService, Validator validator, SqlService sqlService, DataGenerateConfig dataGenerateConfig, FileOutputService fileOutputService) {
         this.yamlFileService = yamlFileService;
         this.validator = validator;
         this.sqlService = sqlService;
         this.dataGenerateConfig = dataGenerateConfig;
+        this.fileOutputService = fileOutputService;
     }
 
     @Override
@@ -62,10 +67,8 @@ public class ConjureCommand  implements Callable<Integer> {
             var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
             var dataPlan = yamlFileService.parsePlanFile(planYaml);
             LOG.info("Plan: {}", dataPlan);
-            var sqls = sqlService.generateSQLs(dataSchema, dataGenerateConfig, dataPlan);
-            for (var sql : sqls) {
-                LOG.info("Entity {}_{}: {}", sql.getEntity(), sql.getOrder(), sql.getQueries().toString());
-            }
+            var generated = sqlService.generateSQLs(dataSchema, dataGenerateConfig, dataPlan);
+            fileOutputService.generateSQLFiles(generated);
         } catch (IOException ioe) {
             LOG.error("Invalid input", ioe);
             exitCode = USAGE;

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
+import tao.dong.dataconjurer.shell.service.FileOutputService;
 import tao.dong.dataconjurer.shell.service.YamlFileService;
 
 import java.io.PrintWriter;
@@ -24,13 +25,14 @@ class ConjureCommandTest {
     private final Validator validator = mock(Validator.class);
     private final SqlService sqlService = mock(SqlService.class);
     private final DataGenerateConfig dataGenerateConfig = mock(DataGenerateConfig.class);
+    private final FileOutputService fileOutputService = mock(FileOutputService.class);
 
     @Test
     void testConjureCommand() throws URISyntaxException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
         when(validator.validate(any())).thenReturn(Collections.emptySet());
 
-        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig);
+        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 
