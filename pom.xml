@@ -16,11 +16,10 @@
 	</parent>
 	<groupId>tao.dong</groupId>
 	<artifactId>data-conjurer</artifactId>
-	<version>${reversion}</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>data-conjurer</name>
 	<description>Data Conjurer</description>
 	<properties>
-		<reversion>0.0.1-SNAPSHOT</reversion>
 		<java.version>17</java.version>
 		<maven.compiler.release>17</maven.compiler.release>
 		<picocli.version>4.7.0</picocli.version>
@@ -30,20 +29,9 @@
 		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
 		<jgrapht.version>1.5.2</jgrapht.version>
-		<maven.complier.plugin.version>3.11.0</maven.complier.plugin.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>tao.dong</groupId>
-				<artifactId>conjurer-common</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>tao.dong</groupId>
-				<artifactId>conjurer-engine</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.dataformat</groupId>
 				<artifactId>jackson-dataformat-yaml</artifactId>
@@ -85,21 +73,18 @@
 				<artifactId>jgrapht-core</artifactId>
 				<version>${jgrapht.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.complier.plugin.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
+		<finalName>data-conjurer</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
+						<mainClass>tao.dong.dataconjurer.shell.DataConjurerApplication</mainClass>
 						<excludes>
 							<exclude>
 								<groupId>org.projectlombok</groupId>

@@ -5,23 +5,18 @@
     <parent>
         <artifactId>data-conjurer</artifactId>
         <groupId>tao.dong</groupId>
-        <!--suppress MavenPropertyInParent -->
-        <version>${reversion}</version>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>conjurer-engine</artifactId>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>tao.dong</groupId>
             <artifactId>conjurer-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -37,6 +32,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
