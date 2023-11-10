@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class MySQLSequenceGeneratorDecorator extends SequenceGeneratorDecorator {
 
-    public MySQLSequenceGeneratorDecorator(Set<Constraint> constraints) {
+    public MySQLSequenceGeneratorDecorator(Set<Constraint<?>> constraints) {
         super(constraints);
     }
 

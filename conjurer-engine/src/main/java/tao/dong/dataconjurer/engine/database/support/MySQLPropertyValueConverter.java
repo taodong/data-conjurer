@@ -17,6 +17,8 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
         switch (property) {
             case SEQUENCE:
                 return new MySQLNumberValue(value);
+            case NUMBER:
+                return new MySQLTextValue(value.toString());
             case TEXT:
             default:
                 String pv = (String)value;

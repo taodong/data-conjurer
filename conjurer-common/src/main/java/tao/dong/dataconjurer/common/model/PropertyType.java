@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 public enum PropertyType {
     TEXT("text", String.class),
     SEQUENCE("sequence", Long.class),
-//    NUMBER("number", BigDecimal.class)
+    NUMBER("number", BigDecimal.class)
     ;
 
     @JsonValue

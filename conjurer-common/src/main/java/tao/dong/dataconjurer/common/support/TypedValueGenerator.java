@@ -8,6 +8,7 @@ public interface TypedValueGenerator {
         return switch (property.type()) {
             case TEXT-> new TextGeneratorDecorator(property.getPropertyConstraints());
             case SEQUENCE -> new SequenceGeneratorDecorator(property.getPropertyConstraints());
+            case NUMBER -> new RandomNumberGeneratorDecorator(property.getPropertyConstraints());
         };
     }
 }

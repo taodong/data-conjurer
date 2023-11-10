@@ -18,7 +18,7 @@ public class SequenceGeneratorDecorator implements ValueGenerator<Long> {
 
     final protected SequenceGenerator generator;
 
-    public SequenceGeneratorDecorator(Set<Constraint> constraints) {
+    public SequenceGeneratorDecorator(Set<Constraint<?>> constraints) {
         this.generator = createSequenceGenerator(calculateCurrentAndLeap(constraints));
     }
 
@@ -26,7 +26,7 @@ public class SequenceGeneratorDecorator implements ValueGenerator<Long> {
         return new SequenceGenerator(spec.getCurrent(), spec.getLeap());
     }
 
-    protected SequenceSpec calculateCurrentAndLeap(Set<Constraint> constraints) {
+    protected SequenceSpec calculateCurrentAndLeap(Set<Constraint<?>> constraints) {
         for (var constraint : constraints) {
             if (StringUtils.equals(INTERVAL.name(), constraint.getType())) {
                 var interval = (Interval)constraint;

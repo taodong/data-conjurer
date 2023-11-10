@@ -14,13 +14,13 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.SIZE;
 public class TextGeneratorDecorator implements ValueGenerator<String> {
 
     private final ValueGenerator<String> generator;
-    public TextGeneratorDecorator(Set<Constraint> constraints) {
+    public TextGeneratorDecorator(Set<Constraint<?>> constraints) {
 
         this.generator = matchGenerator(constraints);
 
     }
 
-    private ValueGenerator<String> matchGenerator(Set<Constraint> constraints) {
+    private ValueGenerator<String> matchGenerator(Set<Constraint<?>> constraints) {
         if (CollectionUtils.isNotEmpty(constraints)) {
             for (var constraint : constraints) {
                 if (StringUtils.equals(LENGTH.name(), constraint.getType())) {

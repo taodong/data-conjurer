@@ -31,6 +31,20 @@ entities:
           - type: size
             min: 5
             max: 100
+      - name: "population"
+        type: "number"
+        constraints:
+          - type: range
+            min: 10000
+            max: 200000
+      - name: "km2"
+        type: "number"
+        constraints:
+          - type: range
+            min: 30
+            max: 450
+          - type: precision
+            max: 2
       - name: "country"
         type: "sequence"
         required: true
