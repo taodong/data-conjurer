@@ -4,13 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.random.RandomGenerator;
 
 @Builder
 @Getter
 public class RandomNumberGenerator implements ValueGenerator<BigDecimal> {
 
-    private static final RandomGenerator RANDOM_GENERATOR = RandomGenerator.getDefault();
+    private static final ThreadLocalRandom RANDOM_GENERATOR = ThreadLocalRandom.current();
 
     @Builder.Default
     private long maxExclusive = Long.MAX_VALUE;
@@ -21,9 +22,10 @@ public class RandomNumberGenerator implements ValueGenerator<BigDecimal> {
 
     @Override
     public BigDecimal generate() {
-        return isDoubleType() ? new BigDecimal(
-                RANDOM_GENERATOR.nextLong(minInclusive, maxExclusive) + '.' + RANDOM_GENERATOR.nextInt(10 * precision)
-        ) : new BigDecimal(RANDOM_GENERATOR.nextLong(minInclusive, maxExclusive));
+        var strVal = isDoubleType() ?
+                String.valueOf(RANDOM_GENERATOR.nextLong(minInclusive, maxExclusive)) + '.' + RANDOM_GENERATOR.nextInt((int)Math.pow(10D, precision)) :
+                String.valueOf(RANDOM_GENERATOR.nextLong(minInclusive, maxExclusive));
+        return new BigDecimal(strVal);
     }
 
     public boolean isDoubleType() {
