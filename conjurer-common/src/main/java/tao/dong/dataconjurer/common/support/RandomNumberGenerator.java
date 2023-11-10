@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.random.RandomGenerator;
 
 @Builder
+@Getter
 public class RandomNumberGenerator implements ValueGenerator<BigDecimal> {
 
     private static final RandomGenerator RANDOM_GENERATOR = RandomGenerator.getDefault();
@@ -16,7 +17,6 @@ public class RandomNumberGenerator implements ValueGenerator<BigDecimal> {
     @Builder.Default
     private long minInclusive = Long.MIN_VALUE;
     @Builder.Default
-    @Getter
     private int precision = 0;
 
     @Override

@@ -2,6 +2,7 @@ package tao.dong.dataconjurer.common.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.NumberRange;
@@ -13,6 +14,7 @@ import java.util.Set;
 import static tao.dong.dataconjurer.common.model.ConstraintType.NUMBER_RANGE;
 import static tao.dong.dataconjurer.common.model.ConstraintType.PRECISION;
 
+@Getter
 public class RandomNumberGeneratorDecorator implements ValueGenerator<BigDecimal>{
     protected final RandomNumberGenerator generator;
 
