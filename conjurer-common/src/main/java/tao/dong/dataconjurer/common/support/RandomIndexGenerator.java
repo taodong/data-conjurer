@@ -4,7 +4,7 @@ import java.util.random.RandomGenerator;
 
 public class RandomIndexGenerator implements IndexValueGenerator {
 
-    private static final RandomGenerator randomGenerator = RandomGenerator.getDefault();
+    private static final RandomGenerator RANDOM_GENERATOR = RandomGenerator.getDefault();
     private final int size;
 
     public RandomIndexGenerator(int size) {
@@ -17,6 +17,6 @@ public class RandomIndexGenerator implements IndexValueGenerator {
 
     @Override
     public Integer generate() {
-        return randomGenerator.nextInt(size);
+        return RANDOM_GENERATOR.nextInt(size);
     }
 }

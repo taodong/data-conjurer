@@ -3,13 +3,16 @@ package tao.dong.dataconjurer.common.model;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 @Getter
 public enum PropertyType {
     TEXT("text", String.class),
-    SEQUENCE("sequence", Long.class);
+    SEQUENCE("sequence", Long.class),
+//    NUMBER("number", BigDecimal.class)
+    ;
 
     @JsonValue
     private final String name;
