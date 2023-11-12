@@ -3,7 +3,6 @@ package tao.dong.dataconjurer.common.support;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.NumberRange;
 import tao.dong.dataconjurer.common.model.Precision;
@@ -26,11 +25,11 @@ public class RandomNumberGeneratorDecorator implements ValueGenerator<BigDecimal
 
     protected void updateSpecFromConstraints(Set<Constraint<?>> constraints, NumberSpec spec) {
         for (var constraint : constraints) {
-            if (StringUtils.equals(NUMBER_RANGE.name(), constraint.getType())) {
+            if (NUMBER_RANGE == constraint.getType()) {
                 var range = (NumberRange) constraint;
                 spec.setMax(range.getMax());
                 spec.setMin(range.getMin());
-            } else if (StringUtils.equals(PRECISION.name(), constraint.getType())) {
+            } else if (PRECISION == constraint.getType()) {
                 spec.setPrecision(((Precision)constraint).getMax());
             }
         }

@@ -29,7 +29,7 @@ public class Interval extends ValueRange<Long> {
     }
 
     @Override
-    public String getType() {
-        return INTERVAL.name();
+    public ConstraintType getType() {
+        return INTERVAL;
     }
 }

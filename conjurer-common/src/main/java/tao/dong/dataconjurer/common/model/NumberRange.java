@@ -18,7 +18,7 @@ public class NumberRange extends ValueRange<Long> {
     }
 
     @Override
-    public String getType() {
-        return NUMBER_RANGE.name();
+    public ConstraintType getType() {
+        return NUMBER_RANGE;
     }
 }

@@ -18,8 +18,8 @@ public class UnfixedSize extends ValueRange<Long> {
     }
 
     @Override
-    public String getType() {
-        return SIZE.name();
+    public ConstraintType getType() {
+        return SIZE;
     }
 
     @Override

@@ -12,17 +12,17 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.DURATION;
 @JsonTypeName("duration")
 public class Duration implements Constraint<Long> {
 
-    private static final long OLDEST_TIME = -30609791999000L; // 1000-01-06T00:00:00 Proleptic Gregorian
+    public static final long OLDEST_TIME = -30609791999000L; // 1000-01-06T00:00:00 Proleptic Gregorian
     private final ValueRange<Long> valueRange;
 
     @JsonCreator
-    protected Duration(@JsonProperty("start") SecondMark start, @JsonProperty("end") SecondMark end) {
+    public Duration(@JsonProperty("start") SecondMark start, @JsonProperty("end") SecondMark end) {
 
         this.valueRange = new ValueRange<>(extractMilliseconds(start, true),
                 extractMilliseconds(end, false), true, false) {
             @Override
-            public String getType() {
-                return DURATION.name();
+            public ConstraintType getType() {
+                return DURATION;
             }
         };
     }
@@ -51,7 +51,7 @@ public class Duration implements Constraint<Long> {
     }
 
     @Override
-    public String getType() {
-        return DURATION.name();
+    public ConstraintType getType() {
+        return DURATION;
     }
 }

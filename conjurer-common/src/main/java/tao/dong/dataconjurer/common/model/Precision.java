@@ -25,7 +25,7 @@ public class Precision extends ValueRange<Integer>{
     }
 
     @Override
-    public String getType() {
-        return PRECISION.name();
+    public ConstraintType getType() {
+        return PRECISION;
     }
 }

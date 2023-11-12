@@ -22,7 +22,7 @@ public class RatioRange extends ValueRange<Double> {
     }
 
     @Override
-    public String getType() {
-        return RATIO_RANGE.name();
+    public ConstraintType getType() {
+        return RATIO_RANGE;
     }
 }

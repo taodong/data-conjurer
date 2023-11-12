@@ -23,10 +23,10 @@ public class TextGeneratorDecorator implements ValueGenerator<String> {
     private ValueGenerator<String> matchGenerator(Set<Constraint<?>> constraints) {
         if (CollectionUtils.isNotEmpty(constraints)) {
             for (var constraint : constraints) {
-                if (StringUtils.equals(LENGTH.name(), constraint.getType())) {
+                if (LENGTH ==constraint.getType()) {
                     var length = Math.toIntExact(((Length)constraint).getMax());
                     return new FixLengthStringGenerator(length);
-                } else if (StringUtils.equals(SIZE.name(), constraint.getType())) {
+                } else if (SIZE == constraint.getType()) {
                     var min = Math.toIntExact(((UnfixedSize)constraint).getMin());
                     var max = Math.toIntExact(((UnfixedSize)constraint).getMax());
                     return new RangeLengthStringGenerator(min, max);

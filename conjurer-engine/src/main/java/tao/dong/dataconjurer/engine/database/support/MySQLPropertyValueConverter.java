@@ -3,7 +3,10 @@ package tao.dong.dataconjurer.engine.database.support;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.model.StringValueSupplier;
+import tao.dong.dataconjurer.common.model.TextValue;
 import tao.dong.dataconjurer.common.support.PropertyValueConverter;
+import tao.dong.dataconjurer.engine.database.model.MySQLDateTimeValue;
+import tao.dong.dataconjurer.engine.database.model.MySQLDateValue;
 import tao.dong.dataconjurer.engine.database.model.MySQLDefaultValue;
 import tao.dong.dataconjurer.engine.database.model.MySQLNullValue;
 import tao.dong.dataconjurer.engine.database.model.MySQLNumberValue;
@@ -18,7 +21,11 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
             case SEQUENCE:
                 return new MySQLNumberValue(value);
             case NUMBER:
-                return new MySQLTextValue(value.toString());
+                return new TextValue(value.toString());
+            case DATE:
+                return new MySQLDateValue((Long)value);
+            case DATETIME:
+                return new MySQLDateTimeValue((Long)value);
             case TEXT:
             default:
                 String pv = (String)value;
@@ -31,8 +38,6 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
                 }
         }
     };
-
-
 
     public MySQLPropertyValueConverter() {
         super(CONVERT_TO_STRING_SUPPLIER);

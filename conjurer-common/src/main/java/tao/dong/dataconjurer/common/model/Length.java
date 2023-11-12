@@ -29,7 +29,7 @@ public class Length extends ValueRange<Long> {
     }
 
     @Override
-    public String getType() {
-        return LENGTH.name();
+    public ConstraintType getType() {
+        return LENGTH;
     }
 }
