@@ -10,6 +10,7 @@ import tao.dong.dataconjurer.engine.database.service.SqlService;
 import tao.dong.dataconjurer.shell.service.FileOutputService;
 import tao.dong.dataconjurer.shell.service.YamlFileService;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,10 +34,11 @@ class ConjureCommandTest {
     private final FileOutputService fileOutputService = mock(FileOutputService.class);
 
     @Test
-    void testConjureCommand() throws URISyntaxException {
+    void testConjureCommand() throws URISyntaxException, IOException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
 
         var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        when(yamlFileService.parsePlanFile(anyString())).thenReturn(new DataPlan("test", "test", null, Collections.emptyList()));
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 

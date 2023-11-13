@@ -28,13 +28,11 @@ class DataSchemaTest {
 
     private static Stream<Arguments> testValidate() {
         return Stream.of(
-              Arguments.of(new DataSchema("  ", MYSQL,
-                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, 0, null, null))))), false),
-              Arguments.of(new DataSchema("abc", null,
-                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, 0, null, null))))), false),
-              Arguments.of(new DataSchema("abc", MYSQL, Collections.emptySet()), false),
-              Arguments.of(new DataSchema("abc", MYSQL,
-                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, false, 0, null, null))))), true)
+              Arguments.of(new DataSchema("  ",
+                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, 0, null, null))))), false),
+              Arguments.of(new DataSchema("abc", Collections.emptySet()), false),
+              Arguments.of(new DataSchema("abc",
+                                          Set.of(new DataEntity("city", Set.of(new EntityProperty("id", SEQUENCE, 0, null, null))))), true)
         );
     }
 

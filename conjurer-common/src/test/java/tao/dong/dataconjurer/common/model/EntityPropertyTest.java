@@ -25,12 +25,12 @@ class EntityPropertyTest {
 
     private static Stream<Arguments> testValidate() {
         return Stream.of(
-                Arguments.of(new EntityProperty(null, null, false, 0, null, null), false),
-                Arguments.of(new EntityProperty(" ", TEXT, true, 0, null, null), false),
-                Arguments.of(new EntityProperty("abc", null, false, 0, null, null), false),
-                Arguments.of(new EntityProperty("abc", TEXT, false, 0, null, new Reference(null, null)), false),
-                Arguments.of(new EntityProperty("abc", TEXT, false, 0, null, null), true),
-                Arguments.of(new EntityProperty("abc", TEXT, false, 0, null, new Reference("efg", "hij")), true)
+                Arguments.of(new EntityProperty(null, null, 0, null, null), false),
+                Arguments.of(new EntityProperty(" ", TEXT, 0, null, null), false),
+                Arguments.of(new EntityProperty("abc", null, 0, null, null), false),
+                Arguments.of(new EntityProperty("abc", TEXT,  0, null, new Reference(null, null)), false),
+                Arguments.of(new EntityProperty("abc", TEXT,  0, null, null), true),
+                Arguments.of(new EntityProperty("abc", TEXT,  0, null, new Reference("efg", "hij")), true)
         );
     }
 

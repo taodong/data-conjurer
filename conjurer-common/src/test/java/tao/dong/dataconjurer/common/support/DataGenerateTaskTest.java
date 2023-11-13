@@ -50,9 +50,9 @@ class DataGenerateTaskTest {
     private EntityWrapper createTestEntityWrapper(EntityData data) {
         var entity = new DataEntity("t1",
            Set.of(
-                   new EntityProperty("p1", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null),
-                   new EntityProperty("p2", SEQUENCE, true, -1, null, new Reference("t2", "p0")),
-                   new EntityProperty("p3", TEXT, true, -1, List.of(new Length(10L)), null)
+                   new EntityProperty("p1", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
+                   new EntityProperty("p2", SEQUENCE, 0, null, new Reference("t2", "p0")),
+                   new EntityProperty("p3", TEXT, 0, List.of(new Length(10L)), null)
            )
         );
 

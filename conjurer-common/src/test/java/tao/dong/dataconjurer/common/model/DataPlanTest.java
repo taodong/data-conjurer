@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tao.dong.dataconjurer.common.model.Dialect.MYSQL;
 
 class DataPlanTest {
     private static Validator validator;
 
-    @SuppressWarnings("resource")
     @BeforeAll
     public static void setUpValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -29,14 +29,14 @@ class DataPlanTest {
         var nullData = new ArrayList<EntityData>();
         nullData.add(null);
         return Stream.of(
-          Arguments.of(new DataPlan(null, "abc", List.of(new EntityData("t1", 1L))), false, "Plan name is required"),
-          Arguments.of(new DataPlan(" ", "abc", List.of(new EntityData("t1", 1L))), false, "Plan name is required"),
-          Arguments.of(new DataPlan("afds", " ", List.of(new EntityData("t1", 1L))), false, "Schema is required"),
-          Arguments.of(new DataPlan("afds", null, List.of(new EntityData("t1", 1L))), false, "Schema is required"),
-          Arguments.of(new DataPlan("afds", "fds", null), false, "Data must not be empty"),
-          Arguments.of(new DataPlan("afds", "fds", Collections.emptyList()), false, "Data must not be empty"),
-          Arguments.of(new DataPlan("afds", "fds", nullData), false, "data element can't be null"),
-          Arguments.of(new DataPlan("afds", "fds", List.of(new EntityData("t1", 1L))), true, null)
+          Arguments.of(new DataPlan(null, "abc", MYSQL, List.of(new EntityData("t1", 1L))), false, "Plan name is required"),
+          Arguments.of(new DataPlan(" ", "abc", MYSQL, List.of(new EntityData("t1", 1L))), false, "Plan name is required"),
+          Arguments.of(new DataPlan("afds", " ", MYSQL, List.of(new EntityData("t1", 1L))), false, "Schema is required"),
+          Arguments.of(new DataPlan("afds", null, MYSQL, List.of(new EntityData("t1", 1L))), false, "Schema is required"),
+          Arguments.of(new DataPlan("afds", "fds", MYSQL, null), false, "Data must not be empty"),
+          Arguments.of(new DataPlan("afds", "fds", MYSQL, Collections.emptyList()), false, "Data must not be empty"),
+          Arguments.of(new DataPlan("afds", "fds", MYSQL, nullData), false, "data element can't be null"),
+          Arguments.of(new DataPlan("afds", "fds", MYSQL, List.of(new EntityData("t1", 1L))), true, null)
         );
     }
 
@@ -45,7 +45,7 @@ class DataPlanTest {
     void testValidate(DataPlan plan, boolean passed, String errMsg) {
         var violations = validator.validate(plan);
         assertEquals(passed, violations.isEmpty());
-        if (!passed) {
+        if (!passed && violations.stream().findFirst().isPresent()) {
             assertEquals(errMsg, violations.stream().findFirst().get().getMessage());
         }
     }

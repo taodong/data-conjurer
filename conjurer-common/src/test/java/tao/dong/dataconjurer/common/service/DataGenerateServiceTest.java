@@ -196,8 +196,8 @@ class DataGenerateServiceTest {
         TEST_HELPER.createSimpleBlueprintDataWithReference(data, idMap);
         var entity5 = new DataEntity("t3",
                 Set.of(
-                        new EntityProperty("t3p0", SEQUENCE, true, 1, List.of(new Interval(1L, 6L)), null),
-                        new EntityProperty("t3p1", SEQUENCE, true, -1, null, new Reference("t4", "t4p0"))
+                        new EntityProperty("t3p0", SEQUENCE, 1, List.of(new Interval(1L, 6L)), null),
+                        new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0"))
                 )
         );
         var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L));

@@ -23,20 +23,20 @@ import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 public class EntityTestHelper {
 
     public DataSchema createSimpleTestSchema() {
-        return new DataSchema("test1", MYSQL, Set.of(
+        return new DataSchema("test1", Set.of(
                 createEntityT1(), createEntityT2(), createEntityT3(), createEntityT4()
         ));
     }
 
     public DataPlan[] createSimpleTestPlans() {
         return new DataPlan[]{
-                new DataPlan("plan1", "test1", List.of(
+                new DataPlan("plan1", "test1", MYSQL, List.of(
                         createSimpleData(null, null),
                         createSimpleData("t2", 5L),
                         createSimpleData("t3", 8L),
                         createSimpleData("t4", 5L)
                 )),
-                new DataPlan("plan2", "test1", List.of(
+                new DataPlan("plan2", "test1", MYSQL, List.of(
                         createSimpleDataWithId("t3", 9L, 1)
                 ))
         };
@@ -79,7 +79,7 @@ public class EntityTestHelper {
     public DataEntity createEntityT4() {
         return new DataEntity("t4",
                 Set.of(
-                        new EntityProperty("t4p0", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null)
+                        new EntityProperty("t4p0", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null)
                 )
         );
     }
@@ -87,8 +87,8 @@ public class EntityTestHelper {
     public DataEntity createEntityT3() {
         return new DataEntity("t3",
                 Set.of(
-                        new EntityProperty("t3p0", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null),
-                        new EntityProperty("t3p1", SEQUENCE, true, -1, null, new Reference("t4", "t4p0"))
+                        new EntityProperty("t3p0", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0"))
                 )
         );
     }
@@ -96,8 +96,8 @@ public class EntityTestHelper {
     public DataEntity createEntityT2() {
         return new DataEntity("t2",
                 Set.of(
-                        new EntityProperty("t2p0", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null),
-                        new EntityProperty("t2p1", TEXT, true, -1, List.of(new Length(15L)), null)
+                        new EntityProperty("t2p0", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t2p1", TEXT, 0, List.of(new Length(15L)), null)
                 )
         );
     }
@@ -105,10 +105,10 @@ public class EntityTestHelper {
     public DataEntity createEntityT1() {
         return new DataEntity("t1",
                 Set.of(
-                        new EntityProperty("t1p1", SEQUENCE, true, 1, List.of(new Interval(1L, 0L)), null),
-                        new EntityProperty("t1p2", SEQUENCE, true, -1, null, new Reference("t2", "t2p0")),
-                        new EntityProperty("t1p3", TEXT, false, -1, List.of(new UnfixedSize(15L)), null),
-                        new EntityProperty("t1p4", SEQUENCE, true, -1, null, new Reference("t3", "t3p0"))
+                        new EntityProperty("t1p1", SEQUENCE,  1, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t1p2", SEQUENCE, 0, null, new Reference("t2", "t2p0")),
+                        new EntityProperty("t1p3", TEXT, 0, List.of(new UnfixedSize(15L)), null),
+                        new EntityProperty("t1p4", SEQUENCE, 0, null, new Reference("t3", "t3p0"))
                 )
         );
     }

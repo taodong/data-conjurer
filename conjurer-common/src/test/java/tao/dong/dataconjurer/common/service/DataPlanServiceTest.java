@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tao.dong.dataconjurer.common.model.Dialect.MYSQL;
 
 class DataPlanServiceTest {
 
@@ -37,10 +38,10 @@ class DataPlanServiceTest {
         var service = new DataPlanService();
         var schema = TEST_HELPER.createSimpleTestSchema();
         var plans = new DataPlan[]{
-                new DataPlan("plan1", "test1", List.of(
+                new DataPlan("plan1", "test1", MYSQL, List.of(
                         TEST_HELPER.createSimpleData("t4", 10L)
                 )),
-                new DataPlan("plan2", "test1", List.of(
+                new DataPlan("plan2", "test1", MYSQL, List.of(
                         TEST_HELPER.createSimpleData("t4", 10L)
                 ))
         };
