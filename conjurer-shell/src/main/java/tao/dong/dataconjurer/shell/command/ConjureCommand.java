@@ -8,6 +8,8 @@ import org.springframework.util.CollectionUtils;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
+import tao.dong.dataconjurer.common.model.DataPlan;
+import tao.dong.dataconjurer.common.model.Dialect;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
 import tao.dong.dataconjurer.shell.service.FileOutputService;
@@ -65,7 +67,8 @@ public class ConjureCommand  implements Callable<Integer> {
             }
 
             var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
-            var dataPlan = yamlFileService.parsePlanFile(planYaml);
+            var rawPlan = yamlFileService.parsePlanFile(planYaml);
+            var dataPlan = setDefaultDataPlanValuesForMySQL(rawPlan);
             LOG.info("Plan: {}", dataPlan);
             var generated = sqlService.generateSQLs(dataSchema, dataGenerateConfig, dataPlan);
             fileOutputService.generateSQLFiles(generated);
@@ -81,5 +84,9 @@ public class ConjureCommand  implements Callable<Integer> {
         var details = violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("\n"));
         msg.append(details);
         return msg.toString();
+    }
+
+    private DataPlan setDefaultDataPlanValuesForMySQL(DataPlan raw) {
+        return new DataPlan(raw.name(), raw.schema(), Dialect.MYSQL, raw.data());
     }
 }

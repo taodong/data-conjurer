@@ -1,5 +1,4 @@
 name: posts-simple
-dialect: MYSQL
 entities:
   - name: usr_user
     properties:

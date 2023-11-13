@@ -10,5 +10,6 @@ import java.util.List;
 public record DataPlan(
         @NotBlank(message = "Plan name is required") String name,
         @NotBlank(message = "Schema is required") String schema,
+        @NotNull(message = "Schema dialect is missing or not supported") Dialect dialect,
         @Valid @NotEmpty(message = "Data must not be empty") List<@NotNull(message = "data element can't be null") EntityData> data) {
 }

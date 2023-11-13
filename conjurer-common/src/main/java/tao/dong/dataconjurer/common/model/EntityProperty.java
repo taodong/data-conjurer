@@ -12,7 +12,7 @@ import java.util.Set;
 
 public record EntityProperty(@NotBlank(message = "Property name is required") String name,
                              @NotNull(message = "Property type ${validatedValue} is either missing or unsupported") PropertyType type,
-                             boolean required, @Min(0) int idIndex, List<Constraint<?>> constraints,
+                             @Min(0) int idIndex, List<Constraint<?>> constraints,
                              @Valid Reference reference) {
 
     public Set<Constraint<?>> getPropertyConstraints() {
