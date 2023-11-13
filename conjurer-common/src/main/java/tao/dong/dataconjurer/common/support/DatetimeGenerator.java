@@ -11,7 +11,7 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.DURATION;
 public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
     private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(DURATION);
 
-    protected DatetimeGenerator(Set<Constraint<?>> constraints) {
+    public DatetimeGenerator(Set<Constraint<?>> constraints) {
         super(constraints);
     }
 

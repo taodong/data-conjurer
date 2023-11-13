@@ -5,7 +5,7 @@ import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
-import tao.dong.dataconjurer.engine.database.support.MySQLSequenceGeneratorDecorator;
+import tao.dong.dataconjurer.engine.database.support.MySQLMutableSequenceGenerator;
 
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 
@@ -17,7 +17,7 @@ public class MySQLEntityWrapper extends EntityWrapper {
     @Override
     protected ValueGenerator<?> matchValueGenerator(EntityProperty property) {
         if (property.type() == SEQUENCE && property.idIndex() == 1) {
-            return new MySQLSequenceGeneratorDecorator(property.getPropertyConstraints());
+            return new MySQLMutableSequenceGenerator(property.getPropertyConstraints());
         } else {
             return super.matchValueGenerator(property);
         }

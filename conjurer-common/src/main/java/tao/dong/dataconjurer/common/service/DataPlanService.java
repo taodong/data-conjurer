@@ -13,7 +13,7 @@ import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.SequenceGenerator;
-import tao.dong.dataconjurer.common.support.SequenceGeneratorDecorator;
+import tao.dong.dataconjurer.common.support.MutableSequenceGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,10 +61,10 @@ public class DataPlanService {
         for (var property : previous.getEntity().properties()) {
             if (property.idIndex() != 0) {
                 var generator = previous.getGenerators().get(property.name());
-                if (generator instanceof SequenceGeneratorDecorator prevGen) {
-                    ((SequenceGeneratorDecorator)(current.getGenerators().get(property.name())))
-                            .getGenerator()
-                            .setCurrent(calculateNewBase(prevGen.getGenerator(), previous.getCount() + config.getMaxIndexCollision()));
+                if (generator instanceof MutableSequenceGenerator prevGen) {
+                    ((MutableSequenceGenerator)(current.getGenerators().get(property.name())))
+                            .getSequenceGenerator()
+                            .setCurrent(calculateNewBase(prevGen.getSequenceGenerator(), previous.getCount() + config.getMaxIndexCollision()));
                 }
             }
         }

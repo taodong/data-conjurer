@@ -1,7 +1,9 @@
 package tao.dong.dataconjurer.common.support;
 
+import lombok.Getter;
 import org.apache.commons.text.CharacterPredicate;
 
+@Getter
 public final class RangeLengthStringGenerator extends RandomStringValueGenerator{
 
     private final int minLength;

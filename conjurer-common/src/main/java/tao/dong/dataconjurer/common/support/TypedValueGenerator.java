@@ -6,10 +6,10 @@ public interface TypedValueGenerator {
 
     default ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property) {
         return switch (property.type()) {
-            case TEXT-> new TextGeneratorDecorator(property.getPropertyConstraints());
-            case SEQUENCE -> new SequenceGeneratorDecorator(property.getPropertyConstraints());
-            case NUMBER -> new RandomNumberGeneratorDecorator(property.getPropertyConstraints());
-            default -> new TextGeneratorDecorator(property.getPropertyConstraints()); // TODO: ...
+            case TEXT-> new FormattedTextGenerator(property.getPropertyConstraints());
+            case SEQUENCE -> new MutableSequenceGenerator(property.getPropertyConstraints());
+            case NUMBER -> new BigDecimalGenerator(property.getPropertyConstraints());
+            case DATETIME, DATE -> new DatetimeGenerator(property.getPropertyConstraints());
         };
     }
 }

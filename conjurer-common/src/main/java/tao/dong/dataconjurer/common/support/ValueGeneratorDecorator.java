@@ -1,5 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.ConstraintType;
 
@@ -11,6 +13,7 @@ public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
     static final BiFunction<Set<Constraint<?>>, Set<ConstraintType>, Set<Constraint<?>>> FILTER_CONSTRAINTS =
             (constraints, types) -> constraints.stream().filter(constraint -> types.contains(constraint.getType())).collect(Collectors.toSet());
 
+    @Getter(AccessLevel.PACKAGE)
     protected final ValueGenerator<T> generator;
 
     protected ValueGeneratorDecorator(Set<Constraint<?>> constraints) {
