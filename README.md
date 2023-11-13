@@ -16,6 +16,6 @@ schema.yaml defines data structure
 plan.yaml defines data generation plan such as rows
 For example, to create data for yamls defined under examples folder
 ```shell
-data-conjurer.jar examples/hw-schema.yaml examples/hw-plan.yaml
+java -jar data-conjurer.jar examples/hw-schema.yaml examples/hw-plan.yaml
 ```
 
