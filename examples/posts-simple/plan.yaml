@@ -1,0 +1,9 @@
+name: "simple"
+schema: "posts-simple"
+data:
+  - entity: "usr_user"
+    count: 10
+  - entity: "post"
+    count: 15
+  - entity: "comment"
+    count: 30

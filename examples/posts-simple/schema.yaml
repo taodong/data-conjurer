@@ -1,0 +1,83 @@
+name: posts-simple
+dialect: MYSQL
+entities:
+  - name: usr_user
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "first_name"
+        type: "text"
+        constraints:
+          - type: size
+            min: 1
+            max: 20
+      - name: "last_name"
+        type: "text"
+        constraints:
+          - type: size
+            min: 1
+            max: 20
+      - name: "created_date"
+        type: "date"
+        constraints:
+          - type: duration
+            start:
+              year: 2000
+              month: 4
+              day: 1
+  - name: post
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "post"
+        type: "text"
+        constraints:
+          - type: size
+            min: 1
+            max: 100
+      - name: "user_id"
+        type: "sequence"
+        reference:
+          entity: "usr_user"
+          property: "id"
+      - name: "created_date"
+        type: "datetime"
+        constraints:
+          - type: duration
+            start:
+              year: 2001
+              month: 4
+              day: 1
+              hour: 12
+  - name: comment
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "comment"
+        type: "text"
+        constraints:
+          - type: size
+            min: 1
+            max: 80
+      - name: "user_id"
+        type: "sequence"
+        reference:
+          entity: "usr_user"
+          property: "id"
+      - name: "post_id"
+        type: "sequence"
+        reference:
+          entity: "post"
+          property: "id"
+      - name: "created_date"
+        type: "datetime"
+        constraints:
+          - type: duration
+            start:
+              year: 2001
+              month: 4
+              day: 1
+              hour: 12
