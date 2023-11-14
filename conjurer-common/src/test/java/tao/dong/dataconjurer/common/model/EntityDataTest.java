@@ -14,7 +14,6 @@ class EntityDataTest {
 
     private static Validator validator;
 
-    @SuppressWarnings("resource")
     @BeforeAll
     public static void setUpValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -23,7 +22,7 @@ class EntityDataTest {
 
     @Test
     void testValidate() {
-        var entityData = new EntityData(" ", -1L);
+        var entityData = new EntityData(" ", -1L, null);
         var violations = validator.validate(entityData);
         assertEquals(2, violations.size());
         var checked = 0;

@@ -59,15 +59,15 @@ public class EntityTestHelper {
         data.put(wrapper1.getId(), wrapper1);
         DataHelper.appendToSetValueInMap(idMap, wrapper1.getEntityName(), wrapper1.getId());
 
-        var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L));
+        var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L, null));
         data.put(wrapper2.getId(), wrapper2);
         DataHelper.appendToSetValueInMap(idMap, wrapper2.getEntityName(), wrapper2.getId());
 
-        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L));
+        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null));
         data.put(wrapper3.getId(), wrapper3);
         DataHelper.appendToSetValueInMap(idMap, wrapper3.getEntityName(), wrapper3.getId());
 
-        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L));
+        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null));
         data.put(wrapper4.getId(), wrapper4);
         DataHelper.appendToSetValueInMap(idMap, wrapper4.getEntityName(), wrapper4.getId());
     }
@@ -115,10 +115,10 @@ public class EntityTestHelper {
 
     public EntityData createSimpleData(String entityName, Long count) {
         return new EntityData(entityName == null ? "t1" : entityName,
-                count == null ? 10L : count);
+                count == null ? 10L : count, null);
     }
 
     public EntityData createSimpleDataWithId(String entityName, Long count, int id) {
-        return new EntityData(entityName == null ? "t1" : entityName, id, count == null ? 10L : count);
+        return new EntityData(entityName == null ? "t1" : entityName, id, count == null ? 10L : count, null);
     }
 }

@@ -1,5 +1,4 @@
 name: test
-dialect: MYSQL
 entities:
   - name: country
     properties:
