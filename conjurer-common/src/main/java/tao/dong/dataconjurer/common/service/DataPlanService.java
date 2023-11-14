@@ -97,8 +97,13 @@ public class DataPlanService {
     private void constructBlueprint(DataBlueprint blueprint, Map<String, DataEntity> entityDefinitions, DataOutputControl outputControl, DataPlan dataPlan) {
         var entityWrapperMap = blueprint.getEntities();
         var entityWrapperIdMap = blueprint.getEntityWrapperIds();
-        var entityOutputs = outputControl.entities().stream()
-                .collect(Collectors.toMap(EntityOutputControl::name, Function.identity()));
+        Map<String, EntityOutputControl> entityOutputs = new HashMap<>();
+        if (outputControl != null) {
+            entityOutputs.putAll(
+                outputControl.entities().stream()
+                    .collect(Collectors.toMap(EntityOutputControl::name, Function.identity()))
+            );
+        }
 
         for (var entityData : dataPlan.data()) {
             var dataEntity = entityDefinitions.get(entityData.entity());
