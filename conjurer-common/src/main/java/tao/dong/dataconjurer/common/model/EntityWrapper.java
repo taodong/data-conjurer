@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @Slf4j
 @Getter
@@ -40,6 +40,8 @@ public class EntityWrapper {
     private final List<String> properties = new ArrayList<>();
     private final List<PropertyType> propertyTypes = new ArrayList<>();
     private final List<IndexedValue> indexes = new ArrayList<>();
+    private final Set<Integer> hiddenIndex = new HashSet<>();
+    private final Map<String, String> aliases = new HashMap<>();
     private String msg;
     protected TypedValueGenerator typedValueGenerator = new TypedValueGenerator() {
         @Override
@@ -57,10 +59,16 @@ public class EntityWrapper {
         this.count = data.count();
         this.id = new EntityWrapperId(entity.name(), data.dataId());
         var indexedProps = new HashMap<Integer, Set<Integer>>();
+        var hiddenProps = new HashSet<String>();
 
-        processProperties(indexedProps);
+        if (outputControl != null) {
+            processOutputControl(outputControl, hiddenProps);
+        }
+        processProperties(indexedProps, hiddenProps);
+        createIndex(indexedProps);
+    }
 
-        // Create indexes
+    void createIndex(Map<Integer, Set<Integer>> indexedProps) {
         if (!indexedProps.isEmpty()) {
             for (var ii : indexedProps.values()) {
                 indexes.add(new IndexedValue(
@@ -70,18 +78,34 @@ public class EntityWrapper {
         }
     }
 
-    void processProperties(HashMap<Integer, Set<Integer>> indexedProps) {
+    void processOutputControl(EntityOutputControl outputControl, Set<String> hiddenProps) {
+        for (var propControl : outputControl.properties()) {
+            if (StringUtils.isNotBlank(propControl.alias())) {
+                aliases.put(propControl.name(), propControl.alias());
+            }
+
+            if (propControl.hide()) {
+                hiddenProps.add(propControl.name());
+            }
+        }
+     }
+
+    void processProperties(Map<Integer, Set<Integer>> indexedProps, Set<String> hiddenProps) {
         var propIndex = 0;
 
         for (var property : entity.properties()) {
-            // List Reference
+            // List reference
             if (property.reference() != null) {
                 dependencies.add(property.reference().entity());
                 references.put(property.name(), property.reference());
             }
-            // extract indexed properties
+            // Extract indexed properties
             if (property.idIndex() > 0) {
                 DataHelper.appendToSetValueInMap(indexedProps, property.idIndex(), propIndex);
+            }
+            // Populate hidden index
+            if (hiddenProps.contains(property.name())) {
+                hiddenIndex.add(propIndex);
             }
 
             // Create generators
@@ -140,6 +164,33 @@ public class EntityWrapper {
 
     public String getEntityName() {
         return id.entityName();
+    }
+
+    public List<PropertyType> getOutputPropertyTypes() {
+        if (!hiddenIndex.isEmpty()) {
+            return DataHelper.removeIndexFromList(propertyTypes, hiddenIndex);
+        } else {
+            return propertyTypes;
+        }
+    }
+
+    public List<String> getOutputProperties() {
+        List<String> props = new ArrayList<>(properties);
+        if (!hiddenIndex.isEmpty()) {
+            props = DataHelper.removeIndexFromList(props, hiddenIndex);
+        }
+        if (!aliases.isEmpty()) {
+            props = props.stream()
+                    .map(name -> aliases.getOrDefault(name, name))
+                    .toList();
+        }
+        return props;
+    }
+
+    public List<List<Object>> getOutputValues() {
+        return values.stream()
+                .map(row -> DataHelper.removeIndexFromList(row, hiddenIndex))
+                .toList();
     }
 
     @Override

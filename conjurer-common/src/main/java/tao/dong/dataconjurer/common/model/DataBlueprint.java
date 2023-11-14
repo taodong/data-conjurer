@@ -33,13 +33,13 @@ public class DataBlueprint {
             var index = entityOrders.get(entityName);
             EntityDataOutput result;
             if (index == null) {
-                result = new EntityDataOutput(entityName, wrapper.getPropertyTypes(), wrapper.getProperties());
+                result = new EntityDataOutput(entityName, wrapper.getOutputPropertyTypes(), wrapper.getOutputProperties());
                 entityOrders.put(entityName, current++);
                 results.add(result);
             } else {
                 result = results.get(index);
             }
-            result.addValues(wrapper.getValues());
+            result.addValues(wrapper.getOutputValues());
 
         }
         return results;

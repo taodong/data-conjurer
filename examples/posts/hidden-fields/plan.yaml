@@ -1,0 +1,14 @@
+plan:
+  name: "hide-values"
+  schema: "posts"
+  data:
+    - entity: "usr_user"
+      count: 10
+    - entity: "post"
+      count: 15
+output:
+    entities:
+      - name: "post"
+        properties:
+          - name: "created_date"
+            hide: true

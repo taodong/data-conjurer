@@ -1,6 +1,6 @@
 plan:
   name: "simple"
-  schema: "posts-simple"
+  schema: "posts"
   data:
     - entity: "usr_user"
       count: 10

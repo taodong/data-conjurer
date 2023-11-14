@@ -1,4 +1,4 @@
-name: posts-simple
+name: posts
 entities:
   - name: usr_user
     properties:
