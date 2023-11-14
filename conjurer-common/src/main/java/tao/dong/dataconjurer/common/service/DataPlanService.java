@@ -5,6 +5,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
+import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.model.EntityData;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class DataPlanService {
-    public DataBlueprint createDataBlueprint(DataSchema schema, DataGenerateConfig config, DataPlan... dataPlans) {
+    public DataBlueprint createDataBlueprint(DataSchema schema, DataGenerateConfig config, DataOutputControl outputControl, DataPlan... dataPlans) {
         var blueprint = new DataBlueprint();
         var entityDefinitions = extraEntityDefinitions(schema);
 

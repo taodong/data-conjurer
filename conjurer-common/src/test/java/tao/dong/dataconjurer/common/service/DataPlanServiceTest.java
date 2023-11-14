@@ -28,7 +28,7 @@ class DataPlanServiceTest {
         var config = DataGenerateConfig.builder()
                 .maxIndexCollision(3)
                 .build();
-        var blueprint = service.createDataBlueprint(schema, config, plans);
+        var blueprint = service.createDataBlueprint(schema, config, null, plans);
         assertEquals(5, blueprint.getEntities().size());
         assertEquals(11L, blueprint.getEntities().get(new EntityWrapperId("t3", 1)).getGenerators().get("t3p0").generate());
     }
@@ -47,7 +47,7 @@ class DataPlanServiceTest {
         };
         var config = DataGenerateConfig.builder()
                 .build();
-        var blueprint = service.createDataBlueprint(schema, config, plans);
+        var blueprint = service.createDataBlueprint(schema, config, null, plans);
         assertEquals(1, blueprint.getEntities().size());
     }
 

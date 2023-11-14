@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
+import tao.dong.dataconjurer.shell.model.MySQLDataPlan;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public class YamlFileService {
         return yamlMapper.readValue(content, DataSchema.class);
     }
 
-    public DataPlan parsePlanFile(String content) throws IOException {
-        return yamlMapper.readValue(content, DataPlan.class);
+    public MySQLDataPlan parsePlanFile(String content) throws IOException {
+        return yamlMapper.readValue(content, MySQLDataPlan.class);
     }
 }

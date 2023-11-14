@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.engine.database.service;
 
+import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.model.StringValueSupplier;
@@ -27,13 +28,13 @@ public class SqlService {
     }
 
 
-    public List<EntityQueryOutput> generateSQLs(DataSchema schema, DataGenerateConfig config, DataPlan dataPlan) {
+    public List<EntityQueryOutput> generateSQLs(DataSchema schema, DataGenerateConfig config, DataOutputControl outputControl, DataPlan dataPlan) {
         
-        return createInsertStatements(schema, config, dataPlan);
+        return createInsertStatements(schema, config, outputControl, dataPlan);
     }
 
-    private List<EntityQueryOutput> createInsertStatements(DataSchema schema, DataGenerateConfig config, DataPlan dataPlan) {
-        var blueprint = dataPlanService.createDataBlueprint(schema, config, dataPlan);
+    private List<EntityQueryOutput> createInsertStatements(DataSchema schema, DataGenerateConfig config, DataOutputControl outputControl, DataPlan dataPlan) {
+        var blueprint = dataPlanService.createDataBlueprint(schema, config, outputControl, dataPlan);
         dataGenerateService.generateData(blueprint, config);
         var generated = blueprint.outputGeneratedData();
         return IntStream.range(0, generated.size())

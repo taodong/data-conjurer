@@ -67,10 +67,12 @@ public class ConjureCommand  implements Callable<Integer> {
             }
 
             var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
-            var rawPlan = yamlFileService.parsePlanFile(planYaml);
+            var mysqlPlan = yamlFileService.parsePlanFile(planYaml);
+            var rawPlan = mysqlPlan.getDataPlan();
+            var outputControl = mysqlPlan.getOutput();
             var dataPlan = setDefaultDataPlanValuesForMySQL(rawPlan);
             LOG.info("Plan: {}", dataPlan);
-            var generated = sqlService.generateSQLs(dataSchema, dataGenerateConfig, dataPlan);
+            var generated = sqlService.generateSQLs(dataSchema, dataGenerateConfig, outputControl, dataPlan);
             fileOutputService.generateSQLFiles(generated);
         } catch (IOException ioe) {
             LOG.error("Invalid input", ioe);

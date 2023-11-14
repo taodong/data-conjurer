@@ -3,10 +3,12 @@ package tao.dong.dataconjurer.shell.command;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
+import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
+import tao.dong.dataconjurer.shell.model.MySQLDataPlan;
 import tao.dong.dataconjurer.shell.service.FileOutputService;
 import tao.dong.dataconjurer.shell.service.YamlFileService;
 
@@ -21,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -38,7 +41,9 @@ class ConjureCommandTest {
         YamlFileService yamlFileService = mock(YamlFileService.class);
 
         var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
-        when(yamlFileService.parsePlanFile(anyString())).thenReturn(new DataPlan("test", "test", null, Collections.emptyList()));
+        var mysqlPlan = new MySQLDataPlan();
+        mysqlPlan.setDataPlan(new DataPlan("test", "test", null, Collections.emptyList()));
+        when(yamlFileService.parsePlanFile(anyString())).thenReturn(mysqlPlan);
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 
@@ -46,7 +51,7 @@ class ConjureCommandTest {
         String plan = getFilePathForClassPathResource("plan.yaml");
 
         when(validator.validate(any(DataSchema.class))).thenReturn(Collections.emptySet());
-        when(sqlService.generateSQLs(any(DataSchema.class), any(DataGenerateConfig.class), any(DataPlan.class))).thenReturn(Collections.emptyList());
+        when(sqlService.generateSQLs(any(DataSchema.class), any(DataGenerateConfig.class), isNull(), any(DataPlan.class))).thenReturn(Collections.emptyList());
         doNothing().when(fileOutputService).generateSQLFiles(anyList());
 
         int exitCode = cmd.execute(schema, plan);
