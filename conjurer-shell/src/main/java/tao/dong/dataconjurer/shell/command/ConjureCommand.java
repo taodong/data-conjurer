@@ -68,7 +68,7 @@ public class ConjureCommand  implements Callable<Integer> {
 
             var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
             var mysqlPlan = yamlFileService.parsePlanFile(planYaml);
-            var rawPlan = mysqlPlan.getDataPlan();
+            var rawPlan = mysqlPlan.getPlan();
             var outputControl = mysqlPlan.getOutput();
             var dataPlan = setDefaultDataPlanValuesForMySQL(rawPlan);
             LOG.info("Plan: {}", dataPlan);

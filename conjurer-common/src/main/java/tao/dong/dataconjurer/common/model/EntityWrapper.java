@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
 
@@ -47,14 +48,30 @@ public class EntityWrapper {
         }
     };
 
-    public EntityWrapper(@NotNull DataEntity entity, EntityData data) {
+    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data) {
+        this(entity, data, null);
+    }
+
+    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl) {
         this.entity = entity;
         this.count = data.count();
         this.id = new EntityWrapperId(entity.name(), data.dataId());
-        var propIndex = 0;
         var indexedProps = new HashMap<Integer, Set<Integer>>();
 
-        BiFunction<Integer, Set<Integer>, Set<Integer>> insertIndex = (i, v) -> { if (v == null) {v = new HashSet<>();} v.add(i); return v;};
+        processProperties(indexedProps);
+
+        // Create indexes
+        if (!indexedProps.isEmpty()) {
+            for (var ii : indexedProps.values()) {
+                indexes.add(new IndexedValue(
+                        ii.stream().mapToInt(Integer::intValue).toArray()
+                ));
+            }
+        }
+    }
+
+    void processProperties(HashMap<Integer, Set<Integer>> indexedProps) {
+        var propIndex = 0;
 
         for (var property : entity.properties()) {
             // List Reference
@@ -64,7 +81,7 @@ public class EntityWrapper {
             }
             // extract indexed properties
             if (property.idIndex() > 0) {
-                indexedProps.compute(propIndex, insertIndex);
+                DataHelper.appendToSetValueInMap(indexedProps, property.idIndex(), propIndex);
             }
 
             // Create generators
@@ -72,15 +89,6 @@ public class EntityWrapper {
             propertyTypes.add(property.type());
             generators.put(property.name(), matchValueGenerator(property));
             propIndex++;
-        }
-
-        // Create indexes
-        if (!indexedProps.isEmpty()) {
-            for (var ii : indexedProps.values()) {
-                indexes.add(new IndexedValue(
-                        ii.stream().mapToInt(Integer::intValue).toArray()
-                ));
-            }
         }
     }
 

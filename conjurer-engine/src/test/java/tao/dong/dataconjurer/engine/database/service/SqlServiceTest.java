@@ -7,11 +7,9 @@ import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.model.Dialect;
 import tao.dong.dataconjurer.common.model.EntityDataOutput;
-import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
-
 
 import java.util.Collections;
 import java.util.List;

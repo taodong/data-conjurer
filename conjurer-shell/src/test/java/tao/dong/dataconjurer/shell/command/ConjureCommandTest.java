@@ -3,7 +3,6 @@ package tao.dong.dataconjurer.shell.command;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
-import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
@@ -42,7 +41,7 @@ class ConjureCommandTest {
 
         var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         var mysqlPlan = new MySQLDataPlan();
-        mysqlPlan.setDataPlan(new DataPlan("test", "test", null, Collections.emptyList()));
+        mysqlPlan.setPlan(new DataPlan("test", "test", null, Collections.emptyList()));
         when(yamlFileService.parsePlanFile(anyString())).thenReturn(mysqlPlan);
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));

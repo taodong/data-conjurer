@@ -6,6 +6,6 @@ import tao.dong.dataconjurer.common.model.DataPlan;
 
 @Data
 public class MySQLDataPlan {
-    private DataPlan dataPlan;
+    private DataPlan plan;
     private DataOutputControl output;
 }
