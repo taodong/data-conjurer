@@ -19,13 +19,13 @@ public enum PropertyType {
     @JsonValue
     private final String name;
     private final Predicate<Dialect> support;
-    private final Class targetClass;
+    private final Class<?> targetClass;
 
-    PropertyType(String name, Class targetClass) {
+    PropertyType(String name, Class<?> targetClass) {
         this(name, targetClass, (Objects::nonNull));
     }
 
-    PropertyType(String name, Class targetClass, Predicate<Dialect> support) {
+    PropertyType(String name, Class<?> targetClass, Predicate<Dialect> support) {
         this.name = name;
         this.support = support;
         this.targetClass = targetClass;
