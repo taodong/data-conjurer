@@ -1,0 +1,20 @@
+plan:
+  name: "alias"
+  schema: "posts"
+  data:
+    - entity: "usr_user"
+      count: 10
+    - entity: "post"
+      count: 15
+    - entity: "comment"
+      count: 20
+output:
+    entities:
+      - name: "post"
+        properties:
+          - name: "created_date"
+            alias: "created"
+      - name: "comment"
+        properties:
+          - name: "user_id"
+            alias: "user"

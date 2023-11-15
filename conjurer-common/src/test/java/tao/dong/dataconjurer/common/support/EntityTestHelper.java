@@ -4,11 +4,13 @@ import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.model.EntityData;
+import tao.dong.dataconjurer.common.model.EntityOutputControl;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.PropertyOutputControl;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.UnfixedSize;
 
@@ -59,7 +61,11 @@ public class EntityTestHelper {
         data.put(wrapper1.getId(), wrapper1);
         DataHelper.appendToSetValueInMap(idMap, wrapper1.getEntityName(), wrapper1.getId());
 
-        var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L, null));
+        var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L, null),
+                new EntityOutputControl("t2", Set.of(
+                        new PropertyOutputControl("t2p0", false, "id"),
+                        new PropertyOutputControl("t2p1", true, null)
+                )));
         data.put(wrapper2.getId(), wrapper2);
         DataHelper.appendToSetValueInMap(idMap, wrapper2.getEntityName(), wrapper2.getId());
 
@@ -120,5 +126,16 @@ public class EntityTestHelper {
 
     public EntityData createSimpleDataWithId(String entityName, Long count, int id) {
         return new EntityData(entityName == null ? "t1" : entityName, id, count == null ? 10L : count, null);
+    }
+
+    public DataEntity createEntityT5() {
+        return new DataEntity("t5",
+                Set.of(
+                        new EntityProperty("t5p0", SEQUENCE,  1, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t5p1", SEQUENCE,  2, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t5p2", SEQUENCE,  2, List.of(new Interval(1L, 0L)), null),
+                        new EntityProperty("t1p3", TEXT, 0, List.of(new UnfixedSize(15L)), null)
+                )
+        );
     }
 }

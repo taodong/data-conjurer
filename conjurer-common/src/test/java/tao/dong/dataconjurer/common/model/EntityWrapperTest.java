@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +14,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EntityWrapperTest {
 
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
+
+    @Test
+    void testConstruct() {
+        var entity = TEST_HELPER.createEntityT5();
+        var plan = TEST_HELPER.createSimpleData("t5", 5L);
+        var outputControl = new EntityOutputControl("t5",
+                Set.of(
+                        new PropertyOutputControl("t5p1", true, null),
+                        new PropertyOutputControl("t5p2", false, "p2")
+                )
+        );
+        var wrapper = new EntityWrapper(entity, plan, outputControl);
+        assertEquals(1, wrapper.getHiddenIndex().size());
+        assertEquals(1, wrapper.getAliases().size());
+        assertEquals(2, wrapper.getIndexes().size());
+    }
 
     @Test
     void testUpdateStatus() {

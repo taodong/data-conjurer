@@ -5,7 +5,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -35,5 +37,18 @@ class DataHelperTest {
     @MethodSource
     void testFormatMilliseconds(long milliseconds, String pattern, String expected) {
         assertEquals(expected, DataHelper.formatMilliseconds(milliseconds, pattern));
+    }
+
+    @Test
+    void testRemoveIndexFromList() {
+        List<Integer> list = new ArrayList<>();
+        list.add(5);
+        list.add(3);
+        list.add(7);
+        list.add(11);
+        var indexes = Set.of(0, 3);
+        var rs = DataHelper.removeIndexFromList(list, indexes);
+        assertEquals(2, rs.size());
+        assertEquals(10, rs.stream().reduce(0, Integer::sum));
     }
 }
