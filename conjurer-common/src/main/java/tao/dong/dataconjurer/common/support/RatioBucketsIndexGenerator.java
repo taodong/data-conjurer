@@ -1,12 +1,9 @@
 package tao.dong.dataconjurer.common.support;
 
 import jakarta.annotation.Nonnull;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import tao.dong.dataconjurer.common.model.RatioRange;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.random.RandomGenerator;
@@ -25,7 +22,7 @@ public class RatioBucketsIndexGenerator implements IndexValueGenerator{
         this.buckets = new ArrayList<>();
         for (var i = 0; i < ranges.length; i++) {
             this.buckets.add(new IndexedBucket(i, ranges[i]));
-            Collections.sort(this.buckets, Comparator.comparingDouble(bucket -> bucket.getRange().getMin()));
+            this.buckets.sort(Comparator.comparingDouble(bucket -> bucket.range().getMin()));
         }
     }
 
@@ -43,12 +40,12 @@ public class RatioBucketsIndexGenerator implements IndexValueGenerator{
             while (low <= high) {
                 var mid = low + (high - low) / 2;
                 var bucket = this.buckets.get(mid);
-                if (bucket.getRange().getMin() >= key) {
+                if (bucket.range().getMin() >= key) {
                     high = mid - 1;
-                } else if (bucket.getRange().getMax() < key) {
+                } else if (bucket.range().getMax() < key) {
                     low = mid + 1;
                 } else {
-                    matched = bucket.getIndex();
+                    matched = bucket.index();
                     break;
                 }
             }
@@ -56,10 +53,6 @@ public class RatioBucketsIndexGenerator implements IndexValueGenerator{
         return matched;
     }
 
-    @RequiredArgsConstructor
-    @Getter
-    class IndexedBucket {
-        private final int index;
-        private final RatioRange range;
+    record IndexedBucket(int index, RatioRange range) {
     }
 }
