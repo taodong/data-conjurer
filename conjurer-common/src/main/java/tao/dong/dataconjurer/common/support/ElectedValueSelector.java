@@ -14,9 +14,9 @@ public class ElectedValueSelector implements ValueGenerator<Object> {
     private final List<Object> values = new ArrayList<>();
     private final IndexValueGenerator indexValueGenerator;
 
-    public ElectedValueSelector(@NotEmpty Set<?> values, @NotNull IndexValueGenerator indexValueGenerator) {
+    public ElectedValueSelector(@NotEmpty Set<?> values) {
         this.values.addAll(values);
-        this.indexValueGenerator = indexValueGenerator;
+        this.indexValueGenerator = new RandomIndexGenerator(values.size());
     }
 
     @Override
