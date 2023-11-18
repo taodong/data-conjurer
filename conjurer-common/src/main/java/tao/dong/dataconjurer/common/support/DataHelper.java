@@ -28,6 +28,7 @@ public interface DataHelper {
     }
 
     static Long convertFormattedStringToMillisecond(String str, @NotEmpty String pattern) throws ParseException {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         var formatter = new SimpleDateFormat(pattern);
         var date = formatter.parse(str);
         var cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

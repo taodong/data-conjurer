@@ -50,14 +50,14 @@ class DefaultStringPropertyValueConverterTest {
                 Arguments.of(List.of("2023-11-17", "2023-11-17 09:22:30", "2023/11/17"), DATE,
                         (Consumer<List<Object>>)(converted) -> {
                             assertEquals(2, converted.size());
-                            assertEquals(1700208000000L, (long)converted.get(0));
-                            assertEquals(1700208000000L, (long)converted.get(1));
+                            assertEquals(1700179200000L, (long)converted.get(0));
+                            assertEquals(1700179200000L, (long)converted.get(1));
                         }
                 ),
                 Arguments.of(List.of("2023-11-17", "2023-11-17 00:00:30", "2023/11/17"), DATETIME,
                         (Consumer<List<Object>>)(converted) -> {
                             assertEquals(1, converted.size());
-                            assertEquals(1700208030000L, (long)converted.get(0));
+                            assertEquals(1700179230000L, (long)converted.get(0));
                         }
                 ),
                 Arguments.of(List.of("2023-11-17", "abc", "测试"), TEXT,
