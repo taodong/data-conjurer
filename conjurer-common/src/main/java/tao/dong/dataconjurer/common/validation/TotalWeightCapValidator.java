@@ -16,10 +16,10 @@ public class TotalWeightCapValidator implements ConstraintValidator<TotalWeightC
                 .sum();
 
         if (totalWeight > 1) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(
-                    constraintValidatorContext.getDefaultConstraintMessageTemplate()
+                    "Total weight is over 1 for property " + propertyInputControl.name()
             )
-                    .addPropertyNode("values")
                     .addConstraintViolation();
             return false;
         }
