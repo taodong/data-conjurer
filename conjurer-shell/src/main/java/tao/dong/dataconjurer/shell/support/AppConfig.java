@@ -19,6 +19,7 @@ import tao.dong.dataconjurer.engine.database.service.MySQLInsertStatementService
 import tao.dong.dataconjurer.engine.database.service.SqlService;
 
 @Configuration
+@SuppressWarnings("unused")
 public class AppConfig {
 
     @Bean
