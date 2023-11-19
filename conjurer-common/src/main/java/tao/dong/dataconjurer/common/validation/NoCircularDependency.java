@@ -10,17 +10,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * To validate the total weight listed within PropertyValueDistribution is less than or equal to 1
- */
-@Target({ElementType.TYPE_USE, ElementType.TYPE})
+@Target({ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = TotalWeightCapValidator.class)
+@Constraint(validatedBy = CircularDependencyValidator.class)
 @Documented
 @ReportAsSingleViolation
 @SuppressWarnings("unused")
-public @interface TotalWeightCap {
-    String message() default "Total weight of all PropertyValueDistribution should be less than or equal to 1";
+public @interface NoCircularDependency {
+    String message() default "Circular dependency found";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

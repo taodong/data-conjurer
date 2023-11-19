@@ -10,9 +10,7 @@ import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Reference;
-import tao.dong.dataconjurer.common.support.CircularDependencyChecker;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
-import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
@@ -24,9 +22,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -35,19 +31,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
-import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.DEPENDENCE;
 
 class DataGenerateServiceTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
-    private final CircularDependencyChecker circularDependencyChecker = mock(CircularDependencyChecker.class);
 
     @Test
     void testGenerateData() {
         Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
-        CircularDependencyChecker checker = new CircularDependencyChecker();
-        DataGenerateService service = new DataGenerateService(checker);
+        DataGenerateService service = new DataGenerateService();
         TEST_HELPER.createSimpleBlueprintDataWithReference(entityMap, idMap);
         var blueprint = new DataBlueprint();
         blueprint.init(entityMap, idMap);
@@ -66,8 +59,7 @@ class DataGenerateServiceTest {
         Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
-        CircularDependencyChecker checker = new CircularDependencyChecker();
-        DataGenerateService service = new DataGenerateService(checker);
+        DataGenerateService service = new DataGenerateService();
         createTestEntityMapWithMultiplePlan(entityMap, idMap);
         var blueprint = new DataBlueprint();
         blueprint.init(entityMap, idMap);
@@ -88,7 +80,7 @@ class DataGenerateServiceTest {
         var wrapper2 = mockWrapperWithStatus(2);
         var wrapper3 = mockWrapperWithStatus(-1);
         var wrappers = Set.of(wrapper1, wrapper2, wrapper3);
-        DataGenerateService service = new DataGenerateService(circularDependencyChecker);
+        DataGenerateService service = new DataGenerateService();
         service.failDataGeneration(wrappers, "test error");
         verify(wrapper1, times(1)).failProcess("test error");
         verify(wrapper2, never()).failProcess(anyString());
@@ -108,7 +100,7 @@ class DataGenerateServiceTest {
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         mockDataForCreateDataGenerationTaskTest(data, idMap);
         CountDownLatch latch = new CountDownLatch(1);
-        DataGenerateService service = new DataGenerateService(circularDependencyChecker);
+        DataGenerateService service = new DataGenerateService();
         var config = DataGenerateConfig.builder().build();
         var task = service.createDataGenerateTask(data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t1")), data, idMap, latch, config);
         assertEquals(2, task.getReferenced().size());
@@ -131,32 +123,8 @@ class DataGenerateServiceTest {
     }
 
     @Test
-    void testValidate() {
-        when(circularDependencyChecker.hasCircular(anyMap())).thenReturn(false);
-        DataGenerateService service = new DataGenerateService(circularDependencyChecker);
-        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
-        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
-        TEST_HELPER.createSimpleBlueprintData(data, idMap);
-        var raw = new HashSet<>(data.values());
-        service.validate(raw);
-        assertTrue(true);
-    }
-
-    @Test
-    void testValidate_ThrowException() {
-        when(circularDependencyChecker.hasCircular(anyMap())).thenReturn(true);
-        DataGenerateService service = new DataGenerateService(circularDependencyChecker);
-        Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
-        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
-        TEST_HELPER.createSimpleBlueprintData(data, idMap);
-        var raw = new HashSet<>(data.values());
-        DataGenerateException exception = assertThrows(DataGenerateException.class, () -> service.validate(raw));
-        assertEquals(DEPENDENCE, exception.getErrorType());
-    }
-
-    @Test
     void testFindReadyEntities() {
-        DataGenerateService service = new DataGenerateService(circularDependencyChecker);
+        DataGenerateService service = new DataGenerateService();
         Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         createTestDataForSelection(data, idMap);
@@ -169,7 +137,7 @@ class DataGenerateServiceTest {
 
     @Test
     void testRemoveDropouts() {
-        DataGenerateService service = new DataGenerateService(circularDependencyChecker);
+        DataGenerateService service = new DataGenerateService();
         Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         createTestDataForSelection(data, idMap);

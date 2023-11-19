@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
-import tao.dong.dataconjurer.common.support.CircularDependencyChecker;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
@@ -54,13 +53,8 @@ public class AppConfig {
     }
 
     @Bean
-    public CircularDependencyChecker circularDependencyChecker() {
-        return new CircularDependencyChecker();
-    }
-
-    @Bean
-    public DataGenerateService dataGenerateService(CircularDependencyChecker circularDependencyChecker) {
-        return new DataGenerateService(circularDependencyChecker);
+    public DataGenerateService dataGenerateService() {
+        return new DataGenerateService();
     }
 
     @Bean

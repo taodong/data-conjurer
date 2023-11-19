@@ -7,9 +7,7 @@ import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.TypedValue;
-import tao.dong.dataconjurer.common.support.CircularDependencyChecker;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
-import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.DataGenerateTask;
 import tao.dong.dataconjurer.common.support.DataHelper;
 
@@ -25,19 +23,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.DEPENDENCE;
-
 @Slf4j
 public class DataGenerateService {
 
-    private final CircularDependencyChecker circularDependencyChecker;
-
-    public DataGenerateService(CircularDependencyChecker circularDependencyChecker) {
-        this.circularDependencyChecker = circularDependencyChecker;
-    }
-
     public void generateData(@NotNull DataBlueprint blueprint, @NotNull DataGenerateConfig config) {
-        validate(blueprint.getEntities().values());
         generateEntityData(blueprint, config);
     }
 
@@ -179,17 +168,5 @@ public class DataGenerateService {
                 it.remove();
             }
         }
-    }
-
-
-    void validate(Collection<EntityWrapper> wrappers) {
-        if (hasCircularDependencies(wrappers)) {
-            throw new DataGenerateException(DEPENDENCE, "Circular dependencies found among entities");
-        }
-    }
-
-    private boolean hasCircularDependencies(Collection<EntityWrapper> wrappers) {
-        Map<String, Set<String>> nodes = wrappers.stream().collect(Collectors.toMap(EntityWrapper::getEntityName, EntityWrapper::getDependencies, (first, second) -> second));
-        return circularDependencyChecker.hasCircular(nodes);
     }
 }
