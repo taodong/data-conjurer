@@ -6,10 +6,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,5 +52,19 @@ class DataHelperTest {
         var rs = DataHelper.removeIndexFromList(list, indexes);
         assertEquals(2, rs.size());
         assertEquals(10, rs.stream().reduce(0, Integer::sum));
+    }
+
+    private static Stream<Arguments> testStreamNullableCollection() {
+        return Stream.of(
+                Arguments.of(null, 0),
+                Arguments.of(List.of(1, 2), 2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testStreamNullableCollection(Collection<Integer> col, int expected) {
+        Set<Integer> res = DataHelper.streamNullableCollection(col).collect(Collectors.toSet());
+        assertEquals(expected, res.size());
     }
 }

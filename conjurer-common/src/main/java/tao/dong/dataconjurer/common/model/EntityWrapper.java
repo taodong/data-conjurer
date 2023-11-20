@@ -5,8 +5,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.support.DataHelper;
+import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
+import tao.dong.dataconjurer.common.support.ElectedValueSelector;
+import tao.dong.dataconjurer.common.support.StringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
+import tao.dong.dataconjurer.common.support.WeightedValueGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -42,12 +48,8 @@ public class EntityWrapper {
     private final Set<Integer> hiddenIndex = new HashSet<>();
     private final Map<String, String> aliases = new HashMap<>();
     private String msg;
-    protected TypedValueGenerator typedValueGenerator = new TypedValueGenerator() {
-        @Override
-        public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property) {
-            return TypedValueGenerator.super.matchDefaultGeneratorByType(property);
-        }
-    };
+
+    protected StringPropertyValueConverter<Object> propertyValueConverter = new DefaultStringPropertyValueConverter();
 
     public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data) {
         this(entity, data, null);
@@ -59,11 +61,12 @@ public class EntityWrapper {
         this.id = new EntityWrapperId(entity.name(), data.dataId());
         var indexedProps = new HashMap<Integer, Set<Integer>>();
         var hiddenProps = new HashSet<String>();
+        var propInputs = DataHelper.streamNullableCollection(data.properties()).collect(Collectors.toMap(PropertyInputControl::name, Function.identity()));
 
         if (outputControl != null) {
             processOutputControl(outputControl, hiddenProps);
         }
-        processProperties(indexedProps, hiddenProps);
+        processProperties(indexedProps, hiddenProps, propInputs);
         createIndex(indexedProps);
     }
 
@@ -89,7 +92,7 @@ public class EntityWrapper {
         }
      }
 
-    void processProperties(Map<Integer, Set<Integer>> indexedProps, Set<String> hiddenProps) {
+    void processProperties(Map<Integer, Set<Integer>> indexedProps, Set<String> hiddenProps, Map<String, PropertyInputControl> propInputs) {
         var propIndex = 0;
 
         for (var property : entity.properties()) {
@@ -110,12 +113,47 @@ public class EntityWrapper {
             // Create generators
             properties.add(property.name());
             propertyTypes.add(property.type());
-            generators.put(property.name(), matchValueGenerator(property));
+            generators.put(property.name(), matchValueGenerator(property, propInputs.get(property.name())));
             propIndex++;
         }
     }
 
-    protected ValueGenerator<?> matchValueGenerator(EntityProperty property) {
+    protected ValueGenerator<?> matchValueGenerator(EntityProperty property, PropertyInputControl input) {
+        var fallbackGenerator = matchFallbackValueGenerator(property);
+        if (input != null) {
+            var providedValues = new ArrayList<WeightedValue>();
+            if (input.values() != null) {
+                var currentMin = 0.0;
+                for (var dist : input.values()) {
+                    var currentMax = currentMin + dist.weight();
+                    providedValues.add(
+                            new WeightedValue(
+                                    new ElectedValueSelector(
+                                            new HashSet<>(propertyValueConverter.convertValues(dist.values(), property.type()))
+                                    ),
+                                    new RatioRange(currentMin, currentMax)
+                            )
+                    );
+                    currentMin = currentMax;
+                }
+            }
+            if (input.defaultValue() != null) {
+                fallbackGenerator = new ElectedValueSelector(Set.of(propertyValueConverter.convert(input.defaultValue(), property.type())));
+            }
+            if (!providedValues.isEmpty()) {
+                return new WeightedValueGenerator(property.type(), providedValues, fallbackGenerator);
+            }
+        }
+        return fallbackGenerator;
+    }
+
+    protected ValueGenerator<?> matchFallbackValueGenerator(EntityProperty property) {
+        var typedValueGenerator = new TypedValueGenerator() {
+            @Override
+            public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property) {
+                return TypedValueGenerator.super.matchDefaultGeneratorByType(property);
+            }
+        };
         return typedValueGenerator.matchDefaultGeneratorByType(property);
     }
 

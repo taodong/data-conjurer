@@ -4,11 +4,16 @@ import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
 
+import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
+
 public class MySQLTypedValueGenerator implements TypedValueGenerator {
-    protected TypedValueGenerator typedValueGenerator = new MySQLTypedValueGenerator();
 
     @Override
     public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property) {
-        return TypedValueGenerator.super.matchDefaultGeneratorByType(property);
+        if (property.type() == SEQUENCE && property.idIndex() == 1) {
+            return new MySQLMutableSequenceGenerator(property.getPropertyConstraints());
+        } else {
+            return TypedValueGenerator.super.matchDefaultGeneratorByType(property);
+        }
     }
 }

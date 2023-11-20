@@ -9,12 +9,15 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public interface DataHelper {
     static <T, K> void appendToSetValueInMap(Map<K, Set<T>> map, K key, T val) {
@@ -41,5 +44,9 @@ public interface DataHelper {
                 .filter(i -> !indexes.contains(i))
                 .mapToObj(list::get)
                 .toList();
+    }
+
+    static <T> Stream<T> streamNullableCollection(Collection<T> nullable) {
+        return Optional.ofNullable(nullable).stream().flatMap(Collection::stream);
     }
 }
