@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -57,21 +58,21 @@ public class ConjureCommand  implements Callable<Integer> {
     public Integer call() {
         var exitCode = OK;
         try {
-            var schemaYaml = Files.readString(this.schema.toPath(), StandardCharsets.UTF_8);
+            var schemaPath = this.schema.toPath();
+            var schemaYaml = Files.readString(schemaPath, StandardCharsets.UTF_8);
 
+            LOG.info("Parsing schema file: {}", schemaPath);
             var dataSchema = yamlFileService.parseSchemaFile(schemaYaml);
-            LOG.info("Schema: {}", dataSchema);
-            var violations = validator.validate(dataSchema);
-            if (!CollectionUtils.isEmpty(violations)) {
-                throw new CommandLine.TypeConversionException(generateErrorMessage("Invalid schema file: " + this.schema.toPath(), violations));
-            }
+            validateInput(dataSchema, "schema", schemaPath);
 
-            var planYaml = Files.readString(this.plan.toPath(), StandardCharsets.UTF_8);
+            var planPath = this.plan.toPath();
+            var planYaml = Files.readString(planPath, StandardCharsets.UTF_8);
+            LOG.info("Parsing plan file: {}", planPath);
             var mysqlPlan = yamlFileService.parsePlanFile(planYaml);
             var rawPlan = mysqlPlan.getPlan();
             var outputControl = mysqlPlan.getOutput();
             var dataPlan = setDefaultDataPlanValuesForMySQL(rawPlan);
-            LOG.info("Plan: {}", dataPlan);
+            validateInput(dataPlan, "plan", planPath);
             var generated = sqlService.generateSQLs(dataSchema, dataGenerateConfig, outputControl, dataPlan);
             fileOutputService.generateSQLFiles(generated);
         } catch (IOException ioe) {
@@ -79,6 +80,13 @@ public class ConjureCommand  implements Callable<Integer> {
             exitCode = USAGE;
         }
         return exitCode;
+    }
+
+    private <T> void validateInput(T input, String name, Path filePath) {
+        var violations = validator.validate(input);
+        if (!CollectionUtils.isEmpty(violations)) {
+            throw new CommandLine.TypeConversionException(generateErrorMessage("Invalid " + name + " file: " + filePath, violations));
+        }
     }
 
     private <T> String generateErrorMessage(String errMsg, Set<ConstraintViolation<T>> violations) {

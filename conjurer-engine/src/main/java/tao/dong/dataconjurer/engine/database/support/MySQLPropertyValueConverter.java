@@ -17,6 +17,10 @@ import java.util.function.BiFunction;
 public class MySQLPropertyValueConverter extends PropertyValueConverter<StringValueSupplier<String>> {
 
     private static final BiFunction<Object, PropertyType, StringValueSupplier<String>> CONVERT_TO_STRING_SUPPLIER = (value, property) -> {
+        if (value == null) {
+            return new MySQLNullValue();
+        }
+
         switch (property) {
             case SEQUENCE:
                 return new MySQLNumberValue(value);
@@ -29,9 +33,7 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
             case TEXT:
             default:
                 String pv = (String)value;
-                if (pv == null) {
-                    return new MySQLNullValue();
-                } else if (StringUtils.containsAnyIgnoreCase(pv, "default")) {
+                if (StringUtils.containsAnyIgnoreCase(pv, "<?default?>")) {
                     return new MySQLDefaultValue();
                 } else {
                     return new MySQLTextValue(pv);

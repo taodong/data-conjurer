@@ -7,6 +7,8 @@ import tao.dong.dataconjurer.common.model.PropertyType;
 import java.math.BigDecimal;
 import java.util.function.BiFunction;
 
+import static tao.dong.dataconjurer.common.model.DefaultStringValueFormat.DATETIME_FORMAT;
+import static tao.dong.dataconjurer.common.model.DefaultStringValueFormat.DATE_FORMAT;
 import static tao.dong.dataconjurer.common.model.KeyWord.NULL_KEY;
 
 @Slf4j
@@ -20,8 +22,8 @@ public class DefaultStringPropertyValueConverter extends StringPropertyValueConv
             return switch (type) {
                 case SEQUENCE -> Long.valueOf(val);
                 case NUMBER -> new BigDecimal(val);
-                case DATE -> DataHelper.convertFormattedStringToMillisecond(val, "yyyy-MM-dd");
-                case DATETIME -> DataHelper.convertFormattedStringToMillisecond(val, "yyyy-MM-dd HH:mm:ss");
+                case DATE -> DataHelper.convertFormattedStringToMillisecond(val, DATE_FORMAT.getFormat());
+                case DATETIME -> DataHelper.convertFormattedStringToMillisecond(val, DATETIME_FORMAT.getFormat());
                 case TEXT -> val;
             };
         } catch (Exception e) {

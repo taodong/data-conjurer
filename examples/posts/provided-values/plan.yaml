@@ -1,0 +1,20 @@
+plan:
+  name: "simple"
+  schema: "posts"
+  data:
+    - entity: "usr_user"
+      count: 10
+      properties:
+        - name: "created_date"
+          values:
+            - values:
+                - "2023-11-20"
+              weight: 0.5
+            - values:
+                - "2023-11-21"
+                - "2023-11-19"
+              weight: 0.5
+    - entity: "post"
+      count: 15
+    - entity: "comment"
+      count: 30

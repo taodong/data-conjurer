@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
-import tao.dong.dataconjurer.common.support.StringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
 import tao.dong.dataconjurer.common.support.WeightedValueGenerator;
@@ -48,8 +47,6 @@ public class EntityWrapper {
     private final Set<Integer> hiddenIndex = new HashSet<>();
     private final Map<String, String> aliases = new HashMap<>();
     private String msg;
-
-    protected StringPropertyValueConverter<Object> propertyValueConverter = new DefaultStringPropertyValueConverter();
 
     public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data) {
         this(entity, data, null);
@@ -121,6 +118,7 @@ public class EntityWrapper {
     protected ValueGenerator<?> matchValueGenerator(EntityProperty property, PropertyInputControl input) {
         var fallbackGenerator = matchFallbackValueGenerator(property);
         if (input != null) {
+            var propertyValueConverter = new DefaultStringPropertyValueConverter();
             var providedValues = new ArrayList<WeightedValue>();
             if (input.values() != null) {
                 var currentMin = 0.0;

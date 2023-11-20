@@ -23,7 +23,7 @@
 		<java.version>17</java.version>
 		<maven.compiler.release>17</maven.compiler.release>
 		<picocli.version>4.7.0</picocli.version>
-		<jackson.version>2.15.2</jackson.version>
+		<jackson.version>2.16.0</jackson.version>
 		<lombok.version>1.18.30</lombok.version>
 		<commons.text.version>1.10.0</commons.text.version>
 		<commons.collections.version>4.4</commons.collections.version>
@@ -40,6 +40,16 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
