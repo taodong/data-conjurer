@@ -39,6 +39,10 @@ public class IndexedValue {
     }
 
     public void removeLastValue() {
-        values.iterator().remove();
+        var it = values.iterator();
+        while(it.hasNext()) {
+            it.next();
+        }
+        it.remove();
     }
 }

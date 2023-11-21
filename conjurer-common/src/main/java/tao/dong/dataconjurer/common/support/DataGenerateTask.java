@@ -79,13 +79,13 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         var valid = true;
         for (var indexedValue : entityWrapper.getIndexes()) {
             valid = indexedValue.addValue(dataRow);
-            index++;
             if (!valid) {
                 break;
             }
+            index++;
         }
 
-        if (!valid) {
+        if (!valid && index > 0) {
             // Rollback inserted index values
             for (var i = 0; i < index; i++) {
                 entityWrapper.getIndexes().get(i).removeLastValue();
