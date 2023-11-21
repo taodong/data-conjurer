@@ -2,6 +2,8 @@ package tao.dong.dataconjurer.engine.database.service;
 
 import jakarta.validation.constraints.NotNull;
 import tao.dong.dataconjurer.common.model.StringValueSupplier;
+import tao.dong.dataconjurer.common.model.TextValue;
+import tao.dong.dataconjurer.engine.database.model.MySQLEscapedValue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +39,7 @@ public class MySQLInsertStatementService implements InsertStatementService{
             queryBuilder
                     .append(INSERT_STATEMENT)
                     .append(SPACE.getDelimiter())
-                    .append(entity)
+                    .append(routeToStringMethod(entity).get())
                     .append(GROUP_START.getDelimiter())
                     .append(
                             joinValues(VALUE_DELIMITER.getDelimiter(),
@@ -68,5 +70,8 @@ public class MySQLInsertStatementService implements InsertStatementService{
         return IntStream.range(0, row.size()).filter(i -> row.get(i) == null).toArray();
     }
 
-
+    @Override
+    public TextValue routeToStringMethod(Object o) {
+        return new MySQLEscapedValue(o);
+    }
 }

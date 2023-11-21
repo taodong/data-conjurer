@@ -47,6 +47,6 @@ CREATE TABLE `order_item` (
     `product_id` INT UNSIGNED NOT NULL,
     `quantity` INT NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_order_item` FOREIGN KEY (`order_id`) REFERENCES `order_item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_order_item` FOREIGN KEY (`order_id`) REFERENCES `order_detail` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_product_item` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );

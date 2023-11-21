@@ -97,7 +97,7 @@ entities:
             max: 2
           - type: "range"
             min: 1
-            max: 9999
+            max: 999
       - name: "sku"
         type: "text"
         constraints:

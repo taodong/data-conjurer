@@ -1,6 +1,8 @@
 package tao.dong.dataconjurer.common.model;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -21,6 +23,7 @@ public class IndexedValue {
         }
     };
 
+    @Getter(AccessLevel.PACKAGE)
     private final LinkedHashSet<String> values = new LinkedHashSet<>();
     private final int[] indexOrders;
 

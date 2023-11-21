@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.model;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,6 +29,17 @@ class IndexedValueTest {
         indexes.addValue(List.of("A", "SX", "BI", "D", "E"));
         indexes.addValue(Arrays.asList("[_NULL_]", "XX", "YY", "1", "2"));
         assertEquals(expected, indexes.addValue(values));
+    }
+
+    @Test
+    void testRemoveLastValue() {
+        var indexes = new IndexedValue(new int[]{1, 2});
+        indexes.addValue(List.of("a", "b", "c", "d"));
+        assertEquals(1, indexes.getValues().size());
+        indexes.addValue(List.of("x", "y", "z", "a"));
+        indexes.removeLastValue();
+        assertEquals(1, indexes.getValues().size());
+        assertEquals("b<->c", indexes.getValues().iterator().next());
     }
 
 }
