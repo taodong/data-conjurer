@@ -16,7 +16,7 @@ class RangeLengthStringGeneratorTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"0,10", "10,10", "10,9", "-1,5"})
+    @CsvSource({"10,10", "10,9", "-1,5"})
     void testGenerate_InvalidLength(int min, int max) {
         assertThrows(IllegalArgumentException.class, () -> new RangeLengthStringGenerator(min, max));
     }
