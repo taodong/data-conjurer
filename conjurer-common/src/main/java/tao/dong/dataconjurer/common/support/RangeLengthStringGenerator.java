@@ -17,7 +17,7 @@ public final class RangeLengthStringGenerator extends RandomStringValueGenerator
         super(characterPredicates);
         this.minLength = minLengthInclude;
         this.maxLength = maxLengthExclude;
-        if (minLengthInclude <= 0 || maxLengthExclude <= minLengthInclude) {
+        if (minLengthInclude < 0 || maxLengthExclude <= minLengthInclude) {
             throw new IllegalArgumentException("Invalid random text length: [" + minLengthInclude + " , " + maxLengthExclude + ")");
         }
     }

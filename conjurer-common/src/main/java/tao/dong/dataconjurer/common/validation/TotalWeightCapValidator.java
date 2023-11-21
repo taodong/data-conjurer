@@ -4,14 +4,15 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import tao.dong.dataconjurer.common.model.PropertyInputControl;
 import tao.dong.dataconjurer.common.model.PropertyValueDistribution;
+import tao.dong.dataconjurer.common.support.DataHelper;
 
 import java.util.Objects;
 
 public class TotalWeightCapValidator implements ConstraintValidator<TotalWeightCap, PropertyInputControl> {
     @Override
     public boolean isValid(PropertyInputControl propertyInputControl, ConstraintValidatorContext constraintValidatorContext) {
-        double totalWeight = propertyInputControl.values()
-                .stream().filter(Objects::nonNull)
+        double totalWeight = DataHelper.streamNullableCollection(propertyInputControl.values())
+                .filter(Objects::nonNull)
                 .mapToDouble(PropertyValueDistribution::weight)
                 .sum();
 

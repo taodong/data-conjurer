@@ -1,0 +1,156 @@
+name: "orders"
+entities:
+  - name: "usr_user"
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "username"
+        type: "text"
+        idIndex: 2
+        constraints:
+          - type: size
+            min: 8
+            max: 20
+      - name: "first_name"
+        type: "text"
+        constraints:
+          - type: size
+            min: 2
+            max: 20
+      - name: "last_name"
+        type: "text"
+        constraints:
+          - type: size
+            min: 5
+            max: 20
+      - name: "created"
+        type: "datetime"
+        constraints:
+          - type: duration
+            start:
+              year: 2023
+              month: 3
+              day: 1
+            end:
+              year: 2023
+              month: 11
+              day: 10
+              hour: 14
+              minute: 5
+              second: 30
+      - name: "modified"
+        type: "datetime"
+  - name: "product_category"
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "name"
+        type: "text"
+        idIndex: 2
+        constraints:
+          - type: size
+            min: 2
+            max: 20
+      - name: "desc"
+        type: "text"
+        constraints:
+          - type: size
+            min: 0
+            max: 100
+      - name: "status"
+        type: "text"
+        constraints:
+          - type: size
+            min: 0
+            max: 20
+      - name: "modified"
+        type: "datetime"
+  - name: "product"
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "name"
+        type: "text"
+        idIndex: 2
+        constraints:
+          - type: size
+            min: 2
+            max: 20
+      - name: "desc"
+        type: "text"
+        constraints:
+          - type: size
+            min: 1
+            max: 100
+      - name: "category_id"
+        type: "sequence"
+        reference:
+          entity: "product_category"
+          property: "id"
+      - name: "price"
+        type: "number"
+        constraints:
+          - type: "precision"
+            max: 2
+          - type: "range"
+            min: 1
+            max: 9999
+      - name: "sku"
+        type: "text"
+        constraints:
+          - type: "length"
+            max: 10
+      - name: "modified"
+        type: "datetime"
+  - name: "order_detail"
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "user_id"
+        type: "sequence"
+        reference:
+          entity: "usr_user"
+          property: "id"
+      - name: "status"
+        type: "text"
+        constraints:
+          - type: size
+            min: 2
+            max: 20
+      - name: "created"
+        type: "datetime"
+        constraints:
+          - type: duration
+            start:
+              year: 2023
+              month: 3
+              day: 1
+      - name: "modified"
+        type: "datetime"
+  - name: "order_item"
+    properties:
+      - name: "id"
+        type: "sequence"
+        idIndex: 1
+      - name: "product_id"
+        type: "sequence"
+        idIndex: 2
+        reference:
+          entity: "product"
+          property: "id"
+      - name: "order_id"
+        type: "sequence"
+        idIndex: 2
+        reference:
+          entity: "order_detail"
+          property: "id"
+      - name: "quantity"
+        type: "number"
+        constraints:
+          - type: "range"
+            min: 1
+            max: 99
