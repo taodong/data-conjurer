@@ -29,14 +29,14 @@ class DataPlanTest {
         var nullData = new ArrayList<EntityData>();
         nullData.add(null);
         return Stream.of(
-          Arguments.of(new DataPlan(null, "abc", MYSQL, List.of(new EntityData("t1", 1L, null))), false, "Plan name is required"),
-          Arguments.of(new DataPlan(" ", "abc", MYSQL, List.of(new EntityData("t1", 1L, null))), false, "Plan name is required"),
-          Arguments.of(new DataPlan("afds", " ", MYSQL, List.of(new EntityData("t1", 1L, null))), false, "Schema is required"),
-          Arguments.of(new DataPlan("afds", null, MYSQL, List.of(new EntityData("t1", 1L, null))), false, "Schema is required"),
+          Arguments.of(new DataPlan(null, "abc", MYSQL, List.of(new EntityData("t1", 1L, null, null))), false, "Plan name is required"),
+          Arguments.of(new DataPlan(" ", "abc", MYSQL, List.of(new EntityData("t1", 1L, null, null))), false, "Plan name is required"),
+          Arguments.of(new DataPlan("afds", " ", MYSQL, List.of(new EntityData("t1", 1L, null, null))), false, "Schema is required"),
+          Arguments.of(new DataPlan("afds", null, MYSQL, List.of(new EntityData("t1", 1L, null, null))), false, "Schema is required"),
           Arguments.of(new DataPlan("afds", "fds", MYSQL, null), false, "Data must not be empty"),
           Arguments.of(new DataPlan("afds", "fds", MYSQL, Collections.emptyList()), false, "Data must not be empty"),
           Arguments.of(new DataPlan("afds", "fds", MYSQL, nullData), false, "data element can't be null"),
-          Arguments.of(new DataPlan("afds", "fds", MYSQL, List.of(new EntityData("t1", 1L, null))), true, null)
+          Arguments.of(new DataPlan("afds", "fds", MYSQL, List.of(new EntityData("t1", 1L, null, null))), true, null)
         );
     }
 

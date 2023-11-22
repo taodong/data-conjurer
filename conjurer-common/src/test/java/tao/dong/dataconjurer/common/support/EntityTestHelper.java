@@ -4,12 +4,14 @@ import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.model.EntityData;
+import tao.dong.dataconjurer.common.model.EntityEntry;
 import tao.dong.dataconjurer.common.model.EntityOutputControl;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.PropertyInputControl;
 import tao.dong.dataconjurer.common.model.PropertyOutputControl;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.UnfixedSize;
@@ -61,7 +63,7 @@ public class EntityTestHelper {
         data.put(wrapper1.getId(), wrapper1);
         DataHelper.appendToSetValueInMap(idMap, wrapper1.getEntityName(), wrapper1.getId());
 
-        var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L, null),
+        var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L, null, null),
                 new EntityOutputControl("t2", Set.of(
                         new PropertyOutputControl("t2p0", false, "id"),
                         new PropertyOutputControl("t2p1", true, null)
@@ -69,11 +71,11 @@ public class EntityTestHelper {
         data.put(wrapper2.getId(), wrapper2);
         DataHelper.appendToSetValueInMap(idMap, wrapper2.getEntityName(), wrapper2.getId());
 
-        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null));
+        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null, null));
         data.put(wrapper3.getId(), wrapper3);
         DataHelper.appendToSetValueInMap(idMap, wrapper3.getEntityName(), wrapper3.getId());
 
-        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null));
+        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null, null));
         data.put(wrapper4.getId(), wrapper4);
         DataHelper.appendToSetValueInMap(idMap, wrapper4.getEntityName(), wrapper4.getId());
     }
@@ -121,11 +123,11 @@ public class EntityTestHelper {
 
     public EntityData createSimpleData(String entityName, Long count) {
         return new EntityData(entityName == null ? "t1" : entityName,
-                count == null ? 10L : count, null);
+                count == null ? 10L : count, null, null);
     }
 
     public EntityData createSimpleDataWithId(String entityName, Long count, int id) {
-        return new EntityData(entityName == null ? "t1" : entityName, id, count == null ? 10L : count, null);
+        return new EntityData(entityName == null ? "t1" : entityName, id, count == null ? 10L : count, null, null);
     }
 
     public DataEntity createEntityT5() {
@@ -138,4 +140,47 @@ public class EntityTestHelper {
                 )
         );
     }
+
+    public static TestEntityDataBuilder entityDataBuilder() {
+        return new TestEntityDataBuilder();
+    }
+
+    @SuppressWarnings("unused")
+    public static class TestEntityDataBuilder {
+        private String entity = "test";
+        private int dataId = 0;
+        private Long count = 1L;
+        private Set<PropertyInputControl> properties = null;
+        private EntityEntry entries = null;
+
+        public TestEntityDataBuilder entity(String entity) {
+            this.entity = entity;
+            return this;
+        }
+
+        public TestEntityDataBuilder dataId(int dataId) {
+            this.dataId = dataId;
+            return this;
+        }
+
+        public TestEntityDataBuilder count(long count) {
+            this.count = count;
+            return this;
+        }
+
+        public TestEntityDataBuilder properties(Set<PropertyInputControl> properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public TestEntityDataBuilder entries(EntityEntry entries) {
+            this.entries = entries;
+            return this;
+        }
+
+        public EntityData build() {
+            return new EntityData(this.entity, this.dataId, this.count, this.properties, this.entries);
+        }
+    }
+
 }

@@ -26,7 +26,7 @@ class DataGenerateTaskTest {
     void testCall_GenerateData() {
         var countDownLatch = new CountDownLatch(1);
         var config = DataGenerateConfig.builder().build();
-        var data = new EntityData("t1", 10L, null);
+        var data = new EntityData("t1", 10L, null, null);
         var wrapper = createTestEntityWrapper(data);
         TypedValue ref1 = new TypedValue(SEQUENCE);
         for (long l = 1L; l < 6L; l++) {
