@@ -60,7 +60,7 @@ class RandomNumberGeneratorTest {
         var top = new BigDecimal(max);
         for (var i = 0; i < 10; i++) {
             var result = generator.generate();
-            assertTrue(bottom.compareTo(result) <= 0 && top.compareTo(result) > 0);
+            assertTrue(bottom.compareTo(result) <= 0 && top.compareTo(result) > 0, "Generated value " + result + " isn't between -503L and 22L");
         }
     }
 }

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -46,6 +47,7 @@ public class EntityWrapper {
     private final List<IndexedValue> indexes = new ArrayList<>();
     private final Set<Integer> hiddenIndex = new HashSet<>();
     private final Map<String, String> aliases = new HashMap<>();
+    private final Map<String, String> refStrategy = new HashMap<>();
     private String msg;
 
     public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data) {
@@ -107,10 +109,16 @@ public class EntityWrapper {
                 hiddenIndex.add(propIndex);
             }
 
+            // Record reference strategy
+            var inputControl = propInputs.get(property.name());
+            if (inputControl != null && inputControl.referenceStrategy() != null) {
+                refStrategy.put(property.name(), inputControl.referenceStrategy());
+            }
+
             // Create generators
             properties.add(property.name());
             propertyTypes.add(property.type());
-            generators.put(property.name(), matchValueGenerator(property, propInputs.get(property.name())));
+            generators.put(property.name(), matchValueGenerator(property, inputControl));
             propIndex++;
         }
     }

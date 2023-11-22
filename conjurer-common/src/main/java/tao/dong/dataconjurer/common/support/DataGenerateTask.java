@@ -7,6 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.Reference;
+import tao.dong.dataconjurer.common.model.ReferenceStrategy;
 import tao.dong.dataconjurer.common.model.TypedValue;
 
 import java.util.ArrayList;
@@ -106,7 +107,8 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                     throw new DataGenerateException(REFERENCE,
                                                     String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
                 }
-                var indexGen = referenceIndexTracker.computeIfAbsent(propertyName, k -> new RandomIndexGenerator(referenced.get(reference).getOrderedValues().size()));
+                var indexGen = referenceIndexTracker.computeIfAbsent(propertyName,
+                        k -> createReferenceIndexGenerator(entityWrapper.getRefStrategy().get(propertyName), referenced.get(reference).getOrderedValues().size()));
                 val = referenced.get(reference).getOrderedValues().get(indexGen.generate());
             } else {
                 val = entityWrapper.getGenerators().get(propertyName).generate();
@@ -118,6 +120,14 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         }
 
         return dataRow;
+    }
+
+    protected IndexValueGenerator createReferenceIndexGenerator(String strategy, int size) {
+        var refStrategy = ReferenceStrategy.getByName(strategy);
+        return switch (refStrategy) {
+            case RANDOM -> new RandomIndexGenerator(size);
+            case LOOP -> new LoopIndexGenerator(size);
+        };
     }
 
     private boolean isReferenceReady(Reference key) {
