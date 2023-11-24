@@ -1,0 +1,83 @@
+plan:
+  name: "simple"
+  schema: "orders"
+  data:
+    - entity: "usr_user"
+      count: 10
+    - entity: "product_category"
+      count: 5
+      properties:
+        - name: "desc"
+          values:
+            - values:
+                - "<?null?>"
+              weight: 0.7
+        - name: "status"
+          defaultValue: "ACTIVE"
+      entries:
+        properties:
+          - "name"
+        values:
+          - ["Electronics"]
+          - ["Computers"]
+          - ["Smart Home"]
+          - ["Home Garden & Tools"]
+          - ["Pet Supplies"]
+          - ["Food & Grocery"]
+    - entity: "product"
+      count: 10
+      entries:
+        properties:
+          - "name"
+          - "desc"
+          - "sku"
+          - "category_id"
+        values:
+          - ["tv_1", "desc_1", "elect00001", "1"]
+          - ["tv_2", "desc_2", "elect00002", "1"]
+          - ["hp_win", "a computer", "comp000001", "2"]
+    - entity: "order_detail"
+      count: 20
+      properties:
+        - name: "status"
+          values:
+            - values:
+                - "CLOSED"
+              weight: 0.1
+            - values:
+                - "RETURNED"
+              weight: 0.1
+            - values:
+                - "SHIPPING"
+              weight: 0.2
+          defaultValue: "PROCESSING"
+    - entity: "order_item"
+      count: 50
+      properties:
+        - name: "quantity"
+          values:
+            - values:
+                - 1
+              weight: 0.8
+output:
+  entities:
+    - name: "usr_user"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "product_category"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "product"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "order_detail"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "order_item"
+      properties:
+        - name: "modified"
+          hide: true

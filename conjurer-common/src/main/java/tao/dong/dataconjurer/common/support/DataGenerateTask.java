@@ -55,7 +55,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         var recordNum = 0L;
         var collision = 0;
         while (recordNum < entityWrapper.getCount() && collision < config.getMaxIndexCollision()) {
-            var dataRow = generateRecord(referenceIndexTracker);
+            var dataRow = generateRecord(referenceIndexTracker, recordNum);
             if (isValidRecord(dataRow)) {
                 entityWrapper.getValues().add(dataRow);
                 recordNum++;
@@ -95,12 +95,14 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         return valid;
     }
 
-    private List<Object> generateRecord(Map<String, IndexValueGenerator> referenceIndexTracker) {
+    private List<Object> generateRecord(Map<String, IndexValueGenerator> referenceIndexTracker, long recordNum) {
 
         List<Object> dataRow = new ArrayList<>(entityWrapper.getProperties().size());
         for (String propertyName : entityWrapper.getProperties()) {
             Object val;
-            if (entityWrapper.getReferences().containsKey(propertyName)) {
+            if (entityWrapper.getEntries().containsKey(propertyName) && entityWrapper.getEntries().get(propertyName).size() > recordNum) {
+              val = entityWrapper.getEntries().get(propertyName).get((int)recordNum);
+            } else if (entityWrapper.getReferences().containsKey(propertyName)) {
                 var reference = entityWrapper.getReferences().get(propertyName);
                 var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);
                 if (Boolean.FALSE.equals(ready)) {

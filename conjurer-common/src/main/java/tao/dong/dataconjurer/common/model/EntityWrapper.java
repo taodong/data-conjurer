@@ -1,12 +1,15 @@
 package tao.dong.dataconjurer.common.model;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
+import tao.dong.dataconjurer.common.support.StringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
 import tao.dong.dataconjurer.common.support.WeightedValueGenerator;
@@ -16,11 +19,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Getter
@@ -48,7 +51,11 @@ public class EntityWrapper {
     private final Set<Integer> hiddenIndex = new HashSet<>();
     private final Map<String, String> aliases = new HashMap<>();
     private final Map<String, String> refStrategy = new HashMap<>();
+    private final Map<String, List<Object>> entries = new HashMap<>();
     private String msg;
+
+    @Getter(AccessLevel.PRIVATE)
+    private final Map<String, PropertyType> typeMap = new HashMap<>();
 
     public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data) {
         this(entity, data, null);
@@ -66,7 +73,32 @@ public class EntityWrapper {
             processOutputControl(outputControl, hiddenProps);
         }
         processProperties(indexedProps, hiddenProps, propInputs);
+        if (data.entries() != null && CollectionUtils.isNotEmpty(data.entries().values())) {
+            saveEntries(data.entries());
+        }
         createIndex(indexedProps);
+    }
+
+    void saveEntries(@NotNull EntityEntry entry) {
+        var propertyValueConverter = new DefaultStringPropertyValueConverter();
+
+        var ps = entry.properties();
+        var vals = entry.values();
+
+        for (var rc : vals) {
+            try {
+                var converted = convertEntryVal(propertyValueConverter, ps, rc);
+                for (var i = 0; i < converted.size(); i++) {
+                    entries.computeIfAbsent(ps.get(i), k -> new ArrayList<>()).add(converted.get(i));
+                }
+            } catch (Exception e) {
+                LOG.warn("Failed to process entity entry value, record skipped", e);
+            }
+        }
+    }
+
+    List<Object> convertEntryVal(StringPropertyValueConverter<Object> converter, List<String> props, List<String> rc) {
+        return IntStream.range(0, props.size()).mapToObj(i -> converter.convert(rc.get(i), typeMap.get(props.get(i)))).toList();
     }
 
     void createIndex(Map<Integer, Set<Integer>> indexedProps) {
@@ -118,6 +150,7 @@ public class EntityWrapper {
             // Create generators
             properties.add(property.name());
             propertyTypes.add(property.type());
+            typeMap.put(property.name(), property.type());
             generators.put(property.name(), matchValueGenerator(property, inputControl));
             propIndex++;
         }
