@@ -22,7 +22,7 @@ public class RandomNumberGenerator implements ValueGenerator<BigDecimal> {
     @Override
     public BigDecimal generate() {
         var strVal = isDoubleType() ?
-                String.valueOf(RANDOM_GENERATOR.nextLong(minInclusive, maxExclusive)) + '.' + RANDOM_GENERATOR.nextInt((int)Math.pow(10D, precision)) :
+                String.valueOf(RANDOM_GENERATOR.nextLong(minInclusive + 1, maxExclusive)) + '.' + RANDOM_GENERATOR.nextInt((int)Math.pow(10D, precision)) :
                 String.valueOf(RANDOM_GENERATOR.nextLong(minInclusive, maxExclusive));
         return new BigDecimal(strVal);
     }
