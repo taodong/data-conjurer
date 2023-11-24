@@ -166,19 +166,27 @@ public class EntityWrapper {
                 var currentMin = 0.0;
                 for (var dist : input.values()) {
                     var currentMax = currentMin + dist.weight();
-                    providedValues.add(
-                            new WeightedValue(
-                                    new ElectedValueSelector(
-                                            new HashSet<>(propertyValueConverter.convertValues(dist.values(), property.type()))
-                                    ),
-                                    new RatioRange(currentMin, currentMax)
-                            )
-                    );
-                    currentMin = currentMax;
+                    var converted = propertyValueConverter.convertValues(dist.values(), property.type());
+                    if (!converted.isEmpty()) {
+                        providedValues.add(
+                                new WeightedValue(
+                                        new ElectedValueSelector(new HashSet<>(converted)),
+                                        new RatioRange(currentMin, currentMax)
+                                )
+                        );
+                        currentMin = currentMax;
+                    } else {
+                        LOG.warn("Failed to parse any given value. Skip weighted value generation for {}.{} with weight {}", getEntityName(), property.name(), dist.weight());
+                    }
                 }
             }
             if (input.defaultValue() != null) {
-                fallbackGenerator = new ElectedValueSelector(Set.of(propertyValueConverter.convert(input.defaultValue(), property.type())));
+                var converted = propertyValueConverter.convert(input.defaultValue(), property.type());
+                if (converted instanceof ConvertError ce) {
+                    LOG.warn("Failed to parse default value {} for {}.{}. Ignored. {}", input.defaultValue(), getEntityName(), property.name(), ce.message());
+                } else {
+                    fallbackGenerator = new ElectedValueSelector(Set.of(converted));
+                }
             }
             if (!providedValues.isEmpty()) {
                 return new WeightedValueGenerator(property.type(), providedValues, fallbackGenerator);
