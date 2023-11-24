@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -102,6 +103,20 @@ class EntityWrapperTest {
     @MethodSource
     void testEquals(EntityWrapper obj1, EntityWrapper obj2, boolean expected) {
         assertEquals(expected, obj1.equals(obj2));
+    }
+
+    @Test
+    void testProcessEntries() {
+        var entity = TEST_HELPER.createEntityT1();
+        var data = EntityTestHelper.entityDataBuilder()
+                .entity("t1")
+                .entries(
+                        new EntityEntry(List.of("t1p2", "t1p3"), List.of(List.of("1", "test1"), List.of("1", "test2"), List.of("abc", "abc")))
+                )
+                .build();
+        var wrapper = new EntityWrapper(entity, data, null);
+        assertEquals(2, wrapper.getEntries().size());
+        assertEquals(2, wrapper.getEntries().get("t1p2").size());
     }
 
 }

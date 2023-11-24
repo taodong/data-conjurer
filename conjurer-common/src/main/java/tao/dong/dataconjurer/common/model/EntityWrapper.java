@@ -86,13 +86,14 @@ public class EntityWrapper {
         var vals = entry.values();
 
         for (var rc : vals) {
-            try {
-                var converted = convertEntryVal(propertyValueConverter, ps, rc);
-                for (var i = 0; i < converted.size(); i++) {
-                    entries.computeIfAbsent(ps.get(i), k -> new ArrayList<>()).add(converted.get(i));
-                }
-            } catch (Exception e) {
-                LOG.warn("Failed to process entity entry value, record skipped", e);
+            var converted = convertEntryVal(propertyValueConverter, ps, rc);
+            var error = converted.stream().filter(v -> v instanceof ConvertError).findFirst();
+            if (error.isPresent()) {
+                LOG.warn("Failed to process entity entry value, record skipped: " + ((ConvertError)(error.get())).message());
+                break;
+            }
+            for (var i = 0; i < converted.size(); i++) {
+                entries.computeIfAbsent(ps.get(i), k -> new ArrayList<>()).add(converted.get(i));
             }
         }
     }
