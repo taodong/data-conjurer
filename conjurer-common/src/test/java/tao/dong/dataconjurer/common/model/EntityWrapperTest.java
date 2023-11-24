@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class EntityWrapperTest {
 
@@ -117,6 +118,74 @@ class EntityWrapperTest {
         var wrapper = new EntityWrapper(entity, data, null);
         assertEquals(2, wrapper.getEntries().size());
         assertEquals(2, wrapper.getEntries().get("t1p2").size());
+    }
+
+    @Test
+    void testHandleDefaultValue() {
+        var entity = TEST_HELPER.createEntityT1();
+        var data = EntityTestHelper.entityDataBuilder()
+                .entity("t1")
+                .properties(
+                        Set.of(
+                                new PropertyInputControl("t1p3", null, "abc", null)
+                        )
+                )
+                .build();
+        var wrapper = new EntityWrapper(entity, data, null);
+        for (var i = 0; i < 10; i++) {
+            assertEquals("abc", wrapper.getGenerators().get("t1p3").generate());
+        }
+    }
+
+    @Test
+    void testHandleDefaultValue_ParseFailure() {
+        var entity = TEST_HELPER.createEntityT1();
+        var data = EntityTestHelper.entityDataBuilder()
+                .entity("t1")
+                .properties(
+                        Set.of(
+                                new PropertyInputControl("t1p2", null, "abc", null)
+                        )
+                )
+                .build();
+        var wrapper = new EntityWrapper(entity, data, null);
+        assertNotEquals("abc", wrapper.getGenerators().get("t1p2").generate());
+    }
+
+    @Test
+    void testHandleWeightedValue() {
+        var entity = TEST_HELPER.createEntityT1();
+        var data = EntityTestHelper.entityDataBuilder()
+                .entity("t1")
+                .properties(
+                        Set.of(
+                                new PropertyInputControl("t1p3", List.of(
+                                        new PropertyValueDistribution(Set.of("abc"), 1.0)
+                                ), null, null)
+                        )
+                )
+                .build();
+        var wrapper = new EntityWrapper(entity, data, null);
+        for (var i = 0; i < 10; i++) {
+            assertEquals("abc", wrapper.getGenerators().get("t1p3").generate());
+        }
+    }
+
+    @Test
+    void testHandleWeightedValue_ParseFailure() {
+        var entity = TEST_HELPER.createEntityT1();
+        var data = EntityTestHelper.entityDataBuilder()
+                .entity("t1")
+                .properties(
+                        Set.of(
+                                new PropertyInputControl("t1p2", List.of(
+                                        new PropertyValueDistribution(Set.of("abc"), 1.0)
+                                ), null, null)
+                        )
+                )
+                .build();
+        var wrapper = new EntityWrapper(entity, data, null);
+        assertNotEquals("abc", wrapper.getGenerators().get("t1p2").generate());
     }
 
 }
