@@ -2,6 +2,7 @@ package tao.dong.dataconjurer.common.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
@@ -34,6 +35,7 @@ import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 
 class DataGenerateServiceTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
+    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
 
     @Test
     void testGenerateData() {
@@ -168,7 +170,7 @@ class DataGenerateServiceTest {
                         new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0"))
                 )
         );
-        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null));
+        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderApi);
         data.put(wrapper5.getId(), wrapper5);
         DataHelper.appendToSetValueInMap(idMap, wrapper5.getEntityName(), wrapper5.getId());
     }

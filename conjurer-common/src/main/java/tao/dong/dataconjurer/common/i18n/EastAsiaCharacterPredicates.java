@@ -1,4 +1,4 @@
-package tao.dong.dataconjurer.common.i18n.characters;
+package tao.dong.dataconjurer.common.i18n;
 
 public enum EastAsiaCharacterPredicates implements UnicodeCharacterPredicate{
 

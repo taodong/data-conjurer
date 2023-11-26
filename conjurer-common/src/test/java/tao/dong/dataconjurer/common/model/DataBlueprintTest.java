@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.model;
 
 import org.junit.jupiter.api.Test;
+import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
@@ -10,9 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 class DataBlueprintTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
+    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
 
     @Test
     void testSortEntityByDependencies() {
@@ -66,7 +69,7 @@ class DataBlueprintTest {
         Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         var wrapperId = new EntityWrapperId("t3", 1);
-        data.put(wrapperId, new EntityWrapper(TEST_HELPER.createEntityT3(), TEST_HELPER.createSimpleDataWithId("t3", 10L, 1)));
+        data.put(wrapperId, new EntityWrapper(TEST_HELPER.createEntityT3(), TEST_HELPER.createSimpleDataWithId("t3", 10L, 1), null, dataProviderApi));
         DataHelper.appendToSetValueInMap(idMap, "t3", wrapperId);
         TEST_HELPER.createSimpleBlueprintDataWithReference(data, idMap);
         var blueprint = new DataBlueprint();

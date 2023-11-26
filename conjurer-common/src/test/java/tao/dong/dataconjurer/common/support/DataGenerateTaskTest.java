@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import org.junit.jupiter.api.Test;
+import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityProperty;
@@ -17,10 +18,12 @@ import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.mock;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
 class DataGenerateTaskTest {
+    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
 
     @Test
     void testCall_GenerateData() {
@@ -56,7 +59,7 @@ class DataGenerateTaskTest {
            )
         );
 
-        var wrapper =  new EntityWrapper(entity, data);
+        var wrapper =  new EntityWrapper(entity, data, null, dataProviderApi);
         wrapper.createReferenced("p1");
         return wrapper;
     }

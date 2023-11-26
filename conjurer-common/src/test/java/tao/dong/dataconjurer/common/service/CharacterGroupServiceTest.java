@@ -18,9 +18,9 @@ import static org.apache.commons.text.CharacterPredicates.DIGITS;
 import static org.apache.commons.text.CharacterPredicates.LETTERS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tao.dong.dataconjurer.common.i18n.characters.EastAsiaCharacterPredicates.CJK_A;
-import static tao.dong.dataconjurer.common.i18n.characters.EastAsiaCharacterPredicates.HIRAGANA;
-import static tao.dong.dataconjurer.common.i18n.characters.EastAsiaCharacterPredicates.KATAKANA;
+import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.CJK_A;
+import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.HIRAGANA;
+import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.KATAKANA;
 
 class CharacterGroupServiceTest {
 

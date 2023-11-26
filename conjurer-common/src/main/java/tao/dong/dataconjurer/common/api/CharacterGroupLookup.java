@@ -1,4 +1,4 @@
-package tao.dong.dataconjurer.common.i18n.characters;
+package tao.dong.dataconjurer.common.api;
 
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.text.CharacterPredicate;

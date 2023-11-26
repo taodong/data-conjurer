@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
@@ -57,11 +58,7 @@ public class EntityWrapper {
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, PropertyType> typeMap = new HashMap<>();
 
-    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data) {
-        this(entity, data, null);
-    }
-
-    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl) {
+    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi) {
         this.entity = entity;
         this.count = data.count();
         this.id = new EntityWrapperId(entity.name(), data.dataId());

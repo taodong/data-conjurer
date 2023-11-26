@@ -1,4 +1,4 @@
-package tao.dong.dataconjurer.common.i18n.characters;
+package tao.dong.dataconjurer.common.i18n;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CharacterPredicate;

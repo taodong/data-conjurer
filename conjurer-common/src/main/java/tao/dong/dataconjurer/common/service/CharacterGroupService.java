@@ -3,7 +3,7 @@ package tao.dong.dataconjurer.common.service;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CharacterPredicate;
-import tao.dong.dataconjurer.common.i18n.characters.CharacterGroupLookup;
+import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.support.DataHelper;
 
 import java.util.Collection;
@@ -17,9 +17,9 @@ import static org.apache.commons.text.CharacterPredicates.ASCII_LOWERCASE_LETTER
 import static org.apache.commons.text.CharacterPredicates.ASCII_UPPERCASE_LETTERS;
 import static org.apache.commons.text.CharacterPredicates.DIGITS;
 import static org.apache.commons.text.CharacterPredicates.LETTERS;
-import static tao.dong.dataconjurer.common.i18n.characters.EastAsiaCharacterPredicates.CJK_A;
-import static tao.dong.dataconjurer.common.i18n.characters.EastAsiaCharacterPredicates.HIRAGANA;
-import static tao.dong.dataconjurer.common.i18n.characters.EastAsiaCharacterPredicates.KATAKANA;
+import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.CJK_A;
+import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.HIRAGANA;
+import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.KATAKANA;
 
 public class CharacterGroupService implements CharacterGroupLookup {
     private final static Map<String, CharacterPredicate> CHARACTER_PREDICATE_MAP = Map.ofEntries(

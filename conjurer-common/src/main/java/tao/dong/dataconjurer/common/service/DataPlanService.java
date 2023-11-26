@@ -3,13 +3,13 @@ package tao.dong.dataconjurer.common.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.common.model.EntityData;
-import tao.dong.dataconjurer.common.model.EntityDataOutput;
 import tao.dong.dataconjurer.common.model.EntityOutputControl;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
@@ -26,6 +26,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class DataPlanService {
+    protected final V1DataProviderApi dataProviderApi;
+
+    public DataPlanService(V1DataProviderApi dataProviderApi) {
+        this.dataProviderApi = dataProviderApi;
+    }
+
     public DataBlueprint createDataBlueprint(DataSchema schema, DataGenerateConfig config, DataOutputControl outputControl, DataPlan... dataPlans) {
         var blueprint = new DataBlueprint();
         var entityDefinitions = extraEntityDefinitions(schema);
@@ -126,7 +132,7 @@ public class DataPlanService {
     }
 
     protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData, EntityOutputControl control) {
-        return new EntityWrapper(dataEntity, entityData, control);
+        return new EntityWrapper(dataEntity, entityData, control, dataProviderApi);
     }
 
 }

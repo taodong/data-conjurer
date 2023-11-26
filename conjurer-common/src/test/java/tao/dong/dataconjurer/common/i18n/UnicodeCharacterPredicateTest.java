@@ -1,4 +1,4 @@
-package tao.dong.dataconjurer.common.i18n.characters;
+package tao.dong.dataconjurer.common.i18n;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
