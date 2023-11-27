@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
@@ -14,9 +15,11 @@ import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
 import tao.dong.dataconjurer.common.model.PropertyInputControl;
 import tao.dong.dataconjurer.common.model.PropertyOutputControl;
+import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.UnfixedSize;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -142,6 +145,48 @@ public class EntityTestHelper {
                         new EntityProperty("t1p3", TEXT, 0, List.of(new UnfixedSize(15L)), null)
                 )
         );
+    }
+
+    public static TestEntityPropertyBuilder entityPropertyBuilder() {
+        return new TestEntityPropertyBuilder();
+    }
+
+    public static class TestEntityPropertyBuilder {
+        private String name = "test";
+        private PropertyType type = SEQUENCE;
+        private int idIndex = 0;
+        private List<Constraint<?>> constraints = new ArrayList<>();
+        private Reference reference = null;
+
+        public TestEntityPropertyBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public TestEntityPropertyBuilder type(PropertyType type) {
+            this.type = type;
+            return this;
+        }
+
+        public TestEntityPropertyBuilder idIndex(int idIndex) {
+            this.idIndex = idIndex;
+            return this;
+        }
+
+        public TestEntityPropertyBuilder constraints(List<Constraint<?>> constraints) {
+            this.constraints = constraints;
+            return this;
+        }
+
+        public TestEntityPropertyBuilder reference(Reference reference) {
+            this.reference = reference;
+            return this;
+        }
+
+        public EntityProperty build() {
+            return new EntityProperty(name, type, idIndex, constraints, reference);
+        }
+
     }
 
     public static TestEntityDataBuilder entityDataBuilder() {

@@ -157,6 +157,9 @@ public class EntityWrapper {
     }
 
     protected ValueGenerator<?> matchValueGenerator(EntityProperty property, PropertyInputControl input) {
+        if (input != null && CollectionUtils.isNotEmpty(input.constraints())) {
+            property = property.addConstraints(input.constraints());
+        }
         var fallbackGenerator = matchFallbackValueGenerator(property);
         if (input != null) {
             var propertyValueConverter = new DefaultStringPropertyValueConverter();

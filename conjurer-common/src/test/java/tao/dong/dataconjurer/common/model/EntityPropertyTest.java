@@ -7,7 +7,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +42,22 @@ class EntityPropertyTest {
     void testValidate(EntityProperty property, boolean passed) {
         var violations = validator.validate(property);
         assertEquals(passed, violations.isEmpty());
+    }
+
+    private static Stream<Arguments> testAddConstraints() {
+        return Stream.of(
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().build(), Collections.emptyList(), 0),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().build(), List.of(new Length(1L)), 1),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().constraints(List.of(new Length(2L))).build(), List.of(new Length(1L)), 2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAddConstraints(EntityProperty property, List<Constraint<?>> extra, int expected) {
+        var cloned = property.addConstraints(extra);
+        assertEquals(property.name(), cloned.name());
+        assertEquals(expected, cloned.constraints().size());
     }
 
 }
