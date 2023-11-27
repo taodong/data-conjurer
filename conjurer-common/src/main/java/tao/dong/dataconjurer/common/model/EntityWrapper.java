@@ -57,8 +57,10 @@ public class EntityWrapper {
 
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, PropertyType> typeMap = new HashMap<>();
+    protected final V1DataProviderApi dataProviderApi;
 
     public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi) {
+        this.dataProviderApi = dataProviderApi;
         this.entity = entity;
         this.count = data.count();
         this.id = new EntityWrapperId(entity.name(), data.dataId());
@@ -195,11 +197,11 @@ public class EntityWrapper {
     protected ValueGenerator<?> matchFallbackValueGenerator(EntityProperty property) {
         var typedValueGenerator = new TypedValueGenerator() {
             @Override
-            public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property) {
-                return TypedValueGenerator.super.matchDefaultGeneratorByType(property);
+            public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, V1DataProviderApi dataProvider) {
+                return TypedValueGenerator.super.matchDefaultGeneratorByType(property, dataProvider);
             }
         };
-        return typedValueGenerator.matchDefaultGeneratorByType(property);
+        return typedValueGenerator.matchDefaultGeneratorByType(property, dataProviderApi);
     }
 
     public int getStatus() {

@@ -10,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = UnfixedSize.class, name = "size"),
         @JsonSubTypes.Type(value = Precision.class, name = "precision"),
         @JsonSubTypes.Type(value = NumberRange.class, name="range"),
-        @JsonSubTypes.Type(value = Duration.class, name="duration")
+        @JsonSubTypes.Type(value = Duration.class, name="duration"),
+        @JsonSubTypes.Type(value = CharacterGroup.class, name="char_group")
 })
 public interface Constraint<T> {
     boolean isMet(T val);

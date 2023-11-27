@@ -54,10 +54,10 @@ class EntityDataTest {
                 new PropertyInputControl("t1p0", List.of(
                         new PropertyValueDistribution(Set.of("v1"), 0.9),
                         new PropertyValueDistribution(Set.of("v2", "v3"), 0.2)
-                ), null, null),
+                ), null, null, null),
                 new PropertyInputControl("t1p1", List.of(
                         new PropertyValueDistribution(Set.of("v4"), 0.9)
-                ), null, null)
+                ), null, null, null)
         ), null);
         var violations = validator.validate(entityData);
         assertEquals(1, violations.size());

@@ -10,7 +10,8 @@ public record PropertyInputControl(
         @NotBlank(message = "Property name is required")String name,
         @Valid List<PropertyValueDistribution> values,
         String defaultValue,
-        String referenceStrategy
+        String referenceStrategy,
+        List<Constraint<?>> constraints
 ) {
     @Override
     public boolean equals(Object obj) {

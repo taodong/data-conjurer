@@ -9,8 +9,8 @@ class PropertyInputControlTest {
 
     @Test
     void testEquals() {
-        var pic1 = new PropertyInputControl("p1", null, "default1", "random");
-        var pic2 = new PropertyInputControl("p1", null, "default2", "loop");
+        var pic1 = new PropertyInputControl("p1", null, "default1", "random", null);
+        var pic2 = new PropertyInputControl("p1", null, "default2", "loop", null);
         assertEquals(pic1, pic2);
     }
 }

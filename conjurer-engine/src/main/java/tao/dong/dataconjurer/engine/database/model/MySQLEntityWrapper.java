@@ -19,6 +19,6 @@ public class MySQLEntityWrapper extends EntityWrapper {
     @Override
     protected ValueGenerator<?> matchFallbackValueGenerator(EntityProperty property) {
         TypedValueGenerator typedValueGenerator = new MySQLTypedValueGenerator();
-        return typedValueGenerator.matchDefaultGeneratorByType(property);
+        return typedValueGenerator.matchDefaultGeneratorByType(property, dataProviderApi);
     }
 }

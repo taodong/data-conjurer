@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.CharacterPredicate;
 import org.apache.commons.text.RandomStringGenerator;
 
@@ -13,7 +14,7 @@ public abstract sealed class RandomStringValueGenerator implements ValueGenerato
 
     protected RandomStringValueGenerator(CharacterPredicate... characterPredicates) {
         this.generator = new RandomStringGenerator.Builder()
-                .filteredBy(characterPredicates)
+                .filteredBy(ArrayUtils.isEmpty(characterPredicates) ? DEFAULT_CHARSET : characterPredicates)
                 .build();
     }
 }

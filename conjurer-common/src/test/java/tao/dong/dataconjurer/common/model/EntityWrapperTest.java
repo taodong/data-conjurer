@@ -130,7 +130,7 @@ class EntityWrapperTest {
                 .entity("t1")
                 .properties(
                         Set.of(
-                                new PropertyInputControl("t1p3", null, "abc", null)
+                                new PropertyInputControl("t1p3", null, "abc", null, null)
                         )
                 )
                 .build();
@@ -147,7 +147,7 @@ class EntityWrapperTest {
                 .entity("t1")
                 .properties(
                         Set.of(
-                                new PropertyInputControl("t1p2", null, "abc", null)
+                                new PropertyInputControl("t1p2", null, "abc", null, null)
                         )
                 )
                 .build();
@@ -164,7 +164,7 @@ class EntityWrapperTest {
                         Set.of(
                                 new PropertyInputControl("t1p3", List.of(
                                         new PropertyValueDistribution(Set.of("abc"), 1.0)
-                                ), null, null)
+                                ), null, null, null)
                         )
                 )
                 .build();
@@ -183,7 +183,7 @@ class EntityWrapperTest {
                         Set.of(
                                 new PropertyInputControl("t1p2", List.of(
                                         new PropertyValueDistribution(Set.of("abc"), 1.0)
-                                ), null, null)
+                                ), null, null, null)
                         )
                 )
                 .build();
