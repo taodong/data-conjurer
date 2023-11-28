@@ -15,13 +15,11 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.CHAR_GROUP;
 import static tao.dong.dataconjurer.common.model.ConstraintType.LENGTH;
 import static tao.dong.dataconjurer.common.model.ConstraintType.SIZE;
 
-public class FormattedTextGenerator extends ValueGeneratorDecorator<String> {
+public class FormattedTextGenerator extends StringValueGeneratorDecorator {
     private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(LENGTH, SIZE, CHAR_GROUP);
-    protected final CharacterGroupLookup characterGroupLookup;
 
     public FormattedTextGenerator(Set<Constraint<?>> constraints, CharacterGroupLookup characterGroupLookup) {
-        super(constraints);
-        this.characterGroupLookup = characterGroupLookup;
+        super(constraints, characterGroupLookup);
     }
 
     @Override

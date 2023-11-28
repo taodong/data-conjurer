@@ -16,12 +16,23 @@ public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
     @Getter(AccessLevel.PACKAGE)
     protected final ValueGenerator<T> generator;
 
+    /**
+     * Short circuit for another abstract child only
+     */
+    protected ValueGeneratorDecorator(ValueGenerator<T> generator) {
+        this.generator = generator;
+    }
+
     protected ValueGeneratorDecorator(Set<Constraint<?>> constraints) {
+        this.generator = createGeneratorByConstraints(constraints);
+    }
+
+    protected ValueGenerator<T> createGeneratorByConstraints(Set<Constraint<?>> constraints) {
         var qualified = filterConstraints(constraints);
         if (!qualified.isEmpty()) {
-            generator = createGenerator(qualified);
+            return createGenerator(qualified);
         } else {
-            generator = getDefaultGenerator();
+            return getDefaultGenerator();
         }
     }
 

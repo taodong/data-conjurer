@@ -1,17 +1,19 @@
 package tao.dong.dataconjurer.common.support;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
+import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.Length;
 import tao.dong.dataconjurer.common.model.Precision;
 import tao.dong.dataconjurer.common.model.UnfixedSize;
+import tao.dong.dataconjurer.common.service.CharacterGroupService;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 class FormattedTextGeneratorTest {
 
@@ -44,4 +46,14 @@ class FormattedTextGeneratorTest {
         assertEquals(1, internalGen.getMinLength());
         assertEquals(100, internalGen.getMaxLength());
     }
+
+    @Test
+    void testGenerateWithCharGroup() {
+         Set<Constraint<?>> constraints = Set.of(new CharacterGroup(Set.of("ea_hiragana", "ea_katakana")));
+        var characterLookup = new CharacterGroupService();
+        var generator = new FormattedTextGenerator(constraints, characterLookup);
+        var output = generator.generate();
+        assertFalse(StringUtils.isAsciiPrintable(output));
+    }
+
 }
