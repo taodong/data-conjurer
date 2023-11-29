@@ -29,6 +29,8 @@
 		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
 		<jgrapht.version>1.5.2</jgrapht.version>
+		<java.faker.version>1.0.2</java.faker.version>
+		<snakeyaml.version>2.2</snakeyaml.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -82,6 +84,23 @@
 				<groupId>org.jgrapht</groupId>
 				<artifactId>jgrapht-core</artifactId>
 				<version>${jgrapht.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.javafaker</groupId>
+				<artifactId>javafaker</artifactId>
+				<version>${java.faker.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- Replace vulnerable older version of snakeyaml used by javafaker -->
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${snakeyaml.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

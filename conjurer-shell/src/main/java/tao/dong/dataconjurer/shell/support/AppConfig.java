@@ -9,12 +9,14 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tao.dong.dataconjurer.common.api.CategorizedStringValueProvider;
 import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.service.CharacterGroupService;
 import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
+import tao.dong.dataconjurer.common.support.DefaultEmailProvider;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
@@ -56,10 +58,17 @@ public class AppConfig {
         return new CharacterGroupService();
     }
 
+
     @Bean
-    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup) {
+    public CategorizedStringValueProvider emailProvider() {
+        return new DefaultEmailProvider();
+    }
+
+    @Bean
+    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup, CategorizedStringValueProvider emailProvider) {
         return DefaultDataProviderService.builder()
                 .characterGroupLookup(characterGroupLookup)
+                .emailProvider(emailProvider)
                 .build();
     }
 

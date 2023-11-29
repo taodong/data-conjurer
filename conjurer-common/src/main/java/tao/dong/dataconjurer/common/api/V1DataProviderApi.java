@@ -6,6 +6,8 @@ public interface V1DataProviderApi {
 
     CharacterGroupLookup getCharacterGroupLookup();
 
+    CategorizedStringValueProvider getEmailProvider();
+
     default <T> T getSupportedProvider(T provider, String providerName) {
         return Optional.ofNullable(provider).orElseThrow(() -> new UnsupportedOperationException(providerName + " isn't supported"));
     }
