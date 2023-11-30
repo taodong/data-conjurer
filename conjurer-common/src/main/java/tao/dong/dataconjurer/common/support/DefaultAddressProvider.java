@@ -1,6 +1,5 @@
 package tao.dong.dataconjurer.common.support;
 
-import tao.dong.dataconjurer.common.api.CategorizedStringValueProvider;
 import tao.dong.dataconjurer.common.model.Constraint;
 
 import java.util.List;

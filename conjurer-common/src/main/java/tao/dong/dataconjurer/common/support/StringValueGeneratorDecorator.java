@@ -2,7 +2,6 @@ package tao.dong.dataconjurer.common.support;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.model.Constraint;
 
 import java.util.Set;

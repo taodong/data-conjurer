@@ -3,7 +3,9 @@ package tao.dong.dataconjurer.common.support;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import tao.dong.dataconjurer.common.model.ReferenceStrategy;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,5 +36,13 @@ class ElectedValueSelectorTest {
         }
     }
 
+    @Test
+    void testLoopedValueSelect() {
+        var values = List.of(1, 2, 3, 4);
+        var test = new ElectedValueSelector(values, ReferenceStrategy.LOOP);
+        for (var i = 0; i < 10; i++) {
+            assertEquals(i % 4 + 1, test.generate());
+        }
+    }
 
 }

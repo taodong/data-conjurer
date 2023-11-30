@@ -1,5 +1,8 @@
 package tao.dong.dataconjurer.common.api;
 
+import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
+import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
+
 import java.util.Optional;
 
 public interface V1DataProviderApi {

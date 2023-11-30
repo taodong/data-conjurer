@@ -1,7 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
 import org.apache.commons.text.CharacterPredicate;
-import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.ConstraintType;

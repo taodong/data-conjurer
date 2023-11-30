@@ -3,7 +3,7 @@ package tao.dong.dataconjurer.common.service;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CharacterPredicate;
-import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
+import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.support.DataHelper;
 
 import java.util.Collection;

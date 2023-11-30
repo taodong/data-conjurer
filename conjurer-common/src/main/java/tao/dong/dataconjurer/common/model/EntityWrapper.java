@@ -160,6 +160,9 @@ public class EntityWrapper {
         if (input != null && CollectionUtils.isNotEmpty(input.constraints())) {
             property = property.addConstraints(input.constraints());
         }
+
+
+
         var fallbackGenerator = matchFallbackValueGenerator(property);
         if (input != null) {
             var propertyValueConverter = new DefaultStringPropertyValueConverter();
@@ -195,6 +198,10 @@ public class EntityWrapper {
             }
         }
         return fallbackGenerator;
+    }
+
+    private boolean isCategorizedValue(EntityProperty property) {
+        return DataHelper.streamNullableCollection(property.constraints()).anyMatch(c -> c instanceof ValueCategory);
     }
 
     protected ValueGenerator<?> matchFallbackValueGenerator(EntityProperty property) {

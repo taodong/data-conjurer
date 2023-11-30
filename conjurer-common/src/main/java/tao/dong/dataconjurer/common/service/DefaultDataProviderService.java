@@ -1,9 +1,10 @@
 package tao.dong.dataconjurer.common.service;
 
 import lombok.Builder;
-import tao.dong.dataconjurer.common.api.CategorizedStringValueProvider;
-import tao.dong.dataconjurer.common.api.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.model.DataProviderType;
+import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
+import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 
 @Builder
 public class DefaultDataProviderService implements V1DataProviderApi {
@@ -19,6 +20,15 @@ public class DefaultDataProviderService implements V1DataProviderApi {
         this.emailProvider = emailProvider;
         this.nameProvider = nameProvider;
         this.addressProvider = addressProvider;
+    }
+
+    public CategorizedStringValueProvider getDataProvider(DataProviderType type) {
+        return switch (type) {
+            case NAME -> getNameProvider();
+            case EMAIL -> getEmailProvider();
+            case ADDRESS -> getAddressProvider();
+            default -> throw new UnsupportedOperationException("No match provider for " + type);
+        };
     }
 
 
