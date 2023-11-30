@@ -8,6 +8,10 @@ public interface V1DataProviderApi {
 
     CategorizedStringValueProvider getEmailProvider();
 
+    CategorizedStringValueProvider getNameProvider();
+
+    CategorizedStringValueProvider getAddressProvider();
+
     default <T> T getSupportedProvider(T provider, String providerName) {
         return Optional.ofNullable(provider).orElseThrow(() -> new UnsupportedOperationException(providerName + " isn't supported"));
     }

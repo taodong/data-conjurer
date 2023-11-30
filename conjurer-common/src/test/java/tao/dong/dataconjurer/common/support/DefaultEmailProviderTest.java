@@ -9,7 +9,7 @@ class DefaultEmailProviderTest {
 
     @Test
     void testFetch() {
-        var rs = provider.fetch(15, null, null);
+        var rs = provider.fetch(15, null, null, null);
         assertEquals(15, rs.size());
     }
 

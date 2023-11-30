@@ -1,6 +1,5 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -11,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Precision.class, name = "precision"),
         @JsonSubTypes.Type(value = NumberRange.class, name="range"),
         @JsonSubTypes.Type(value = Duration.class, name="duration"),
-        @JsonSubTypes.Type(value = CharacterGroup.class, name="char_group")
+        @JsonSubTypes.Type(value = CharacterGroup.class, name="char_group"),
+        @JsonSubTypes.Type(value = ValueCategory.class, name="category")
 })
 public interface Constraint<T> {
     boolean isMet(T val);

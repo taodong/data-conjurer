@@ -16,8 +16,10 @@ import tao.dong.dataconjurer.common.service.CharacterGroupService;
 import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
+import tao.dong.dataconjurer.common.support.DefaultAddressProvider;
 import tao.dong.dataconjurer.common.support.DefaultEmailProvider;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
+import tao.dong.dataconjurer.common.support.DefaultNameProvider;
 import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
 import tao.dong.dataconjurer.engine.database.service.MySQLInsertStatementService;
@@ -65,10 +67,23 @@ public class AppConfig {
     }
 
     @Bean
-    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup, CategorizedStringValueProvider emailProvider) {
+    public CategorizedStringValueProvider nameProvider() {
+        return new DefaultNameProvider();
+    }
+
+    @Bean
+    public CategorizedStringValueProvider addressProvider() {
+        return new DefaultAddressProvider();
+    }
+
+    @Bean
+    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup, CategorizedStringValueProvider emailProvider,
+                                             CategorizedStringValueProvider nameProvider, CategorizedStringValueProvider addressProvider) {
         return DefaultDataProviderService.builder()
                 .characterGroupLookup(characterGroupLookup)
                 .emailProvider(emailProvider)
+                .nameProvider(nameProvider)
+                .addressProvider(addressProvider)
                 .build();
     }
 

@@ -1,19 +1,13 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.Set;
 
 import static tao.dong.dataconjurer.common.model.ConstraintType.CHAR_GROUP;
 
+@JsonTypeName("char_group")
 public record CharacterGroup(Set<String> groups) implements Constraint<String> {
-
-    @JsonCreator
-    public CharacterGroup(@JsonProperty("groups") @NotEmpty Set<String> groups) {
-        this.groups = groups;
-    }
 
     @Override
     public boolean isMet(String val) {
