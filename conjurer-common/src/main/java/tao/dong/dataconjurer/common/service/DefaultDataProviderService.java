@@ -22,16 +22,6 @@ public class DefaultDataProviderService implements V1DataProviderApi {
         this.addressProvider = addressProvider;
     }
 
-    public CategorizedStringValueProvider getDataProvider(DataProviderType type) {
-        return switch (type) {
-            case NAME -> getNameProvider();
-            case EMAIL -> getEmailProvider();
-            case ADDRESS -> getAddressProvider();
-            default -> throw new UnsupportedOperationException("No match provider for " + type);
-        };
-    }
-
-
     @Override
     public CharacterGroupLookup getCharacterGroupLookup() {
         return getSupportedProvider(this.characterGroupLookup, "CharacterGroupLookup");

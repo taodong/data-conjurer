@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -161,7 +163,10 @@ public class EntityWrapper {
             property = property.addConstraints(input.constraints());
         }
 
-
+        var firstChoiceGenerator = getPossibleDataProviderBackedGenerator(property);
+        if (firstChoiceGenerator != null) {
+            return firstChoiceGenerator;
+        }
 
         var fallbackGenerator = matchFallbackValueGenerator(property);
         if (input != null) {
@@ -200,8 +205,40 @@ public class EntityWrapper {
         return fallbackGenerator;
     }
 
-    private boolean isCategorizedValue(EntityProperty property) {
-        return DataHelper.streamNullableCollection(property.constraints()).anyMatch(c -> c instanceof ValueCategory);
+    private Optional<ValueCategory> lookupValueCategoryConstraint(EntityProperty property) {
+        if (property.type() == PropertyType.TEXT) {
+            return DataHelper.streamNullableCollection(property.constraints())
+                    .filter(c -> c instanceof ValueCategory)
+                    .map(ValueCategory.class::cast)
+                    .findFirst();
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    protected ValueGenerator<?> getPossibleDataProviderBackedGenerator(EntityProperty property) {
+        try {
+            var valueCategory = lookupValueCategoryConstraint(property);
+            if (valueCategory.isPresent()) {
+                var vc = valueCategory.get();
+                var dataProvider = getDataProvider(DataProviderType.getByTypeName(vc.name()), dataProviderApi);
+                // Override to lightweight thread when updating to 21
+                var values = dataProvider.fetch(Math.toIntExact(count), vc.qualifier(), vc.locale(), null);
+                return new ElectedValueSelector(values, ReferenceStrategy.LOOP);
+            }
+        } catch (Exception e) {
+            LOG.warn("Failed to create generator for Value Category of {}.{}", getEntityName(), property.name(), e);
+        }
+        return null;
+    }
+
+    protected CategorizedStringValueProvider getDataProvider(DataProviderType type, V1DataProviderApi dataProviderApi) {
+        return switch (type) {
+            case NAME -> dataProviderApi.getNameProvider();
+            case EMAIL -> dataProviderApi.getEmailProvider();
+            case ADDRESS -> dataProviderApi.getAddressProvider();
+            default -> throw new UnsupportedOperationException("No match provider for " + type);
+        };
     }
 
     protected ValueGenerator<?> matchFallbackValueGenerator(EntityProperty property) {

@@ -32,12 +32,4 @@ class DefaultDataProviderServiceTest {
         var service = DefaultDataProviderService.builder().characterGroupLookup(characterGroupLookup).build();
         assertNotNull(service.getCharacterGroupLookup());
     }
-
-    @ParameterizedTest
-    @EnumSource(DataProviderType.class)
-    void testGetDataProvider_NoMatch(DataProviderType type) {
-        var service = DefaultDataProviderService.builder().build();
-        assertThrows(UnsupportedOperationException.class, () -> service.getDataProvider(type));
-    }
-
 }

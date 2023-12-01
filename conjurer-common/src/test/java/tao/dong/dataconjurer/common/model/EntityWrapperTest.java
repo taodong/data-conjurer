@@ -3,8 +3,10 @@ package tao.dong.dataconjurer.common.model;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.List;
@@ -13,7 +15,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class EntityWrapperTest {
 
@@ -189,6 +194,16 @@ class EntityWrapperTest {
                 .build();
         var wrapper = new EntityWrapper(entity, data, null, dataProviderApi);
         assertNotEquals("abc", wrapper.getGenerators().get("t1p2").generate());
+    }
+
+    @ParameterizedTest
+    @EnumSource(DataProviderType.class)
+    void testGetDataProvider_NoMatch(DataProviderType type) {
+        var service = DefaultDataProviderService.builder().build();
+        EntityWrapper wrapper = mock(EntityWrapper.class);
+        when(wrapper.getDataProviderApi()).thenReturn(service);
+        when(wrapper.getDataProvider(any(DataProviderType.class), any(V1DataProviderApi.class))).thenCallRealMethod();
+        assertThrows(UnsupportedOperationException.class, () -> wrapper.getDataProvider(type, service));
     }
 
 }

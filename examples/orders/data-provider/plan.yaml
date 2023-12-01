@@ -1,0 +1,80 @@
+plan:
+  name: "data-provider"
+  schema: "orders"
+  data:
+    - entity: "usr_user"
+      count: 10
+      properties:
+        - name: "username"
+          constraints:
+            - type: "category"
+              name: "email"
+        - name: "first_name"
+          constraints:
+            - type: "category"
+              name: "name"
+              qualifier: "firstname"
+              locale: "zh-CN"
+        - name: "last_name"
+          constraints:
+            - type: "category"
+              name: "name"
+              qualifier: "lastname"
+              locale: "zh-CN"
+    - entity: "product_category"
+      count: 5
+      properties:
+        - name: "desc"
+          values:
+            - values:
+                - "<?null?>"
+              weight: 0.7
+        - name: "status"
+          defaultValue: "ACTIVE"
+    - entity: "product"
+      count: 10
+    - entity: "order_detail"
+      count: 20
+      properties:
+        - name: "status"
+          values:
+            - values:
+                - "CLOSED"
+              weight: 0.1
+            - values:
+                - "RETURNED"
+              weight: 0.1
+            - values:
+                - "SHIPPING"
+              weight: 0.2
+          defaultValue: "PROCESSING"
+    - entity: "order_item"
+      count: 50
+      properties:
+        - name: "quantity"
+          values:
+            - values:
+                - 1
+              weight: 0.8
+output:
+  entities:
+    - name: "usr_user"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "product_category"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "product"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "order_detail"
+      properties:
+        - name: "modified"
+          hide: true
+    - name: "order_item"
+      properties:
+        - name: "modified"
+          hide: true
