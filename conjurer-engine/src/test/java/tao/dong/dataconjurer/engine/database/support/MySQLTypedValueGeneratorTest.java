@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.model.EntityIndex;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.support.MutableSequenceGenerator;
 
@@ -19,8 +20,8 @@ public class MySQLTypedValueGeneratorTest {
 
     private static Stream<Arguments> testMatchDefaultGeneratorByType() {
         return Stream.of(
-                Arguments.of(new EntityProperty("p1", SEQUENCE, 0, null, null), 0L),
-                Arguments.of(new EntityProperty("p1", SEQUENCE, 1, null, null), 1L)
+                Arguments.of(new EntityProperty("p1", SEQUENCE, null, null, null), 0L),
+                Arguments.of(new EntityProperty("p1", SEQUENCE, new EntityIndex(0, 0, false, false), null, null), 1L)
         );
     }
 

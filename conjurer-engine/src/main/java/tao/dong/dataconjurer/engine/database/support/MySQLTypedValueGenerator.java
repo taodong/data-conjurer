@@ -11,7 +11,7 @@ public class MySQLTypedValueGenerator implements TypedValueGenerator {
 
     @Override
     public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, V1DataProviderApi dataProviderApi) {
-        if (property.type() == SEQUENCE && property.idIndex() == 1) {
+        if (property.type() == SEQUENCE && property.index().id() == 0) {
             return new MySQLMutableSequenceGenerator(property.getPropertyConstraints());
         } else {
             return TypedValueGenerator.super.matchDefaultGeneratorByType(property, dataProviderApi);

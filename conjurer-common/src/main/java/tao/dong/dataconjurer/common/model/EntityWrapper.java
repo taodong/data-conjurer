@@ -50,7 +50,7 @@ public class EntityWrapper {
     private final Map<String, ValueGenerator<?>> generators = new HashMap<>();
     private final List<String> properties = new ArrayList<>();
     private final List<PropertyType> propertyTypes = new ArrayList<>();
-    private final List<IndexedValue> indexes = new ArrayList<>();
+    private final List<UniqueIndex<?>> indexes = new ArrayList<>();
     private final Set<Integer> hiddenIndex = new HashSet<>();
     private final Map<String, String> aliases = new HashMap<>();
     private final Map<String, String> refStrategy = new HashMap<>();
@@ -135,8 +135,8 @@ public class EntityWrapper {
                 references.put(property.name(), property.reference());
             }
             // Extract indexed properties
-            if (property.idIndex() > 0) {
-                DataHelper.appendToSetValueInMap(indexedProps, property.idIndex(), propIndex);
+            if (property.index() != null) {
+                DataHelper.appendToSetValueInMap(indexedProps, property.index().id(), propIndex); // TODO:...
             }
             // Populate hidden index
             if (hiddenProps.contains(property.name())) {
@@ -286,7 +286,7 @@ public class EntityWrapper {
         if (properties != null) {
             for (var prop : properties) {
                 if (referenced.containsKey(prop)) {
-                    rs.put(new Reference(id.entityName(), prop), referenced.get(prop));
+                    rs.put(new Reference(id.entityName(), prop, null), referenced.get(prop)); // TODO: ...
                 }
             }
         }
