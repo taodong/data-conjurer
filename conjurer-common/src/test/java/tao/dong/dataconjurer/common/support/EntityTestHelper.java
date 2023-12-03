@@ -185,7 +185,7 @@ public class EntityTestHelper {
             return this;
         }
 
-        EntityIndex build() {
+        public EntityIndex build() {
             return new EntityIndex(id, type, qualifier);
         }
     }

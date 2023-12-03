@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.Collections;
 import java.util.Set;
@@ -28,8 +29,13 @@ class DataEntityTest {
         return Stream.of(
                 Arguments.of(new DataEntity(" ", null), false),
                 Arguments.of(new DataEntity("abc", Collections.emptySet()), false),
-                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty(null, null, 0, null, null))), false),
-                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty("abc", TEXT, 0, null, null))), true)
+//                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty(null, null, 0, null, null))), false),
+//                Arguments.of(new DataEntity("abc", Set.of(new EntityProperty("abc", TEXT, 0, null, null))), true)
+                Arguments.of(new DataEntity("abc", Set.of(
+                        new EntityProperty(null, null, null, null, null))),
+                        false),
+                Arguments.of(new DataEntity("abc", Set.of(
+                        EntityTestHelper.entityPropertyBuilder().name("abc").type(TEXT).build())), true)
         );
     }
 

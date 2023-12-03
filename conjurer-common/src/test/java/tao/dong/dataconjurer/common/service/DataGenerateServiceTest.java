@@ -6,7 +6,6 @@ import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
-import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
@@ -31,7 +30,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 
 class DataGenerateServiceTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
@@ -166,8 +164,10 @@ class DataGenerateServiceTest {
         TEST_HELPER.createSimpleBlueprintDataWithReference(data, idMap);
         var entity5 = new DataEntity("t3",
                 Set.of(
-                        new EntityProperty("t3p0", SEQUENCE, 1, List.of(new Interval(1L, 6L)), null),
-                        new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0", null))
+//                        new EntityProperty("t3p0", SEQUENCE, 1, List.of(new Interval(1L, 6L)), null),
+//                        new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0", null))
+                        EntityTestHelper.entityPropertyBuilder().name("t3p0").index(EntityTestHelper.entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 6L))).build(),
+                        EntityTestHelper.entityPropertyBuilder().name("t3p1").reference(new Reference("t4", "t4p0", null)).build()
                 )
         );
         var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderApi);

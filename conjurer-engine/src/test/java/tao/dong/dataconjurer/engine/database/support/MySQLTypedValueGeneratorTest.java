@@ -21,7 +21,7 @@ public class MySQLTypedValueGeneratorTest {
     private static Stream<Arguments> testMatchDefaultGeneratorByType() {
         return Stream.of(
                 Arguments.of(new EntityProperty("p1", SEQUENCE, null, null, null), 0L),
-                Arguments.of(new EntityProperty("p1", SEQUENCE, new EntityIndex(0, 0, false, false), null, null), 1L)
+                Arguments.of(new EntityProperty("p1", SEQUENCE, new EntityIndex(0, 0, 0), null, null), 1L)
         );
     }
 

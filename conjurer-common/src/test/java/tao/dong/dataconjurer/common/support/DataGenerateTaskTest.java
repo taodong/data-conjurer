@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
-import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
@@ -36,7 +35,7 @@ class DataGenerateTaskTest {
             ref1.addValue(l);
         }
         Map<Reference, TypedValue> referenced = Map.of(
-                new Reference("t2", "p0"), ref1
+                new Reference("t2", "p0", null), ref1
         );
         var task = DataGenerateTask.builder()
                 .countDownLatch(countDownLatch)
@@ -53,9 +52,12 @@ class DataGenerateTaskTest {
     private EntityWrapper createTestEntityWrapper(EntityData data) {
         var entity = new DataEntity("t1",
            Set.of(
-                   new EntityProperty("p1", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
-                   new EntityProperty("p2", SEQUENCE, 0, null, new Reference("t2", "p0")),
-                   new EntityProperty("p3", TEXT, 0, List.of(new Length(10L)), null)
+//                   new EntityProperty("p1", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
+//                   new EntityProperty("p2", SEQUENCE, 0, null, new Reference("t2", "p0")),
+//                   new EntityProperty("p3", TEXT, 0, List.of(new Length(10L)), null)
+                   EntityTestHelper.entityPropertyBuilder().name("p1").index(EntityTestHelper.entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
+                   EntityTestHelper.entityPropertyBuilder().name("p2").reference(new Reference("t2", "p0", null)).build(),
+                   EntityTestHelper.entityPropertyBuilder().name("p3").type(TEXT).constraints(List.of(new Length(10L))).build()
            )
         );
 

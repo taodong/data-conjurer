@@ -28,12 +28,24 @@ class EntityPropertyTest {
 
     private static Stream<Arguments> testValidate() {
         return Stream.of(
-                Arguments.of(new EntityProperty(null, null, 0, null, null), false),
-                Arguments.of(new EntityProperty(" ", TEXT, 0, null, null), false),
-                Arguments.of(new EntityProperty("abc", null, 0, null, null), false),
-                Arguments.of(new EntityProperty("abc", TEXT,  0, null, new Reference(null, null)), false),
-                Arguments.of(new EntityProperty("abc", TEXT,  0, null, null), true),
-                Arguments.of(new EntityProperty("abc", TEXT,  0, null, new Reference("efg", "hij")), true)
+//                Arguments.of(new EntityProperty(null, null, 0, null, null), false),
+//                Arguments.of(new EntityProperty(" ", TEXT, 0, null, null), false),
+//                Arguments.of(new EntityProperty("abc", null, 0, null, null), false),
+//                Arguments.of(new EntityProperty("abc", TEXT,  0, null, new Reference(null, null)), false),
+//                Arguments.of(new EntityProperty("abc", TEXT,  0, null, null), true),
+//                Arguments.of(new EntityProperty("abc", TEXT,  0, null, new Reference("efg", "hij")), true)
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().name(null).type(null).build(),
+                        false),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().name(" ").type(TEXT).build(),
+                        false),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().name("abc").type(null).build(),
+                        false),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().name("abc").type(TEXT).reference(new Reference(null, null, null)).build(),
+                        false),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().name("abc").type(TEXT).build(),
+                        true),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().name("abc").type(TEXT).reference(new Reference("efg", "hij", null)).build(),
+                        true)
         );
     }
 
