@@ -19,7 +19,8 @@ class JFakerValueProviderTest {
                 Arguments.of(4, "city", Locale.FRANCE),
                 Arguments.of(5, "country", null),
                 Arguments.of(6, "zip", Locale.CHINA),
-                Arguments.of(7, "address", Locale.CANADA)
+                Arguments.of(7, "address", Locale.CANADA),
+                Arguments.of(8, "state", Locale.US)
         );
     }
 

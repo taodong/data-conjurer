@@ -1,0 +1,81 @@
+package tao.dong.dataconjurer.common.model;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class LinkedTypedValueTest {
+
+    private static Stream<Arguments> testAddLinkedValue() {
+        return Stream.of(
+                Arguments.of("k1", "v1", 1),
+                Arguments.of("k2", "v1", 1),
+                Arguments.of("k1", "v2", 2)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAddLinkedValue(String key, Object val, int count) {
+        var test = new LinkedTypedValue(PropertyType.TEXT);
+        test.addLinkedValue("k1", "v1");
+        test.addLinkedValue(key, val);
+        assertEquals(count, test.getValues().get(key).size());
+    }
+
+    @Test
+    void testAddLinkedValue_MismatchedType() {
+        var test = new LinkedTypedValue(PropertyType.TEXT);
+        assertThrows(IllegalArgumentException.class, () -> test.addLinkedValue("k1", 1));
+    }
+
+    @Test
+    void testJoin() {
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT);
+        var ltv2 = new LinkedTypedValue(PropertyType.TEXT);
+        ltv1.addLinkedValue("k1", "v1");
+        ltv1.addLinkedValue("k1", "v2");
+        ltv1.addLinkedValue("k2", "v2");
+        ltv2.addLinkedValue("k1", "v2");
+        ltv2.addLinkedValue("k1", "v3");
+        ltv2.addLinkedValue("k3", "v1");
+        ltv1.join(ltv2);
+        assertEquals(3, ltv1.getValues().size());
+        assertEquals(3, ltv1.getValues().get("k1").size());
+        assertEquals(1, ltv1.getValues().get("k2").size());
+        assertEquals(1, ltv1.getValues().get("k3").size());
+    }
+
+    @Test
+    void testJoin_MismatchedType() {
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT);
+        var ltv2 = new LinkedTypedValue(PropertyType.SEQUENCE);
+
+        assertThrows(IllegalArgumentException.class, () -> ltv1.join(ltv2));
+    }
+
+    private static Stream<Arguments> testGetOrderedValues() {
+        return Stream.of(
+                Arguments.of("k1", 2),
+                Arguments.of("k2", 1),
+                Arguments.of("k3", 0)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testGetOrderedValues(String key, int size) {
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT);
+        ltv1.addLinkedValue("k1", "v1");
+        ltv1.addLinkedValue("k1", "v2");
+        ltv1.addLinkedValue("k2", "v2");
+        assertEquals(size, ltv1.getOrderedValues(key).size());
+    }
+
+}

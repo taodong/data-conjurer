@@ -3,8 +3,6 @@ package tao.dong.dataconjurer.common.support;
 import com.github.javafaker.Faker;
 import jakarta.validation.constraints.Min;
 import org.apache.commons.lang3.StringUtils;
-import tao.dong.dataconjurer.common.model.Constraint;
-import tao.dong.dataconjurer.common.support.LocaleStringValueCollector;
 
 import java.util.List;
 import java.util.Locale;
