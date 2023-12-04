@@ -170,17 +170,17 @@ public class EntityTestHelper {
         private int type;
         private int qualifier;
 
-        TestEntityIndexBuilder id(int id) {
+        public TestEntityIndexBuilder id(int id) {
             this.id = id;
             return this;
         }
 
-        TestEntityIndexBuilder type(int type) {
+        public TestEntityIndexBuilder type(int type) {
             this.type = type;
             return this;
         }
 
-        TestEntityIndexBuilder qualifier(int qualifier) {
+        public TestEntityIndexBuilder qualifier(int qualifier) {
             this.qualifier = qualifier;
             return this;
         }
