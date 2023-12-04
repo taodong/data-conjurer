@@ -94,7 +94,6 @@ public class EntityTestHelper {
     public DataEntity createEntityT4() {
         return new DataEntity("t4",
                 Set.of(
-//                        new EntityProperty("t4p0", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null)
                         entityPropertyBuilder().name("t4p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build()
                 )
         );
@@ -103,8 +102,6 @@ public class EntityTestHelper {
     public DataEntity createEntityT3() {
         return new DataEntity("t3",
                 Set.of(
-//                        new EntityProperty("t3p0", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
-//                        new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0"))
                         entityPropertyBuilder().name("t3p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
                         entityPropertyBuilder().name("t3p1").reference(new Reference("t4", "t4p0", null)).build()
                 )
@@ -114,8 +111,6 @@ public class EntityTestHelper {
     public DataEntity createEntityT2() {
         return new DataEntity("t2",
                 Set.of(
-//                        new EntityProperty("t2p0", SEQUENCE, 1, List.of(new Interval(1L, 0L)), null),
-//                        new EntityProperty("t2p1", TEXT, 0, List.of(new Length(15L)), null)
                         entityPropertyBuilder().name("t2p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
                         entityPropertyBuilder().name("t2p1").type(TEXT).constraints(List.of(new Length(15L))).build()
                 )
@@ -125,10 +120,6 @@ public class EntityTestHelper {
     public DataEntity createEntityT1() {
         return new DataEntity("t1",
                 Set.of(
-//                        new EntityProperty("t1p1", SEQUENCE,  1, List.of(new Interval(1L, 0L)), null),
-//                        new EntityProperty("t1p2", SEQUENCE, 0, null, new Reference("t2", "t2p0")),
-//                        new EntityProperty("t1p3", TEXT, 0, List.of(new UnfixedSize(15L)), null),
-//                        new EntityProperty("t1p4", SEQUENCE, 0, null, new Reference("t3", "t3p0"))
                         entityPropertyBuilder().name("t1p1").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
                         entityPropertyBuilder().name("t1p2").reference(new Reference("t2", "t2p0", null)).build(),
                         entityPropertyBuilder().name("t1p3").type(TEXT).constraints(List.of(new UnfixedSize(15L))).build(),
@@ -149,10 +140,6 @@ public class EntityTestHelper {
     public DataEntity createEntityT5() {
         return new DataEntity("t5",
                 Set.of(
-//                        new EntityProperty("t5p0", SEQUENCE,  1, List.of(new Interval(1L, 0L)), null),
-//                        new EntityProperty("t5p1", SEQUENCE,  2, List.of(new Interval(1L, 0L)), null),
-//                        new EntityProperty("t5p2", SEQUENCE,  2, List.of(new Interval(1L, 0L)), null),
-//                        new EntityProperty("t1p3", TEXT, 0, List.of(new UnfixedSize(15L)), null)
                         entityPropertyBuilder().name("t5p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
                         entityPropertyBuilder().name("t5p1").index(entityIndexBuilder().id(2).build()).constraints(List.of(new Interval(1L, 0L))).build(),
                         entityPropertyBuilder().name("t5p2").index(entityIndexBuilder().id(2).build()).constraints(List.of(new Interval(1L, 0L))).build(),
