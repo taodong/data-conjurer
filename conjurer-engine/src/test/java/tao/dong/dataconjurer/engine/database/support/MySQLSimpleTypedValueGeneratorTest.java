@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 
-public class MySQLTypedValueGeneratorTest {
+public class MySQLSimpleTypedValueGeneratorTest {
 
     private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
 

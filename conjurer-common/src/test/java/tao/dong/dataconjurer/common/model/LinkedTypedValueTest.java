@@ -23,7 +23,7 @@ class LinkedTypedValueTest {
     @ParameterizedTest
     @MethodSource
     void testAddLinkedValue(String key, Object val, int count) {
-        var test = new LinkedTypedValue(PropertyType.TEXT);
+        var test = new LinkedTypedValue(PropertyType.TEXT, "abc");
         test.addLinkedValue("k1", "v1");
         test.addLinkedValue(key, val);
         assertEquals(count, test.getValues().get(key).size());
@@ -31,14 +31,14 @@ class LinkedTypedValueTest {
 
     @Test
     void testAddLinkedValue_MismatchedType() {
-        var test = new LinkedTypedValue(PropertyType.TEXT);
+        var test = new LinkedTypedValue(PropertyType.TEXT, "abc");
         assertThrows(IllegalArgumentException.class, () -> test.addLinkedValue("k1", 1));
     }
 
     @Test
     void testJoin() {
-        var ltv1 = new LinkedTypedValue(PropertyType.TEXT);
-        var ltv2 = new LinkedTypedValue(PropertyType.TEXT);
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "abc");
+        var ltv2 = new LinkedTypedValue(PropertyType.TEXT, "abc");
         ltv1.addLinkedValue("k1", "v1");
         ltv1.addLinkedValue("k1", "v2");
         ltv1.addLinkedValue("k2", "v2");
@@ -54,8 +54,8 @@ class LinkedTypedValueTest {
 
     @Test
     void testJoin_MismatchedType() {
-        var ltv1 = new LinkedTypedValue(PropertyType.TEXT);
-        var ltv2 = new LinkedTypedValue(PropertyType.SEQUENCE);
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "abc");
+        var ltv2 = new LinkedTypedValue(PropertyType.SEQUENCE, "df");
 
         assertThrows(IllegalArgumentException.class, () -> ltv1.join(ltv2));
     }
@@ -71,7 +71,7 @@ class LinkedTypedValueTest {
     @ParameterizedTest
     @MethodSource
     void testGetOrderedValues(String key, int size) {
-        var ltv1 = new LinkedTypedValue(PropertyType.TEXT);
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "ef");
         ltv1.addLinkedValue("k1", "v1");
         ltv1.addLinkedValue("k1", "v2");
         ltv1.addLinkedValue("k2", "v2");

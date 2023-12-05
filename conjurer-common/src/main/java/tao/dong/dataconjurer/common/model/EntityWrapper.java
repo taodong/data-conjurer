@@ -268,17 +268,24 @@ public class EntityWrapper {
         }
     }
 
-    public void createReferenced(String... properties) {
+    public void createReferenced(PropertyLink... properties) {
         if (properties != null) {
             for (var prop : properties) {
-                referenced.computeIfAbsent(prop, this::createReferenceTypedValue);
+                referenced.computeIfAbsent(prop.name(), k -> createReferenceTypedValue(prop));
             }
         }
     }
 
-    private TypedValue createReferenceTypedValue(String propName) {
-        return entity.properties().stream().filter(property -> StringUtils.equals(propName, property.name()))
-                .findFirst().map(p -> new TypedValue(p.type())).orElseThrow(() -> new IllegalArgumentException("Property " + propName + " isn't defined in " + id.entityName()));
+    private TypedValue createReferenceTypedValue(PropertyLink prop) {
+        validatePropertyLink(prop);
+        var type = typeMap.get(prop.name());
+        return prop.linked() == null ? new SimpleTypedValue(type) : new LinkedTypedValue(type, prop.linked());
+    }
+
+    void validatePropertyLink(PropertyLink propertyLink) {
+        if (!typeMap.containsKey(propertyLink.name()) || (propertyLink.linked() != null && !typeMap.containsKey(propertyLink.linked()))) {
+            throw new IllegalArgumentException("Property " + propertyLink + " isn't defined in " + id.entityName());
+        }
     }
 
     public Map<Reference, TypedValue> getReferencedByProperties(String... properties) {

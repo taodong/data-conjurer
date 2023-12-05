@@ -8,6 +8,7 @@ import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.ReferenceStrategy;
+import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.model.TypedValue;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.*;
+import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.INDEX;
+import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.MISC;
+import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.REFERENCE;
 
 @Builder
 @Slf4j
@@ -110,13 +113,13 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                                                     String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
                 }
                 var indexGen = referenceIndexTracker.computeIfAbsent(propertyName,
-                        k -> createReferenceIndexGenerator(entityWrapper.getRefStrategy().get(propertyName), referenced.get(reference).getOrderedValues().size()));
-                val = referenced.get(reference).getOrderedValues().get(indexGen.generate());
+                        k -> createReferenceIndexGenerator(entityWrapper.getRefStrategy().get(propertyName), ((SimpleTypedValue)referenced.get(reference)).getOrderedValues().size())); // TODO:...
+                val = ((SimpleTypedValue)referenced.get(reference)).getOrderedValues().get(indexGen.generate()); // TODO:...
             } else {
                 val = entityWrapper.getGenerators().get(propertyName).generate();
             }
             if (entityWrapper.getReferenced().containsKey(propertyName)) {
-                entityWrapper.getReferenced().get(propertyName).addValue(val);
+                ((SimpleTypedValue)entityWrapper.getReferenced().get(propertyName)).addValue(val); // TODO: ...
             }
             dataRow.add(val);
         }
@@ -133,7 +136,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     private boolean isReferenceReady(Reference key) {
-        return CollectionUtils.isNotEmpty(referenced.get(key).getOrderedValues());
+        return CollectionUtils.isNotEmpty(((SimpleTypedValue)referenced.get(key)).getOrderedValues());
     }
 
 }

@@ -13,6 +13,7 @@ import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityOutputControl;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
+import tao.dong.dataconjurer.common.model.PropertyLink;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.SequenceGenerator;
@@ -84,17 +85,17 @@ public class DataPlanService {
     }
 
     void enableReferences(DataBlueprint blueprint) {
-        var refs = new HashMap<String, Set<String>>();
+        var refs = new HashMap<String, Set<PropertyLink>>();
         for (var entityEntry : blueprint.getEntities().values()) {
             for (var ref : entityEntry.getReferences().values()) {
-                DataHelper.appendToSetValueInMap(refs, ref.entity(), ref.property());
+                DataHelper.appendToSetValueInMap(refs, ref.entity(), new PropertyLink(ref.property(), ref.linked()));
             }
         }
         for (var entry : refs.entrySet()) {
             var entityIds = blueprint.getEntityWrapperIds().get(entry.getKey());
             if (CollectionUtils.isNotEmpty(entityIds)) {
                 entityIds.forEach(
-                        id -> blueprint.getEntities().get(id).createReferenced(entry.getValue().toArray(String[]::new))
+                        id -> blueprint.getEntities().get(id).createReferenced(entry.getValue().toArray(PropertyLink[]::new))
                 );
             }
         }

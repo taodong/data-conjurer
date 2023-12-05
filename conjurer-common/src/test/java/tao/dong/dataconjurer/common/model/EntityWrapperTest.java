@@ -87,8 +87,19 @@ class EntityWrapperTest {
                         new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null),
                         new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleDataWithId(null, null, 1), null, null),
                         false
+                ),
+                Arguments.of(
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null),
+                        "ABC", false
+
                 )
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testEquals(EntityWrapper obj1, Object obj2, boolean expected) {
+        assertEquals(expected, obj1.equals(obj2));
     }
 
     private static Stream<Arguments> testCreateReferenced() {
@@ -103,15 +114,9 @@ class EntityWrapperTest {
     @MethodSource
     void testCreateReferenced(String[] props, int expected) {
         var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi);
-        test.createReferenced("t1p1", "t1p2");
+        test.createReferenced(new PropertyLink("t1p1", null), new PropertyLink("t1p2", null));
         var res = test.getReferencedByProperties(props);
         assertEquals(expected, res.size());
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void testEquals(EntityWrapper obj1, EntityWrapper obj2, boolean expected) {
-        assertEquals(expected, obj1.equals(obj2));
     }
 
     @Test

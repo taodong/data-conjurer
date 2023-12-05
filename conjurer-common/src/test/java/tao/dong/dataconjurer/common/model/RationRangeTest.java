@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.model;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tao.dong.dataconjurer.common.model.ConstraintType.RATIO_RANGE;
 
 class RationRangeTest {
 
@@ -42,5 +44,11 @@ class RationRangeTest {
     void testIsMet(double min, double max, double val, boolean expected) {
         var ratioRange = new RatioRange(min, max);
         assertEquals(expected, ratioRange.isMet(val));
+    }
+
+    @Test
+    void testGetType() {
+        var ratioRange = new RatioRange(0.1, 0.2);
+        assertEquals(RATIO_RANGE, ratioRange.getType());
     }
 }

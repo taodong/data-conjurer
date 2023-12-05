@@ -9,7 +9,9 @@ import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
+import tao.dong.dataconjurer.common.model.PropertyLink;
 import tao.dong.dataconjurer.common.model.Reference;
+import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
@@ -111,14 +113,14 @@ class DataGenerateServiceTest {
         var t2 = data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t2"));
         t2.updateStatus(1);
         t2.updateStatus(2);
-        t2.createReferenced("t2p0");
+        t2.createReferenced(new PropertyLink("t2p0", null));
         var t3 = data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t3"));
         t3.updateStatus(1);
         t3.updateStatus(2);
-        t3.createReferenced("t3p0");
+        t3.createReferenced(new PropertyLink("t3p0", null));
         for (var i = 0; i < 5; i++) {
-            t2.getReferenced().get("t2p0").addValue((long)i);
-            t3.getReferenced().get("t3p0").addValue((long)i);
+            ((SimpleTypedValue)t2.getReferenced().get("t2p0")).addValue((long)i);
+            ((SimpleTypedValue)t3.getReferenced().get("t3p0")).addValue((long)i);
         }
     }
 
@@ -153,19 +155,17 @@ class DataGenerateServiceTest {
     private void createTestDataForSelection(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
         TEST_HELPER.createSimpleBlueprintData(data, idMap);
         var t2 = data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t2"));
-        t2.createReferenced("t2p0");
+        t2.createReferenced(new PropertyLink("t2p0", null));
         var t3 = data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t3"));
-        t3.createReferenced("t3p0");
+        t3.createReferenced(new PropertyLink("t3p0", null));
         var t4 = data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t4"));
-        t4.createReferenced("t4p0");
+        t4.createReferenced(new PropertyLink("t4p0",null));
     }
 
     private void createTestEntityMapWithMultiplePlan(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
         TEST_HELPER.createSimpleBlueprintDataWithReference(data, idMap);
         var entity5 = new DataEntity("t3",
                 Set.of(
-//                        new EntityProperty("t3p0", SEQUENCE, 1, List.of(new Interval(1L, 6L)), null),
-//                        new EntityProperty("t3p1", SEQUENCE, 0, null, new Reference("t4", "t4p0", null))
                         EntityTestHelper.entityPropertyBuilder().name("t3p0").index(EntityTestHelper.entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 6L))).build(),
                         EntityTestHelper.entityPropertyBuilder().name("t3p1").reference(new Reference("t4", "t4p0", null)).build()
                 )

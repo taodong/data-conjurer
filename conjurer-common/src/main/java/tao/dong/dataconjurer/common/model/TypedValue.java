@@ -1,49 +1,28 @@
 package tao.dong.dataconjurer.common.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+@RequiredArgsConstructor
+@Getter
+public abstract class TypedValue {
 
-@Data
-public class TypedValue {
-    private final PropertyType type;
-    private final Set<Object> values = new HashSet<>();
-    @Setter(AccessLevel.NONE)
-    private final List<Object> orderedValues = new ArrayList<>();
+    protected final PropertyType type;
 
-    public void addValue(Object value) {
-        if (type.getTargetClass().isInstance(value)) {
-            values.add(value);
-        } else {
-            throw new IllegalArgumentException("value isn't compatible with " + type.getName());
+    public abstract DataType getDataType();
+    public abstract void join(TypedValue tv);
+    public abstract void clearOrderedValues();
+
+    public enum DataType {
+        SIMPLE,LINKED
+    }
+
+    protected void validateJoin(PropertyType type, DataType dataType) {
+        if (this.type != type || this.getDataType() != dataType) {
+            throw new IllegalArgumentException(
+                    "Type mismatched values aren't allowed to join: %s|%s vs %s|%s".formatted(this.type.getName(), getDataType().name(), type.getName(), dataType.name())
+            );
         }
     }
 
-    public List<Object> getOrderedValues() {
-        if (orderedValues.isEmpty()) {
-            orderedValues.addAll(values);
-        }
-        return orderedValues;
-    }
-
-    @SuppressWarnings("unused")
-    public List<Object> getOrderedValues(boolean reload) {
-        if (reload) {
-            orderedValues.clear();
-        }
-        return getOrderedValues();
-    }
-
-    public void join(TypedValue tv) {
-        if (type != tv.getType()) {
-            throw new IllegalArgumentException("Can't join values of different types: " + type.getName() + " vs " + tv.getType().getName());
-        }
-        values.addAll(tv.getValues());
-        orderedValues.clear();
-    }
 }

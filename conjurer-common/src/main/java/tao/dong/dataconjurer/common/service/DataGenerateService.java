@@ -6,6 +6,7 @@ import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Reference;
+import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.model.TypedValue;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataGenerateTask;
@@ -135,7 +136,7 @@ public class DataGenerateService {
     private void joinReferencedValues(Map<Reference, TypedValue> referencedValues, Map<Reference, TypedValue> toJoin) {
         for (var entry : toJoin.entrySet()) {
             var newValue = entry.getValue();
-            var typeVal = referencedValues.computeIfAbsent(entry.getKey(), k -> new TypedValue(newValue.getType()));
+            var typeVal = referencedValues.computeIfAbsent(entry.getKey(), k -> new SimpleTypedValue(newValue.getType()));
             typeVal.join(newValue);
         }
     }

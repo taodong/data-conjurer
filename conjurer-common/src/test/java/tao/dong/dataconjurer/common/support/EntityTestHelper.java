@@ -15,6 +15,7 @@ import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
 import tao.dong.dataconjurer.common.model.PropertyInputControl;
+import tao.dong.dataconjurer.common.model.PropertyLink;
 import tao.dong.dataconjurer.common.model.PropertyOutputControl;
 import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.model.Reference;
@@ -59,9 +60,9 @@ public class EntityTestHelper {
 
     public void createSimpleBlueprintDataWithReference(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
         createSimpleBlueprintData(data, idMap);
-        data.get(createEntityWrapperIdNoOrder("t2")).createReferenced("t2p0");
-        data.get(createEntityWrapperIdNoOrder("t3")).createReferenced("t3p0");
-        data.get(createEntityWrapperIdNoOrder("t4")).createReferenced("t4p0");
+        data.get(createEntityWrapperIdNoOrder("t2")).createReferenced(new PropertyLink("t2p0", null));
+        data.get(createEntityWrapperIdNoOrder("t3")).createReferenced(new PropertyLink("t3p0", null));
+        data.get(createEntityWrapperIdNoOrder("t4")).createReferenced(new PropertyLink("t4p0", null));
     }
 
 
