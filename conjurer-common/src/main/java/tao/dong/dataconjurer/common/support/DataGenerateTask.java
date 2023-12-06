@@ -9,6 +9,7 @@ import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.LinkedTypedValue;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.ReferenceStrategy;
+import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.model.TypedValue;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
 
 import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.INDEX;
 import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.MISC;
@@ -63,6 +65,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         while (recordNum < entityWrapper.getCount() && collision < config.getMaxIndexCollision()) {
             var dataRow = generateRecord(referenceIndexTracker, deferredProperties, recordNum);
             collision = generateDeferredProperties(dataRow, referenceIndexTracker, deferredProperties, collision);
+            populateReferencedValues(dataRow);
             if (isValidRecord(dataRow)) {
                 entityWrapper.getValues().add(dataRow);
                 recordNum++;
@@ -79,6 +82,23 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                                                           entityWrapper.getId(), collision, recordNum),
                                             entityWrapper.getId().getIdString()
             );
+        }
+    }
+
+    private void populateReferencedValues(List<Object> dataRow) {
+        Function<String, Object> getPropValue = propName -> dataRow.get(entityWrapper.getPropertyOrders().get(propName));
+        for (var entry : entityWrapper.getReferenced().entrySet()) {
+            var propertyName = entry.getKey();
+            var typedValue = entry.getValue();
+            if (typedValue instanceof SimpleTypedValue stv) {
+                stv.addValue(getPropValue.apply(propertyName));
+            } else if (typedValue instanceof LinkedTypedValue ltv) {
+                var linked = ltv.getLinked();
+                ltv.addLinkedValue(
+                        String.valueOf(getPropValue.apply(linked)),
+                        getPropValue.apply(propertyName)
+                );
+            }
         }
     }
 
@@ -192,9 +212,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
             } else {
                 val = entityWrapper.getGenerators().get(propertyName).generate();
             }
-//            if (entityWrapper.getReferenced().containsKey(propertyName)) {
-//                ((SimpleTypedValue)entityWrapper.getReferenced().get(propertyName)).addValue(val); // TODO: ...
-//            }
+
             dataRow.add(val);
         }
 
