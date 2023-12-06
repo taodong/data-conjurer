@@ -55,6 +55,7 @@ public class EntityWrapper {
     private final Map<String, String> aliases = new HashMap<>();
     private final Map<String, String> refStrategy = new HashMap<>();
     private final Map<String, List<Object>> entries = new HashMap<>();
+    private final Map<String, Integer> propertyOrders = new HashMap<>();
     private String msg;
 
     @Getter(AccessLevel.PRIVATE)
@@ -154,6 +155,7 @@ public class EntityWrapper {
             propertyTypes.add(property.type());
             typeMap.put(property.name(), property.type());
             generators.put(property.name(), matchValueGenerator(property, inputControl));
+            propertyOrders.put(property.name(), propIndex);
             propIndex++;
         }
     }
@@ -271,8 +273,16 @@ public class EntityWrapper {
     public void createReferenced(PropertyLink... properties) {
         if (properties != null) {
             for (var prop : properties) {
-                referenced.computeIfAbsent(prop.name(), k -> createReferenceTypedValue(prop));
+                referenced.compute(prop.name(), (k, v) -> computeTypedValue(prop, v));
             }
+        }
+    }
+
+    TypedValue computeTypedValue(PropertyLink propertyLink, TypedValue currentValue) {
+        if (currentValue == null || (currentValue.getDataType() == TypedValue.DataType.SIMPLE && propertyLink.linked() != null)) {
+            return createReferenceTypedValue(propertyLink);
+        } else{
+            return currentValue;
         }
     }
 

@@ -60,7 +60,7 @@ class LinkedTypedValueTest {
         assertThrows(IllegalArgumentException.class, () -> ltv1.join(ltv2));
     }
 
-    private static Stream<Arguments> testGetOrderedValues() {
+    private static Stream<Arguments> testGetKeyedValues() {
         return Stream.of(
                 Arguments.of("k1", 2),
                 Arguments.of("k2", 1),
@@ -70,12 +70,21 @@ class LinkedTypedValueTest {
 
     @ParameterizedTest
     @MethodSource
-    void testGetOrderedValues(String key, int size) {
+    void testGetKeyedValues(String key, int size) {
         var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "ef");
         ltv1.addLinkedValue("k1", "v1");
         ltv1.addLinkedValue("k1", "v2");
         ltv1.addLinkedValue("k2", "v2");
-        assertEquals(size, ltv1.getOrderedValues(key).size());
+        assertEquals(size, ltv1.getKeyedValues(key).size());
+    }
+
+    @Test
+    void testGetOrderedValues() {
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "ef");
+        ltv1.addLinkedValue("k1", "v1");
+        ltv1.addLinkedValue("k1", "v2");
+        ltv1.addLinkedValue("k2", "v3");
+        assertEquals(3, ltv1.getOrderedValues().size());
     }
 
 }

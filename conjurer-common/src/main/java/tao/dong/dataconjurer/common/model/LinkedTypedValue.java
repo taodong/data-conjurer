@@ -15,11 +15,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
-public class LinkedTypedValue extends TypedValue{
+public class LinkedTypedValue extends TypedValue {
     private final Map<String, Set<Object>> values = new HashMap<>();
     private final String linked;
-    @Getter(AccessLevel.PACKAGE)
+    @Getter(AccessLevel.NONE)
     private final Map<String, List<Object>> orderedValues = new HashMap<>();
+    private final List<String> orderedKeys = new ArrayList<>();
+    private final List<Object> allValues = new ArrayList<>();
 
     public LinkedTypedValue(PropertyType type, String linked) {
         super(type);
@@ -34,8 +36,20 @@ public class LinkedTypedValue extends TypedValue{
         }
     }
 
-    public List<Object> getOrderedValues(String key) {
+    public List<Object> getKeyedValues(String key) {
         return orderedValues.computeIfAbsent(key, k -> new ArrayList<>(values.computeIfAbsent(k, k1 -> Collections.emptySet())));
+    }
+
+    public List<String> getOrderedKeys() {
+        if (orderedKeys.isEmpty()) {
+            orderedKeys.addAll(orderedValues.keySet());
+        }
+        return orderedKeys;
+    }
+
+    @Override
+    public List<Object> getOrderedValues() {
+        return allValues.isEmpty() ? values.values().stream().flatMap(Collection::stream).toList() : allValues;
     }
 
     @Override
@@ -46,6 +60,8 @@ public class LinkedTypedValue extends TypedValue{
     @Override
     public void clearOrderedValues() {
         orderedValues.clear();
+        allValues.clear();
+        orderedKeys.clear();
     }
 
     @Override

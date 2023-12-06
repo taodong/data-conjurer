@@ -27,6 +27,7 @@ public class SimpleTypedValue extends TypedValue {
         }
     }
 
+    @Override
     public List<Object> getOrderedValues() {
         if (orderedValues.isEmpty()) {
             orderedValues.addAll(values);

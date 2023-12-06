@@ -3,6 +3,8 @@ package tao.dong.dataconjurer.common.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Getter
 public abstract class TypedValue {
@@ -12,6 +14,7 @@ public abstract class TypedValue {
     public abstract DataType getDataType();
     public abstract void join(TypedValue tv);
     public abstract void clearOrderedValues();
+    public abstract List<Object> getOrderedValues();
 
     public enum DataType {
         SIMPLE,LINKED
