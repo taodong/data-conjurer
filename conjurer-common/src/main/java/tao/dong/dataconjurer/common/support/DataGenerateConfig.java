@@ -9,8 +9,6 @@ import java.time.Duration;
 @Data
 public class DataGenerateConfig {
     @Builder.Default
-    private int handlerCount = 1; // Threads to generate data
-    @Builder.Default
     private Duration entityGenTimeOut = Duration.ofMinutes(5); // Data generation timeout for single entity
     @Builder.Default
     private int maxIndexCollision = 100; // Max occurrence of generated records has none unique index per entity

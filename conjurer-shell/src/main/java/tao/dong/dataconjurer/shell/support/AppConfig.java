@@ -46,7 +46,6 @@ public class AppConfig {
     @Bean
     public DataGenerateConfig dataGenerateConfig(DataGenerationProperties dataGenerationProperties) {
         return DataGenerateConfig.builder()
-                .handlerCount(dataGenerationProperties.getHandlerCount())
                 .entityGenTimeOut(dataGenerationProperties.getEntityGenTimeOut())
                 .maxIndexCollision(dataGenerationProperties.getMaxIndexCollision())
                 .partialResult(dataGenerationProperties.isPartialResult())

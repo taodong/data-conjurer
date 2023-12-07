@@ -11,7 +11,7 @@ public record PropertyInputControl(
         @Valid List<PropertyValueDistribution> values,
         String defaultValue,
         String referenceStrategy,
-        List<Constraint<?>> constraints
+        List<@Valid Constraint<?>> constraints
 ) {
     @Override
     public boolean equals(Object obj) {

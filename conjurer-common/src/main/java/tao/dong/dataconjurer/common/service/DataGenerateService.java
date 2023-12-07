@@ -6,7 +6,6 @@ import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Reference;
-import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.model.TypedValue;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataGenerateTask;
@@ -34,8 +33,7 @@ public class DataGenerateService {
     private void generateEntityData(DataBlueprint blueprint, DataGenerateConfig config) {
         var entityMap = blueprint.getEntities();
         var entityIdMap = blueprint.getEntityWrapperIds();
-        var pool = Executors.newFixedThreadPool(config.getHandlerCount());
-        try {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var processed = 0;
             var timeout = System.currentTimeMillis() + config.getDataGenTimeOut().toMillis();
             while (processed <= entityMap.size() - 1 && System.currentTimeMillis() < timeout) {
@@ -49,7 +47,7 @@ public class DataGenerateService {
                         final var latch = new CountDownLatch(runners.size());
                         var futures = runners.stream()
                                         .map(target -> createDataGenerateTask(target, entityMap, entityIdMap, latch, config))
-                                        .map(pool::submit)
+                                        .map(executor::submit)
                                         .toList();
 
                         var lrs = latch.await(config.getEntityGenTimeOut().getSeconds(), TimeUnit.SECONDS);
@@ -86,8 +84,6 @@ public class DataGenerateService {
             if (processed < entityMap.size()) {
                 failDataGeneration(entityMap.values(), "Data generation timeout after " + config.getDataGenTimeOut().toSeconds() + " seconds.");
             }
-        } finally {
-            pool.shutdown();
         }
     }
 

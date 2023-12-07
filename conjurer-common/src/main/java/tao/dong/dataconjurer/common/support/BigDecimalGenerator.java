@@ -10,12 +10,13 @@ import tao.dong.dataconjurer.common.model.Precision;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import static tao.dong.dataconjurer.common.model.ConstraintType.CORRELATION;
 import static tao.dong.dataconjurer.common.model.ConstraintType.NUMBER_RANGE;
 import static tao.dong.dataconjurer.common.model.ConstraintType.PRECISION;
 
 
 public class BigDecimalGenerator extends ValueGeneratorDecorator<BigDecimal>{
-    private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(NUMBER_RANGE, PRECISION);
+    private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(NUMBER_RANGE, PRECISION, CORRELATION);
 
     public BigDecimalGenerator(Set<Constraint<?>> constraints) {
         super(constraints);

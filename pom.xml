@@ -31,6 +31,7 @@
 		<jgrapht.version>1.5.2</jgrapht.version>
 		<java.faker.version>1.0.2</java.faker.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
+		<evalex.version>3.1.0</evalex.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -101,6 +102,11 @@
 				<groupId>org.yaml</groupId>
 				<artifactId>snakeyaml</artifactId>
 				<version>${snakeyaml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.ezylang</groupId>
+				<artifactId>EvalEx</artifactId>
+				<version>${evalex.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

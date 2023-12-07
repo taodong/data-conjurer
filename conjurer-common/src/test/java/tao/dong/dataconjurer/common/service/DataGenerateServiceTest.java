@@ -41,7 +41,7 @@ class DataGenerateServiceTest {
     void testGenerateData() {
         Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
-        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
+        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().build();
         DataGenerateService service = new DataGenerateService();
         TEST_HELPER.createSimpleBlueprintDataWithReference(entityMap, idMap);
         var blueprint = new DataBlueprint();
@@ -60,7 +60,7 @@ class DataGenerateServiceTest {
     void testGenerateData_MultiplePlan() {
         Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
-        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().handlerCount(2).build();
+        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().build();
         DataGenerateService service = new DataGenerateService();
         createTestEntityMapWithMultiplePlan(entityMap, idMap);
         var blueprint = new DataBlueprint();

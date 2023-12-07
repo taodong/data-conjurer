@@ -10,7 +10,6 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "data")
 @Data
 public class DataGenerationProperties {
-    private int handlerCount;
     private Duration entityGenTimeOut;
     private int maxIndexCollision;
     private boolean partialResult;

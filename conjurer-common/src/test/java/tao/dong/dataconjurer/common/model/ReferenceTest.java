@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-// TODO: ...
 class ReferenceTest {
 
     private static Validator validator;
@@ -26,9 +25,9 @@ class ReferenceTest {
     private static Stream<Arguments> testNotBlank() {
         return Stream.of(
                 Arguments.of(null, "abc", null),
-                Arguments.of("ebc", null, null),
+                Arguments.of("ebc", null, "null"),
                 Arguments.of("", "abc", null),
-                Arguments.of(" ", "   ", null)
+                Arguments.of(" ", "   ", "efg")
         );
     }
 

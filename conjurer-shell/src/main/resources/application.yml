@@ -3,7 +3,6 @@ spring:
     web-application-type: none
 
 data:
-  handler-count: 2
   entity-gen-timeout: PT5M
   max-index-collision: 50
   partial-result: false

@@ -263,7 +263,6 @@ public class EntityWrapper {
             if (valueCategory.isPresent()) {
                 var vc = valueCategory.get();
                 var dataProvider = getDataProvider(DataProviderType.getByTypeName(vc.name()), dataProviderApi);
-                // Override to lightweight thread when updating to 21
                 var values = dataProvider.fetch(Math.toIntExact(count), vc.qualifier(), vc.locale(), null);
                 return new ElectedValueSelector(values, ReferenceStrategy.LOOP);
             }

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public record EntityProperty(@NotBlank(message = "Property name is required") String name,
                              @NotNull(message = "Property type ${validatedValue} is either missing or unsupported") PropertyType type,
-                             EntityIndex index, List<Constraint<?>> constraints,
+                             EntityIndex index, List<@Valid Constraint<?>> constraints,
                              @Valid Reference reference) {
 
     public Set<Constraint<?>> getPropertyConstraints() {
