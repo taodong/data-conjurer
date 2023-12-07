@@ -87,4 +87,13 @@ class LinkedTypedValueTest {
         assertEquals(3, ltv1.getOrderedValues().size());
     }
 
+    @Test
+    void testGetOrderedKeys() {
+        var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "ef");
+        ltv1.addLinkedValue("k1", "v1");
+        ltv1.addLinkedValue("k1", "v2");
+        ltv1.addLinkedValue("k2", "v3");
+        assertEquals(2, ltv1.getOrderedKeys().size());
+    }
+
 }

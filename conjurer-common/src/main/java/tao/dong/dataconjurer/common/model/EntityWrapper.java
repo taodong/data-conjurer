@@ -8,6 +8,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
+import tao.dong.dataconjurer.common.support.DataGenerationErrorType;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
@@ -67,7 +69,7 @@ public class EntityWrapper {
         this.entity = entity;
         this.count = data.count();
         this.id = new EntityWrapperId(entity.name(), data.dataId());
-        var indexedProps = new HashMap<Integer, Set<Integer>>();
+        var indexedProps = new HashMap<Integer, Map<Integer, EntityIndex>>();
         var hiddenProps = new HashSet<String>();
         var propInputs = DataHelper.streamNullableCollection(data.properties()).collect(Collectors.toMap(PropertyInputControl::name, Function.identity()));
 
@@ -78,7 +80,7 @@ public class EntityWrapper {
         if (data.entries() != null && CollectionUtils.isNotEmpty(data.entries().values())) {
             saveEntries(data.entries());
         }
-        createIndex(indexedProps);
+        createIndexes(indexedProps);
     }
 
     void saveEntries(@NotNull EntityEntry entry) {
@@ -104,14 +106,51 @@ public class EntityWrapper {
         return IntStream.range(0, props.size()).mapToObj(i -> converter.convert(rc.get(i), typeMap.get(props.get(i)))).toList();
     }
 
-    void createIndex(Map<Integer, Set<Integer>> indexedProps) {
+    void createIndexes(Map<Integer, Map<Integer, EntityIndex>> indexedProps) {
         if (!indexedProps.isEmpty()) {
-            for (var ii : indexedProps.values()) {
-                indexes.add(new IndexedValue(
-                        ii.stream().mapToInt(Integer::intValue).toArray()
-                ));
+            for (var indexDefs : indexedProps.values()) {
+                indexes.add(createIndex(indexDefs));
             }
         }
+    }
+
+    UniqueIndex<?> createIndex(Map<Integer, EntityIndex> indexDefs) {
+        boolean first = true;
+        int type = 0;
+        int parent = -1;
+        int child = -1;
+        var ids = new ArrayList<Integer>();
+        for (var entry : indexDefs.entrySet()) {
+            var propIndex = entry.getKey();
+            ids.add(propIndex);
+            var def = entry.getValue();
+            if (first) {
+                type = def.type();
+                first = false;
+            } else if (type != def.type()) {
+                throw new DataGenerateException(DataGenerationErrorType.INDEX,
+                        "Multiple index types defined under the same id %d in %s".formatted(def.id(), getEntityName()));
+            }
+
+            if (type == 2 && def.qualifier() == 1) {
+                parent = propIndex;
+            } else if (type == 2 && def.qualifier() == 2) {
+                child = propIndex;
+            }
+        }
+
+        if (type == 2 && (parent < 0 || child < 0)) {
+            throw new DataGenerateException(DataGenerationErrorType.INDEX,
+                    "Missing qualifier for type 2 index under in %s".formatted(getEntityName()));
+        }
+
+        Function<List<Integer>, int[]> convertToArray = list -> list.stream().mapToInt(x -> x).toArray();
+        return switch (type) {
+            case 1 -> new UnorderedIndexedValue(convertToArray.apply(ids));
+            case 2 -> new NonCircleIndexValue(convertToArray.apply(ids), parent, child);
+            default -> new IndexedValue(convertToArray.apply(ids));
+        };
+
     }
 
     void processOutputControl(EntityOutputControl outputControl, Set<String> hiddenProps) {
@@ -126,7 +165,7 @@ public class EntityWrapper {
         }
      }
 
-    void processProperties(Map<Integer, Set<Integer>> indexedProps, Set<String> hiddenProps, Map<String, PropertyInputControl> propInputs) {
+    void processProperties(Map<Integer, Map<Integer, EntityIndex>> indexedProps, Set<String> hiddenProps, Map<String, PropertyInputControl> propInputs) {
         var propIndex = 0;
 
         for (var property : entity.properties()) {
@@ -137,7 +176,7 @@ public class EntityWrapper {
             }
             // Extract indexed properties
             if (property.index() != null) {
-                DataHelper.appendToSetValueInMap(indexedProps, property.index().id(), propIndex); // TODO:...
+                indexedProps.computeIfAbsent(property.index().id(), k -> new HashMap<>()).put(propIndex, property.index());
             }
             // Populate hidden index
             if (hiddenProps.contains(property.name())) {
@@ -303,7 +342,12 @@ public class EntityWrapper {
         if (properties != null) {
             for (var prop : properties) {
                 if (referenced.containsKey(prop)) {
-                    rs.put(new Reference(id.entityName(), prop, null), referenced.get(prop)); // TODO: ...
+                    var tv = referenced.get(prop);
+                    String linked = null;
+                    if (tv instanceof LinkedTypedValue ltv) {
+                        linked = ltv.getLinked();
+                    }
+                    rs.put(new Reference(id.entityName(), prop, linked), tv);
                 }
             }
         }

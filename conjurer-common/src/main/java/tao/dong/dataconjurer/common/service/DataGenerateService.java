@@ -136,8 +136,11 @@ public class DataGenerateService {
     private void joinReferencedValues(Map<Reference, TypedValue> referencedValues, Map<Reference, TypedValue> toJoin) {
         for (var entry : toJoin.entrySet()) {
             var newValue = entry.getValue();
-            var typeVal = referencedValues.computeIfAbsent(entry.getKey(), k -> new SimpleTypedValue(newValue.getType()));
-            typeVal.join(newValue);
+            if (referencedValues.containsKey(entry.getKey())) {
+                referencedValues.get(entry.getKey()).join(newValue);
+            } else {
+                referencedValues.put(entry.getKey(), newValue);
+            }
         }
     }
 

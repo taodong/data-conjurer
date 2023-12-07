@@ -42,7 +42,7 @@ public class LinkedTypedValue extends TypedValue {
 
     public List<String> getOrderedKeys() {
         if (orderedKeys.isEmpty()) {
-            orderedKeys.addAll(orderedValues.keySet());
+            orderedKeys.addAll(values.keySet());
         }
         return orderedKeys;
     }
