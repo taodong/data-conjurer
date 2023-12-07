@@ -1,7 +1,7 @@
 # data-conjurer
 A tool to generate data for MySQL Database
 ## Environment
-The tool needs java 17 or higher to run. The code is tested using Correto 17.
+The tool needs java 21. The code is developed using Temurin 21 JDK.
 ## Installation
 Before stable release, the binary file can be created through maven command after cloning the code
 ```shell
