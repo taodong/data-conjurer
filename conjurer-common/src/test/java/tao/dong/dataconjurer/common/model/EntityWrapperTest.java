@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -209,6 +210,18 @@ class EntityWrapperTest {
         when(wrapper.getDataProviderApi()).thenReturn(service);
         when(wrapper.getDataProvider(any(DataProviderType.class), any(V1DataProviderApi.class))).thenCallRealMethod();
         assertThrows(UnsupportedOperationException.class, () -> wrapper.getDataProvider(type, service));
+    }
+
+    @Test
+    void testGetPropertyOrder() {
+        var wrapper = TEST_HELPER.getSimpleEntityWrapper();
+        assertTrue(wrapper.getPropertyOrder("t1p1") >= 0);
+    }
+
+    @Test
+    void testGetPropertyOrder_NonExisting() {
+        var wrapper = TEST_HELPER.getSimpleEntityWrapper();
+        assertEquals(-1, wrapper.getPropertyOrder("abc"));
     }
 
 }

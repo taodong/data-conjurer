@@ -9,7 +9,7 @@ plan:
     - entity: "comment"
       count: 80
     - entity: "comment_comment"
-      count: 20
+      count: 30
       properties:
         - name: "parent"
           referenceStrategy: "loop"

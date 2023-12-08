@@ -13,6 +13,7 @@ import tao.dong.dataconjurer.common.support.DataGenerationErrorType;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
+import tao.dong.dataconjurer.common.support.NumberCalculator;
 import tao.dong.dataconjurer.common.support.StringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
@@ -57,7 +58,9 @@ public class EntityWrapper {
     private final Map<String, String> aliases = new HashMap<>();
     private final Map<String, String> refStrategy = new HashMap<>();
     private final Map<String, List<Object>> entries = new HashMap<>();
+    @Getter(AccessLevel.PRIVATE)
     private final Map<String, Integer> propertyOrders = new HashMap<>();
+    private final Set<String> correlated = new HashSet<>();
     private String msg;
 
     @Getter(AccessLevel.PRIVATE)
@@ -243,6 +246,11 @@ public class EntityWrapper {
                 return new WeightedValueGenerator(property.type(), providedValues, fallbackGenerator);
             }
         }
+
+        if (fallbackGenerator instanceof NumberCalculator) {
+            correlated.add(property.name());
+        }
+
         return fallbackGenerator;
     }
 
@@ -382,6 +390,10 @@ public class EntityWrapper {
         return values.stream()
                 .map(row -> DataHelper.removeIndexFromList(row, hiddenIndex))
                 .toList();
+    }
+
+    public int getPropertyOrder(String propertyName) {
+        return propertyOrders.getOrDefault(propertyName, -1);
     }
 
     @Override

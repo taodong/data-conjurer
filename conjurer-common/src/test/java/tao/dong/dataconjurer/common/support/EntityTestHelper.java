@@ -88,7 +88,7 @@ public class EntityTestHelper {
         DataHelper.appendToSetValueInMap(idMap, wrapper4.getEntityName(), wrapper4.getId());
     }
 
-    private EntityWrapper getSimpleEntityWrapper() {
+    public EntityWrapper getSimpleEntityWrapper() {
         return new EntityWrapper(createEntityT1(), createSimpleData(null, null), null, dataProviderApi);
     }
 

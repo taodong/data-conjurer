@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import tao.dong.dataconjurer.common.model.DeferredPropertyType;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.LinkedTypedValue;
@@ -13,6 +14,7 @@ import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.model.TypedValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.INDEX;
 import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.MISC;
@@ -64,7 +67,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         var collision = 0;
         while (recordNum < entityWrapper.getCount() && collision < config.getMaxIndexCollision()) {
             var dataRow = generateRecord(referenceIndexTracker, deferredProperties, recordNum);
-            collision = generateDeferredProperties(dataRow, referenceIndexTracker, deferredProperties, collision);
+            generateDeferredProperties(dataRow, referenceIndexTracker, deferredProperties);
             populateReferencedValues(dataRow);
             if (isValidRecord(dataRow)) {
                 entityWrapper.getValues().add(dataRow);
@@ -86,7 +89,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     private void populateReferencedValues(List<Object> dataRow) {
-        Function<String, Object> getPropValue = propName -> dataRow.get(entityWrapper.getPropertyOrders().get(propName));
+        Function<String, Object> getPropValue = propName -> dataRow.get(entityWrapper.getPropertyOrder(propName));
         for (var entry : entityWrapper.getReferenced().entrySet()) {
             var propertyName = entry.getKey();
             var typedValue = entry.getValue();
@@ -102,46 +105,57 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         }
     }
 
-    int generateDeferredProperties(List<Object> dataRow, Map<String, IndexValueGenerator> referenceIndexTracker,
-                                    List<String> deferredProperties, int collision) {
-        boolean generated = false;
+    private void generateDeferredProperties(List<Object> dataRow, Map<String, IndexValueGenerator> referenceIndexTracker,
+                                   Map<DeferredPropertyType, Collection<String>> deferredProperties) {
+        if (CollectionUtils.isNotEmpty(deferredProperties.get(DeferredPropertyType.INDEX))) {
+            generateDeferredIndexProperties(dataRow, referenceIndexTracker, deferredProperties.get(DeferredPropertyType.INDEX));
+        }
+        if (CollectionUtils.isNotEmpty(deferredProperties.get(DeferredPropertyType.CORRELATION))) {
+            generateCorrelatedProperties(dataRow, deferredProperties.get(DeferredPropertyType.CORRELATION));
+        }
+    }
+
+    private void generateCorrelatedProperties(List<Object> dataRow, Collection<String> properties) {
+        for (var property : properties) {
+            var generator = (NumberCalculator)entityWrapper.getGenerators().get(property);
+            var dependencies = generator.getParameters();
+            var params = dependencies.stream().collect(Collectors.toMap(
+                    Function.identity(),
+                    prop -> dataRow.get(entityWrapper.getPropertyOrder(prop))
+            ));
+            var val = generator.calculate(params);
+            dataRow.set(entityWrapper.getPropertyOrder(property), val);
+        }
+    }
+
+    private void generateDeferredIndexProperties(List<Object> dataRow, Map<String, IndexValueGenerator> referenceIndexTracker,
+                                    Collection<String> deferredProperties) {
         var propVals = new HashMap<String, Object>();
         if (!deferredProperties.isEmpty()) {
-            while (!generated && collision < config.getMaxIndexCollision()) {
-                var pillars = new HashMap<String, LinkedPair>();
-                propVals.clear();
-                try {
-                    for (var propertyName : deferredProperties) {
-                        var reference = entityWrapper.getReferences().get(propertyName);
-                        var linkedProp = reference.entity() + '_' + reference.linked();
-                        if (!pillars.containsKey(linkedProp)) {
-                            var pillarVal = getPillarValue(referenceIndexTracker, propertyName, linkedProp, reference);
-                            pillars.put(linkedProp, pillarVal);
-                            propVals.put(propertyName, pillarVal.value());
-                        } else {
-                            var key = pillars.get(linkedProp).key();
-                            var val = getLinkedValue(referenceIndexTracker, propertyName, reference, key);
-                            propVals.put(propertyName, val);
-                        }
+            var pillars = new HashMap<String, LinkedPair>();
+            try {
+                for (var propertyName : deferredProperties) {
+                    var reference = entityWrapper.getReferences().get(propertyName);
+                    var linkedProp = reference.entity() + '_' + reference.linked();
+                    if (!pillars.containsKey(linkedProp)) {
+                        var pillarVal = getPillarValue(referenceIndexTracker, propertyName, linkedProp, reference);
+                        pillars.put(linkedProp, pillarVal);
+                        propVals.put(propertyName, pillarVal.value());
+                    } else {
+                        var key = pillars.get(linkedProp).key();
+                        var val = getLinkedValue(referenceIndexTracker, propertyName, reference, key);
+                        propVals.put(propertyName, val);
                     }
-
-                    if (propVals.size() == deferredProperties.size()) {
-                        generated = true;
-                    }
-                } catch (IndexOutOfBoundsException e) {
-                    LOG.warn("Failed to generate deferred property value");
-                    collision++;
                 }
+            } catch (IndexOutOfBoundsException e) {
+                throw new DataGenerateException(INDEX,
+                        "Failed to generate deferred index property value for entity %s".formatted(entityWrapper.getId()), e);
             }
 
-            if (generated) {
-                for (var propEntry : propVals.entrySet()) {
-                    dataRow.set(entityWrapper.getPropertyOrders().get(propEntry.getKey()), propEntry.getValue());
-                }
+            for (var propEntry : propVals.entrySet()) {
+                dataRow.set(entityWrapper.getPropertyOrder(propEntry.getKey()), propEntry.getValue());
             }
         }
-
-        return collision;
     }
 
     private Object getLinkedValue(Map<String, IndexValueGenerator> referenceIndexTracker, String propertyName, Reference reference, String key) {
@@ -165,9 +179,13 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         return new LinkedPair(key, val);
     }
 
-    List<String> getDeferredProperties() {
-        return entityWrapper.getReferences().entrySet().stream().filter(entry -> entry.getValue().linked() != null)
+    private Map<DeferredPropertyType, Collection<String>> getDeferredProperties() {
+        var deferred = new HashMap<DeferredPropertyType, Collection<String>>();
+        deferred.put(DeferredPropertyType.CORRELATION, entityWrapper.getCorrelated());
+        var linked = entityWrapper.getReferences().entrySet().stream().filter(entry -> entry.getValue().linked() != null)
                 .map(Map.Entry::getKey).distinct().toList();
+        deferred.put(DeferredPropertyType.INDEX, linked);
+        return deferred;
     }
 
     private boolean isValidRecord(List<Object> dataRow) {
@@ -190,9 +208,10 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         return valid;
     }
 
-    private List<Object> generateRecord(Map<String, IndexValueGenerator> referenceIndexTracker, List<String> deferredProperties, long recordNum) {
+    private List<Object> generateRecord(Map<String, IndexValueGenerator> referenceIndexTracker, Map<DeferredPropertyType, Collection<String>> deferredProperties, long recordNum) {
 
         List<Object> dataRow = new ArrayList<>(entityWrapper.getProperties().size());
+        var deferred = deferredProperties.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
         for (String propertyName : entityWrapper.getProperties()) {
             Object val;
             if (entityWrapper.getEntries().containsKey(propertyName) && entityWrapper.getEntries().get(propertyName).size() >= recordNum) {
@@ -204,7 +223,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                     throw new DataGenerateException(REFERENCE,
                                                     String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
                 }
-                if (!deferredProperties.contains(propertyName)) {
+                if (!deferred.contains(propertyName)) {
                     val = retrieveReferencedValue(referenceIndexTracker, propertyName, reference);
                 } else {
                     val = null;

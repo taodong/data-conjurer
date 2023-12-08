@@ -7,8 +7,8 @@ import lombok.Setter;
 public class SequenceGenerator implements ValueGenerator<Long> {
 
     @Setter
-    protected long current = 1;
-    protected long leap = 1;
+    protected long current;
+    protected long leap;
 
     public SequenceGenerator(long current, long leap) {
         this.current = current;
