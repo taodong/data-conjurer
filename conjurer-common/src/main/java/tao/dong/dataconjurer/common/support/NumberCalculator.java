@@ -2,6 +2,7 @@ package tao.dong.dataconjurer.common.support;
 
 import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.Expression;
+import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.parser.ParseException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,11 +20,17 @@ import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.CALCU
 @Getter
 public class NumberCalculator implements ValueGenerator<BigDecimal> {
 
+    private final ExpressionConfiguration expressionConfiguration = ExpressionConfiguration.defaultConfiguration()
+            .withAdditionalFunctions(
+            Map.entry("TIME_AFTER", new TimeAfterFunction()),
+            Map.entry("PAST_TIME_AFTER", new PastTimeAfterFunction())
+            );
+
     private final Set<String> parameters = new HashSet<>();
     private final Expression formula;
 
     public NumberCalculator(@NotBlank String formulaStr, @NotEmpty Collection<String> parameters) {
-        this.formula = new Expression(formulaStr);
+        this.formula = new Expression(formulaStr, expressionConfiguration);
         this.parameters.addAll(parameters);
     }
 

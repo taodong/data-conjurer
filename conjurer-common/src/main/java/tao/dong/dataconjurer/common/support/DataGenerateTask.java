@@ -124,7 +124,12 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                     prop -> dataRow.get(entityWrapper.getPropertyOrder(prop))
             ));
             var val = generator.calculate(params);
-            dataRow.set(entityWrapper.getPropertyOrder(property), val);
+            var propOrder = entityWrapper.getPropertyOrder(property);
+            switch (entityWrapper.getPropertyTypes().get(propOrder)) {
+                case DATETIME, DATE -> dataRow.set(propOrder, val.longValue());
+                default -> dataRow.set(propOrder, val);
+            }
+
         }
     }
 
@@ -214,20 +219,18 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         var deferred = deferredProperties.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
         for (String propertyName : entityWrapper.getProperties()) {
             Object val;
-            if (entityWrapper.getEntries().containsKey(propertyName) && entityWrapper.getEntries().get(propertyName).size() >= recordNum) {
+            if (entityWrapper.getEntries().containsKey(propertyName) && entityWrapper.getEntries().get(propertyName).size() > recordNum) {
               val = entityWrapper.getEntries().get(propertyName).get((int)recordNum);
+            } else if (deferred.contains(propertyName)) {
+                val = null;
             } else if (entityWrapper.getReferences().containsKey(propertyName)) {
                 var reference = entityWrapper.getReferences().get(propertyName);
                 var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);
                 if (Boolean.FALSE.equals(ready)) {
                     throw new DataGenerateException(REFERENCE,
-                                                    String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
+                            String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
                 }
-                if (!deferred.contains(propertyName)) {
-                    val = retrieveReferencedValue(referenceIndexTracker, propertyName, reference);
-                } else {
-                    val = null;
-                }
+                val = retrieveReferencedValue(referenceIndexTracker, propertyName, reference);
             } else {
                 val = entityWrapper.getGenerators().get(propertyName).generate();
             }
