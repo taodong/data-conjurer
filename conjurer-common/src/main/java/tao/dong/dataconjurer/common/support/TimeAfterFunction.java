@@ -7,6 +7,7 @@ import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 
 @FunctionParameter(name = "anchor")
 public class TimeAfterFunction extends AbstractFunction {
@@ -14,7 +15,9 @@ public class TimeAfterFunction extends AbstractFunction {
     public EvaluationValue evaluate(Expression expression, Token token, EvaluationValue... evaluationValues) {
         var anchor = evaluationValues[0];
         var min = anchor.getNumberValue().longValue() + 1;
-        var rs = new BigDecimal(RandomLongGenerator.builder().minInclusive(min).build().generate());
+        var cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, 10);
+        var rs = new BigDecimal(RandomLongGenerator.builder().minInclusive(min).maxExclusive(cal.getTimeInMillis()).build().generate());
         return EvaluationValue.numberValue(rs);
     }
 }

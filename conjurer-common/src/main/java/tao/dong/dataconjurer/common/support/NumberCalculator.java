@@ -20,7 +20,7 @@ import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.CALCU
 @Getter
 public class NumberCalculator implements ValueGenerator<BigDecimal> {
 
-    private final ExpressionConfiguration expressionConfiguration = ExpressionConfiguration.defaultConfiguration()
+    private static final ExpressionConfiguration EXPRESSION_CONFIGURATION = ExpressionConfiguration.defaultConfiguration()
             .withAdditionalFunctions(
             Map.entry("TIME_AFTER", new TimeAfterFunction()),
             Map.entry("PAST_TIME_AFTER", new PastTimeAfterFunction())
@@ -30,7 +30,7 @@ public class NumberCalculator implements ValueGenerator<BigDecimal> {
     private final Expression formula;
 
     public NumberCalculator(@NotBlank String formulaStr, @NotEmpty Collection<String> parameters) {
-        this.formula = new Expression(formulaStr, expressionConfiguration);
+        this.formula = new Expression(formulaStr, EXPRESSION_CONFIGURATION);
         this.parameters.addAll(parameters);
     }
 
