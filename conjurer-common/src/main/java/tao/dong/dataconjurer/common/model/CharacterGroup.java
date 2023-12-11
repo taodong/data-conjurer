@@ -11,7 +11,7 @@ public record CharacterGroup(Set<String> groups) implements Constraint<String> {
 
     @Override
     public boolean isMet(String val) {
-        return groups != null && groups.contains(val);
+        return val != null && groups != null && groups.contains(val);
     }
 
     @Override

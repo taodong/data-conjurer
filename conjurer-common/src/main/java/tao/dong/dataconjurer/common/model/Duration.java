@@ -52,6 +52,6 @@ public class Duration implements Constraint<Long> {
 
     @Override
     public ConstraintType getType() {
-        return DURATION;
+        return valueRange.getType();
     }
 }

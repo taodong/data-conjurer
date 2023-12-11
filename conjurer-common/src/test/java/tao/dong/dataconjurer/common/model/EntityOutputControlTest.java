@@ -14,13 +14,14 @@ class EntityOutputControlTest {
     private static Stream<Arguments> testEquals(){
         return Stream.of(
                 Arguments.of(new EntityOutputControl("entity1", Set.of()), new EntityOutputControl("entity1", null), true),
-                Arguments.of(new EntityOutputControl("entity1", Set.of()), new EntityOutputControl("entity2", Set.of()), false)
+                Arguments.of(new EntityOutputControl("entity1", Set.of()), new EntityOutputControl("entity2", Set.of()), false),
+                Arguments.of(new EntityOutputControl("entity1", Set.of()), "string", false)
         );
     }
 
     @ParameterizedTest
     @MethodSource
-    void testEquals(EntityOutputControl control1, EntityOutputControl control2, boolean expected) {
+    void testEquals(EntityOutputControl control1, Object control2, boolean expected) {
         assertEquals(expected, control1.equals(control2));
     }
 }
