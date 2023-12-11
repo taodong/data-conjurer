@@ -4,17 +4,16 @@ entities:
     properties:
       - name: "id"
         type: "sequence"
-        idIndex: 1
+        index:
+          id: 0
       - name: "name"
         type: "text"
-        required: true
         constraints:
           - type: size
             min: 5
             max: 20
       - name: "code"
         type: "text"
-        required: true
         constraints:
           - type: length
             max: 2
@@ -22,10 +21,10 @@ entities:
     properties:
       - name: "id"
         type: "sequence"
-        idIndex: 1
+        index:
+          id: 0
       - name: "name"
         type: "text"
-        required: true
         constraints:
           - type: size
             min: 5
@@ -46,7 +45,6 @@ entities:
             max: 2
       - name: "country"
         type: "sequence"
-        required: true
         reference:
           entity: "country"
           property: "id"
