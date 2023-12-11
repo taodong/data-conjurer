@@ -32,6 +32,7 @@ The following configurations can be used to control behaviors of this tool
 | i            | wait-interval  | Wait interval of data generation service to check entity status updates in seconds | 10 seconds |
 | p            | partial-result | Allow partial results of entity generation                                         | false      |
 | t            | timeout        | Program execution timeout in minutes                                               | 15 minutes |
+
 The following is the output of `java -jar conjurer-shell/target/data-conjurer.jar -h`
 ```shell
 Usage: conjure [-hpV] [-c=<maxCollision>] [-e=<timeOutInMinutes>]
