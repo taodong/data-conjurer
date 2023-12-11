@@ -57,6 +57,32 @@ class ConjureCommandTest {
         assertEquals(0, exitCode);
     }
 
+    @Test
+    void testOption() {
+        YamlFileService yamlFileService = mock(YamlFileService.class);
+        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        String[] args = {"-e", "15", "-c", "200", "-i", "30", "-t", "60", "-p", "true", "schema.yaml"};
+        new CommandLine(conjureCommand).parseArgs(args);
+        assertEquals(15, conjureCommand.getTimeOutInMinutes());
+        assertEquals(200, conjureCommand.getMaxCollision());
+        assertEquals(30, conjureCommand.getGenerationInterval());
+        assertEquals(60, conjureCommand.getMaxTimeout());
+        assertEquals(true, conjureCommand.getPartialResult());
+    }
+
+    @Test
+    void testOption_LongOption() {
+        YamlFileService yamlFileService = mock(YamlFileService.class);
+        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        String[] args = {"--entity-timeout", "15", "--max-collision", "200", "--wait-interval", "30", "--timeout", "60", "--partial-result", "true", "schema.yaml"};
+        new CommandLine(conjureCommand).parseArgs(args);
+        assertEquals(15, conjureCommand.getTimeOutInMinutes());
+        assertEquals(200, conjureCommand.getMaxCollision());
+        assertEquals(30, conjureCommand.getGenerationInterval());
+        assertEquals(60, conjureCommand.getMaxTimeout());
+        assertEquals(true, conjureCommand.getPartialResult());
+    }
+
     private String getFilePathForClassPathResource(String resource) throws URISyntaxException {
         return Path.of(ClassLoader.getSystemResource(resource).toURI()).toString();
     }

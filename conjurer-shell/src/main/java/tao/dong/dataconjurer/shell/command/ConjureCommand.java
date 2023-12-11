@@ -2,6 +2,8 @@ package tao.dong.dataconjurer.shell.command;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -31,6 +34,7 @@ import static picocli.CommandLine.ExitCode.USAGE;
 @Command(name = "conjure", mixinStandardHelpOptions = true, version = "checksum 4.0",
                      description = "Command to generate data")
 @Slf4j
+@Getter(AccessLevel.PACKAGE)
 public class ConjureCommand  implements Callable<Integer> {
 
     @SuppressWarnings("unused")
@@ -39,6 +43,22 @@ public class ConjureCommand  implements Callable<Integer> {
     @SuppressWarnings("unused")
     @Parameters(index = "1", description = "Data generation plan")
     private File plan;
+
+    @SuppressWarnings("unused")
+    @CommandLine.Option(names = {"-e", "--entity-timeout"}, description = "Single entity generation timeout in minutes")
+    private Integer timeOutInMinutes;
+    @SuppressWarnings("unused")
+    @CommandLine.Option(names= {"-c", "--max-collision"}, description = "Max occurrence of generated records which violate index constraints")
+    private Integer maxCollision;
+    @SuppressWarnings("unused")
+    @CommandLine.Option(names= {"-i", "--wait-interval"}, description = "Wait interval of data generation service to check entity status updates in seconds")
+    private Integer generationInterval;
+    @SuppressWarnings("unused")
+    @CommandLine.Option(names = {"-t", "--timeout"}, description = "Program execution timeout in minutes")
+    private Integer maxTimeout;
+    @SuppressWarnings("unused")
+    @CommandLine.Option(names={"-p", "--partial-result"}, description = "Allow partial results of entity generation")
+    private Boolean partialResult;
 
     private final YamlFileService yamlFileService;
     private final Validator validator;
@@ -73,13 +93,23 @@ public class ConjureCommand  implements Callable<Integer> {
             var outputControl = mysqlPlan.getOutput();
             var dataPlan = setDefaultDataPlanValuesForMySQL(rawPlan);
             validateInput(dataPlan, "plan", planPath);
-            var generated = sqlService.generateSQLs(dataSchema, dataGenerateConfig, outputControl, dataPlan);
+            var generated = sqlService.generateSQLs(dataSchema, updatedConfig(), outputControl, dataPlan);
             fileOutputService.generateSQLFiles(generated);
         } catch (IOException ioe) {
             LOG.error("Invalid input", ioe);
             exitCode = USAGE;
         }
         return exitCode;
+    }
+
+    private DataGenerateConfig updatedConfig() {
+        return DataGenerateConfig.builder()
+                .dataGenTimeOut(maxTimeout == null ? dataGenerateConfig.getDataGenTimeOut() : Duration.ofMinutes(maxTimeout))
+                .maxIndexCollision(maxCollision == null ? dataGenerateConfig.getMaxIndexCollision() : maxCollision)
+                .dataGenCheckInterval(generationInterval == null? dataGenerateConfig.getDataGenCheckInterval() : Duration.ofSeconds(generationInterval))
+                .entityGenTimeOut(timeOutInMinutes == null ? dataGenerateConfig.getEntityGenTimeOut() : Duration.ofMinutes(timeOutInMinutes))
+                .partialResult(partialResult == null ? dataGenerateConfig.isPartialResult() : partialResult)
+                .build();
     }
 
     private <T> void validateInput(T input, String name, Path filePath) {

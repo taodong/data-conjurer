@@ -4,7 +4,7 @@ spring:
 
 data:
   entity-gen-timeout: PT5M
-  max-index-collision: 50
+  max-index-collision: 100
   partial-result: false
-  data-gen-check-in-interval: PT30S
+  data-gen-check-in-interval: PT10S
   data-gen-timeout: PT15M
