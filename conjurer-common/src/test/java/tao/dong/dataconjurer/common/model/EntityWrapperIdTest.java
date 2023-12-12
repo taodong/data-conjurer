@@ -21,7 +21,8 @@ class EntityWrapperIdTest {
         return Stream.of(
                 Arguments.of(new EntityWrapperId("t1", 0), new EntityWrapperId("t1", 0), 0),
                 Arguments.of(new EntityWrapperId("t1", 0), new EntityWrapperId("t1", 1), -1),
-                Arguments.of(new EntityWrapperId("t1", 1), new EntityWrapperId("t0", 2), 1)
+                Arguments.of(new EntityWrapperId("t1", 1), new EntityWrapperId("t0", 2), 1),
+                Arguments.of(new EntityWrapperId("t1", 1), null, -1)
         );
     }
 

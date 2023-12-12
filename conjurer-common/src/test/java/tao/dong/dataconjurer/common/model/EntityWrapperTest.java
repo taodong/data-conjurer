@@ -7,9 +7,11 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -222,6 +224,36 @@ class EntityWrapperTest {
     void testGetPropertyOrder_NonExisting() {
         var wrapper = TEST_HELPER.getSimpleEntityWrapper();
         assertEquals(-1, wrapper.getPropertyOrder("abc"));
+    }
+
+    private static Stream<Arguments> testCreateIndex() {
+        return Stream.of(
+                Arguments.of(Map.of(0, new EntityIndex(0, 0, 0)), IndexedValue.class),
+                Arguments.of(Map.of(1, new EntityIndex(1, 1, 0), 2, new EntityIndex(1, 1, 0)), UnorderedIndexedValue.class),
+                Arguments.of(Map.of(2, new EntityIndex(2, 2, 1), 3, new EntityIndex(2, 2, 2)), NonCircleIndexValue.class)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testCreateIndex(Map<Integer, EntityIndex> indexDefs, Class<UniqueIndex<?>> expected) {
+        var wrapper = TEST_HELPER.getSimpleEntityWrapper();
+        var rs = wrapper.createIndex(indexDefs);
+        assertTrue(expected.isInstance(rs));
+    }
+
+    private static Stream<Arguments> testCreateIndex_HandleErrors() {
+        return Stream.of(
+                Arguments.of(Map.of(1, new EntityIndex(1, 1, 0), 2, new EntityIndex(1, 0, 0))),
+                Arguments.of(Map.of(1, new EntityIndex(1, 2, 0), 2, new EntityIndex(1, 2, 3)))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testCreateIndex_HandleErrors(Map<Integer, EntityIndex> indexDefs) {
+        var wrapper = TEST_HELPER.getSimpleEntityWrapper();
+        assertThrows(DataGenerateException.class, () -> wrapper.createIndex(indexDefs));
     }
 
 }
