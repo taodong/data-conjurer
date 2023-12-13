@@ -12,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -53,5 +54,11 @@ class NumberCorrelationTest {
         var violations = validator.validate(nc);
         assertEquals(1, violations.size());
         assertTrue(StringUtils.startsWith(violations.iterator().next().getMessage(), "Formula prop3 + prop2"));
+    }
+
+    @Test
+    void testIsMet() {
+        var nc = new NumberCorrelation(Set.of("p1"), "power(p1)");
+        assertTrue(nc.isMet(new BigDecimal(0)));
     }
 }

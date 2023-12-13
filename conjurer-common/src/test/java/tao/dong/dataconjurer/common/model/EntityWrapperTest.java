@@ -6,8 +6,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.service.CharacterGroupService;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
 import tao.dong.dataconjurer.common.support.DataGenerateException;
+import tao.dong.dataconjurer.common.support.DefaultNameProvider;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.List;
@@ -254,6 +256,22 @@ class EntityWrapperTest {
     void testCreateIndex_HandleErrors(Map<Integer, EntityIndex> indexDefs) {
         var wrapper = TEST_HELPER.getSimpleEntityWrapper();
         assertThrows(DataGenerateException.class, () -> wrapper.createIndex(indexDefs));
+    }
+
+    @Test
+    void testComplicatedWrapper() {
+        var wrapper = new EntityWrapper(TEST_HELPER.createEntityT6(), TEST_HELPER.createDataT6(), TEST_HELPER.createOutputControlT6(),
+                DefaultDataProviderService.builder().characterGroupLookup(new CharacterGroupService()).nameProvider(new DefaultNameProvider()).build());
+        assertEquals(10, wrapper.getCount());
+        assertEquals(4, wrapper.getReferences().size());
+        assertEquals(3, wrapper.getDependencies().size());
+        assertEquals(10, wrapper.getGenerators().size());
+        assertEquals(3, wrapper.getIndexes().size());
+        assertEquals(1, wrapper.getHiddenIndex().size());
+        assertEquals(1, wrapper.getAliases().size());
+        assertEquals(1, wrapper.getRefStrategy().size());
+        assertEquals(1, wrapper.getEntries().size());
+        assertEquals(1, wrapper.getCorrelated().size());
     }
 
 }

@@ -1,10 +1,12 @@
 package tao.dong.dataconjurer.common.support;
 
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
+import tao.dong.dataconjurer.common.model.Duration;
 import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityEntry;
 import tao.dong.dataconjurer.common.model.EntityIndex;
@@ -14,12 +16,17 @@ import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.NumberCorrelation;
+import tao.dong.dataconjurer.common.model.Precision;
 import tao.dong.dataconjurer.common.model.PropertyInputControl;
 import tao.dong.dataconjurer.common.model.PropertyLink;
 import tao.dong.dataconjurer.common.model.PropertyOutputControl;
 import tao.dong.dataconjurer.common.model.PropertyType;
+import tao.dong.dataconjurer.common.model.PropertyValueDistribution;
 import tao.dong.dataconjurer.common.model.Reference;
+import tao.dong.dataconjurer.common.model.SecondMark;
 import tao.dong.dataconjurer.common.model.UnfixedSize;
+import tao.dong.dataconjurer.common.model.ValueCategory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +35,9 @@ import java.util.Set;
 
 import static org.mockito.Mockito.mock;
 import static tao.dong.dataconjurer.common.model.Dialect.MYSQL;
+import static tao.dong.dataconjurer.common.model.PropertyType.DATE;
+import static tao.dong.dataconjurer.common.model.PropertyType.DATETIME;
+import static tao.dong.dataconjurer.common.model.PropertyType.NUMBER;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
@@ -149,6 +159,72 @@ public class EntityTestHelper {
         );
     }
 
+    public DataEntity createEntityT6() {
+        return new DataEntity("t6",
+                Set.of(
+                    entityPropertyBuilder().name("t6p0").index(entityIndexBuilder().build()).build(),
+                    entityPropertyBuilder().name("t6p1").type(TEXT).constraints(List.of(new UnfixedSize(15L))).build(),
+                    entityPropertyBuilder().name("t6p2").type(DATE).build(),
+                    entityPropertyBuilder().name("t6p3").type(DATETIME).build(),
+                    entityPropertyBuilder().name("t6p4").type(NUMBER).constraints(List.of(new Precision(2))).build(),
+                    entityPropertyBuilder().name("t6p5").index(entityIndexBuilder().id(1).type(1).build()).reference(new Reference("t7", "t7p0", null)).build(),
+                    entityPropertyBuilder().name("t6p6").index(entityIndexBuilder().id(1).type(1).build()).reference(new Reference("t8", "t8p0", null)).build(),
+                    entityPropertyBuilder().name("t6p7").index(entityIndexBuilder().id(2).type(2).qualifier(1).build()).reference(new Reference("t5", "t5p0", "t5p1")).build(),
+                    entityPropertyBuilder().name("t6p8").index(entityIndexBuilder().id(2).type(2).qualifier(2).build()).reference(new Reference("t5", "t5p0", "t5p1")).build(),
+                    entityPropertyBuilder().name("t6p9").type(TEXT).constraints(List.of(new UnfixedSize(32L), new ValueCategory("name", null, null))).build()
+                )
+        );
+    }
+
+    public EntityData createDataT6() {
+        var start = new SecondMark();
+        start.setYear(2023);
+        var end = new SecondMark();
+        end.setYear(2023);
+        end.setMonth(5);
+        end.setDay(31);
+        return entityDataBuilder()
+                .entity("t6")
+                .count(10)
+                .properties(
+                        Set.of(
+                            PropertyInputControl.builder()
+                                    .name("t6p1")
+                                    .values(
+                                            List.of(new PropertyValueDistribution(Set.of("abc", "efg"), 0.5))
+                                    )
+                                    .defaultValue("de")
+                                    .referenceStrategy("loop")
+                                    .constraints(
+                                            List.of(new CharacterGroup(Set.of("ASCII_ALPHA_NUMERALS")))
+                                    )
+                                    .build(),
+                            PropertyInputControl.builder()
+                                    .name("t6p2")
+                                    .constraints(
+                                            List.of(
+                                                    new Duration(start, end))
+                                    )
+                                    .build(),
+                            PropertyInputControl.builder()
+                                    .name("t6p3")
+                                    .constraints(
+                                            List.of(new NumberCorrelation(Set.of("t6p2"), "PAST_TIME_AFTER(t6p2)"))
+                                    )
+                                    .build()
+                        )
+                )
+                .entries(new EntityEntry(List.of("t6p1"), List.of(List.of("hello"), List.of("world"))))
+                .build();
+    }
+
+    public EntityOutputControl createOutputControlT6() {
+        return new EntityOutputControl("control-t6", Set.of(
+                new PropertyOutputControl("t6p1", false, "t6p1v1"),
+                new PropertyOutputControl("t6p8", true, null)
+        ));
+    }
+
     public static TestEntityIndexBuilder entityIndexBuilder() {
         return new TestEntityIndexBuilder();
     }
@@ -261,5 +337,7 @@ public class EntityTestHelper {
             return new EntityData(this.entity, this.dataId, this.count, this.properties, this.entries);
         }
     }
+
+
 
 }
