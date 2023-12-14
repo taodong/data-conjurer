@@ -1,6 +1,5 @@
 package tao.dong.dataconjurer.common.model;
 
-import jakarta.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,10 +9,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class ValueRange<T extends Comparable> implements Constraint<T>{
-    @Nonnull
+public abstract class ValueRange<T extends Comparable<T>> implements Constraint<T>{
     protected T min;
-    @Nonnull
     protected T max;
     protected boolean includeMin;
     protected boolean includeMax;

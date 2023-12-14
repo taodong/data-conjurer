@@ -4,7 +4,8 @@ entities:
     properties:
       - name: "id"
         type: "sequence"
-        idIndex: 1
+        index:
+          id: 0
       - name: "first_name"
         type: "text"
         constraints:
@@ -29,7 +30,8 @@ entities:
     properties:
       - name: "id"
         type: "sequence"
-        idIndex: 1
+        index:
+          id: 0
       - name: "post"
         type: "text"
         constraints:
@@ -54,7 +56,8 @@ entities:
     properties:
       - name: "id"
         type: "sequence"
-        idIndex: 1
+        index:
+          id: 0
       - name: "comment"
         type: "text"
         constraints:

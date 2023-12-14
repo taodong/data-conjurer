@@ -3,6 +3,7 @@ package tao.dong.dataconjurer.common.model;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NonCircleIndexValueTest {
 
@@ -40,5 +42,11 @@ class NonCircleIndexValueTest {
         UniqueIndex<?> indexes = new NonCircleIndexValue(new int[] {0, 1}, 0, 1);
         indexes.addValue(List.of(50,66,3));
         assertFalse(indexes.addValue(List.of(25, 66, 33)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0, 0", "-1, 0", "0, -1"})
+    void testValidate(int parentIndex, int childIndex) {
+        assertThrows(IllegalArgumentException.class, () -> new NonCircleIndexValue(new int[]{0, 1, 2}, parentIndex, childIndex));
     }
 }

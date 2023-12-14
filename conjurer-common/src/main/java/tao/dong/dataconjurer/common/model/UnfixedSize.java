@@ -24,6 +24,7 @@ public class UnfixedSize extends ValueRange<Long> {
 
     @Override
     protected void validate() {
+        super.validate();
         if (min < 0L) {
             throw new IllegalArgumentException("Invalid size with min: " + min);
         } else if (min.compareTo(max) == 0) {

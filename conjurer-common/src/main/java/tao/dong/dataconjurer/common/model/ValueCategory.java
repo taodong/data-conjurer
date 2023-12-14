@@ -10,6 +10,7 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.CATEGORY;
 @JsonTypeName("category")
 public record ValueCategory (@NotEmpty String name, String qualifier, Locale locale) implements Constraint<String> {
 
+    // Short-circuited method always returns true
     @Override
     public boolean isMet(String val) {
         return true;
