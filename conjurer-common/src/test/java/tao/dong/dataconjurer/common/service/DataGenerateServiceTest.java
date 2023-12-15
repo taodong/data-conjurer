@@ -10,8 +10,10 @@ import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.PropertyLink;
+import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.SimpleTypedValue;
+import tao.dong.dataconjurer.common.model.TypedValue;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
@@ -26,6 +28,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -173,5 +176,35 @@ class DataGenerateServiceTest {
         var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderApi);
         data.put(wrapper5.getId(), wrapper5);
         DataHelper.appendToSetValueInMap(idMap, wrapper5.getEntityName(), wrapper5.getId());
+    }
+
+    @Test
+    void testJoinReferencedValues() {
+        DataGenerateService service = mock(DataGenerateService.class, CALLS_REAL_METHODS);
+        var tv1 = new SimpleTypedValue(PropertyType.SEQUENCE);
+        tv1.addValue(1L);
+        tv1.addValue(2L);
+        var tv2 = new SimpleTypedValue(PropertyType.SEQUENCE);
+        tv2.addValue(2L);
+        tv2.addValue(3L);
+        var tv3 = new SimpleTypedValue(PropertyType.SEQUENCE);
+        tv3.addValue(2L);
+        tv3.addValue(3L);
+        var tv4 = new SimpleTypedValue(PropertyType.SEQUENCE);
+        tv4.addValue(4L);
+        var ref1 = new Reference("t1", "p1", null);
+        var ref2 = new Reference("t1", "p2", null);
+        var ref3 = new Reference("t1", "p1", null);
+        var ref4 = new Reference("t1", "p3", null);
+        var referencedValues = new HashMap<Reference, TypedValue>();
+        referencedValues.put(ref1, tv1);
+        referencedValues.put(ref2, tv2);
+        var toJoin = new HashMap<Reference, TypedValue>();
+        toJoin.put(ref3, tv3);
+        toJoin.put(ref4, tv4);
+        service.joinReferencedValues(referencedValues, toJoin);
+        assertEquals(3, referencedValues.size());
+        assertEquals(3, referencedValues.get(ref1).getOrderedValues().size());
+        assertEquals(2, referencedValues.get(ref2).getOrderedValues().size());
     }
 }

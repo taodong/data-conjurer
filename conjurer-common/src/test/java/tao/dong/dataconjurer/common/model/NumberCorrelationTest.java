@@ -49,6 +49,13 @@ class NumberCorrelationTest {
     }
 
     @Test
+    void testValidation() throws JsonProcessingException {
+        var nc = objectMapper.readerFor(NumberCorrelation.class).readValue("{\"type\": \"correlation\", \"properties\": [\"prop1\", \"prop2\"], \"formula\": \"prop1 + prop2\"}");
+        var violations = validator.validate(nc);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
     void testValidation_FormulaVariableCheck() throws JsonProcessingException {
         var nc = objectMapper.readerFor(NumberCorrelation.class).readValue("{\"type\": \"correlation\", \"properties\": [\"prop1\", \"prop2\"], \"formula\": \"prop3 + prop2\"}");
         var violations = validator.validate(nc);

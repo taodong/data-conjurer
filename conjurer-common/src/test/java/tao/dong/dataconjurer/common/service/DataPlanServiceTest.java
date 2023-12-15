@@ -3,9 +3,12 @@ package tao.dong.dataconjurer.common.service;
 import org.junit.jupiter.api.Test;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
+import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
+import tao.dong.dataconjurer.common.model.EntityOutputControl;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
+import tao.dong.dataconjurer.common.model.PropertyOutputControl;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
@@ -31,13 +34,20 @@ class DataPlanServiceTest {
         var config = DataGenerateConfig.builder()
                 .maxIndexCollision(3)
                 .build();
-        var blueprint = service.createDataBlueprint(schema, config, null, plans);
+        var output = new DataOutputControl("control", Set.of(
+                new EntityOutputControl("t1", Set.of(
+                        new PropertyOutputControl("t1p1", false, "id"),
+                        new PropertyOutputControl("t2p4", true, null)
+                ))
+        ));
+        var blueprint = service.createDataBlueprint(schema, config, output, plans);
         assertEquals(5, blueprint.getEntities().size());
         assertEquals(11L, blueprint.getEntities().get(new EntityWrapperId("t3", 1)).getGenerators().get("t3p0").generate());
+        assertEquals(1, blueprint.getEntities().get(new EntityWrapperId("t1", 0)).getAliases().size());
     }
 
     @Test
-    void testCreateDataBlueprint_IgnorePlanWithDuplicateId() {
+    void testCreateDataBlueprint_IgnorePlans() {
         var service = new DataPlanService(dataProviderApi);
         var schema = TEST_HELPER.createSimpleTestSchema();
         var plans = new DataPlan[]{
@@ -46,6 +56,12 @@ class DataPlanServiceTest {
                 )),
                 new DataPlan("plan2", "test1", MYSQL, List.of(
                         TEST_HELPER.createSimpleData("t4", 10L)
+                )),
+                new DataPlan("plan3", "test2", MYSQL, List.of(
+                        TEST_HELPER.createSimpleDataWithId("t4", 10L, 1)
+                )),
+                new DataPlan("plan4", "test1", MYSQL, List.of(
+                        TEST_HELPER.createSimpleData("abc", 10L)
                 ))
         };
         var config = DataGenerateConfig.builder()

@@ -29,10 +29,6 @@ public class ElectedValueSelector implements ValueGenerator<Object> {
     @Override
     public Object generate() {
         var index = indexValueGenerator.generate();
-        if (index < 0 || index >= values.size()) {
-            LOG.warn("Generated index value {} is out of values allowed range, fallback to first value", index);
-            index = 0;
-        }
         return values.get(index);
     }
 }

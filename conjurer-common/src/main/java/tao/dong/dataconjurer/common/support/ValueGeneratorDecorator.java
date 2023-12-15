@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
     static final BiFunction<Set<Constraint<?>>, Set<ConstraintType>, Set<Constraint<?>>> FILTER_CONSTRAINTS =
-            (constraints, types) -> constraints.stream().filter(constraint -> types.contains(constraint.getType())).collect(Collectors.toSet());
+            (constraints, types) -> DataHelper.streamNullableCollection(constraints).filter(constraint -> types.contains(constraint.getType())).collect(Collectors.toSet());
 
     @Getter(AccessLevel.PACKAGE)
     protected final ValueGenerator<T> generator;
