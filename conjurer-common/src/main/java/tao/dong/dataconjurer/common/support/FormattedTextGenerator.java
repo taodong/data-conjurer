@@ -29,7 +29,6 @@ public class FormattedTextGenerator extends StringValueGeneratorDecorator {
     @Override
     protected ValueGenerator<String> createGenerator(Set<Constraint<?>> constraints) {
         CharacterPredicate[] charGroups = null;
-        boolean userDefinedType = false;
         int min = 1;
         int max = 100;
         for (var constraint : constraints) {
@@ -37,31 +36,24 @@ public class FormattedTextGenerator extends StringValueGeneratorDecorator {
                 var length = Math.toIntExact(((Length)constraint).getMax());
                 min = length;
                 max = length;
-                userDefinedType = true;
             } else if (SIZE == constraint.getType()) {
                 min = Math.toIntExact(((UnfixedSize)constraint).getMin());
                 max = Math.toIntExact(((UnfixedSize)constraint).getMax());
-                userDefinedType = true;
             } else if (CHAR_GROUP == constraint.getType() && characterGroupLookup != null) {
                 charGroups = characterGroupLookup.lookupCharacterGroups(((CharacterGroup)constraint).groups());
             }
         }
 
-        return createStringGenerator(userDefinedType, min, max, charGroups);
+        return createStringGenerator(min, max, charGroups);
     }
 
-    private ValueGenerator<String> createStringGenerator(boolean userDefinedType, int min, int max, CharacterPredicate[] charGroups) {
-        if (userDefinedType || charGroups != null) {
-            if (charGroups == null && characterGroupLookup != null) {
-                charGroups = characterGroupLookup.lookupCharacterGroups(Collections.emptySet());
-            }
-            return min == max ? new FixLengthStringGenerator(max, charGroups) : new RangeLengthStringGenerator(min, max, charGroups);
-        } else {
-            return getDefaultGenerator();
+    private ValueGenerator<String> createStringGenerator(int min, int max, CharacterPredicate[] charGroups) {
+        if (charGroups == null && characterGroupLookup != null) {
+            charGroups = characterGroupLookup.lookupCharacterGroups(Collections.emptySet());
         }
+        return min == max ? new FixLengthStringGenerator(max, charGroups) : new RangeLengthStringGenerator(min, max, charGroups);
     }
-
-
+    
     @Override
     protected Set<Constraint<?>> filterConstraints(Set<Constraint<?>> constraints) {
         return FILTER_CONSTRAINTS.apply(constraints, CONSTRAINT_TYPES);

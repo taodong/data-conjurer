@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.CharacterPredicate;
 import org.junit.jupiter.api.Test;
 import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
@@ -11,9 +12,15 @@ import tao.dong.dataconjurer.common.service.CharacterGroupService;
 
 import java.util.Set;
 
+import static org.apache.commons.text.CharacterPredicates.ARABIC_NUMERALS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class FormattedTextGeneratorTest {
 
@@ -54,6 +61,16 @@ class FormattedTextGeneratorTest {
         var generator = new FormattedTextGenerator(constraints, characterLookup);
         var output = generator.generate();
         assertFalse(StringUtils.isAsciiPrintable(output));
+    }
+
+    @Test
+    void testGenerateWithCharGroup_Undefined() {
+        var characterLookup = mock(CharacterGroupLookup.class);
+        Set<Constraint<?>> constraints = Set.of(new UnfixedSize(2L, 5L));
+        when(characterLookup.lookupCharacterGroups(anySet())).thenReturn(new CharacterPredicate[]{ARABIC_NUMERALS});
+        var generator = new FormattedTextGenerator(constraints, characterLookup);
+        assertTrue(generator.getGenerator() instanceof  RangeLengthStringGenerator);
+        verify(characterLookup, times(1)).lookupCharacterGroups(anySet());
     }
 
 }
