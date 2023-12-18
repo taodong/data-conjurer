@@ -5,7 +5,7 @@ import tao.dong.dataconjurer.common.model.PropertyType;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
@@ -14,15 +14,10 @@ import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.MISC;
 public abstract class PropertyValueConverter<T> {
 
     private final BiFunction<Object, PropertyType, T> convertFun;
-    private final int threadNum;
+
 
     public PropertyValueConverter(BiFunction<Object, PropertyType, T> convertFun) {
-        this(convertFun, 4);
-    }
-
-    public PropertyValueConverter(BiFunction<Object, PropertyType, T> convertFun, int threadNum) {
         this.convertFun = convertFun;
-        this.threadNum = threadNum > 0 ? threadNum : 1;
     }
 
     public final T convert(final Object val, final PropertyType type) {
@@ -40,15 +35,15 @@ public abstract class PropertyValueConverter<T> {
     }
 
     public final List<List<T>> convertRecords(@NotNull final List<List<Object>> records, @NotNull final List<PropertyType> types) {
-        final var pool = new ForkJoinPool(threadNum);
-        try {
-            return pool.submit(() -> records.stream().parallel()
-                    .map(record -> convertEntityProperties(record, types))
-                    .toList()).get();
+        try (final var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var future = executor.submit(
+                    () -> records.parallelStream()
+                            .map(record -> convertEntityProperties(record, types))
+                            .toList()
+            );
+            return future.get();
         } catch (ExecutionException | InterruptedException e) {
             throw new DataGenerateException(MISC, "Failed to convert to MySQL string values", e);
-       } finally {
-            pool.shutdown();
         }
     }
 
