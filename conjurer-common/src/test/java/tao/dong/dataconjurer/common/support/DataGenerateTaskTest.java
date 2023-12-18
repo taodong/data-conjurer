@@ -19,11 +19,15 @@ import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
 class DataGenerateTaskTest {
+    private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
+
     private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
 
     @Test
@@ -64,4 +68,48 @@ class DataGenerateTaskTest {
         wrapper.createReferenced(new PropertyLink("p1", null));
         return wrapper;
     }
+
+    @Test
+    void testCall_DelayedProperties() {
+        when(dataProviderApi.getNameProvider()).thenReturn(new DefaultNameProvider());
+        var countDownLatch = new CountDownLatch(1);
+        var config = DataGenerateConfig.builder().build();
+        var entity = TEST_HELPER.createEntityT6();
+        var data = TEST_HELPER.createDataT6();
+        var output = TEST_HELPER.createOutputControlT6();
+        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi);
+        wrapper.createReferenced(new PropertyLink("t6p0", null), new PropertyLink("t6p5", "t6p0"));
+        var referenced = TEST_HELPER.createReferencedT6();
+        var task = DataGenerateTask.builder()
+                .countDownLatch(countDownLatch)
+                .entityWrapper(wrapper)
+                .config(config)
+                .referenced(referenced)
+                .build();
+        var result = task.call();
+        assertEquals(2, result.status());
+        assertEquals(10, wrapper.getValues().size());
+    }
+
+    @Test
+    void testCall_MaxCollision() {
+        when(dataProviderApi.getNameProvider()).thenReturn(new DefaultNameProvider());
+        var countDownLatch = new CountDownLatch(1);
+        var config = DataGenerateConfig.builder().maxIndexCollision(1).build();
+        var entity = TEST_HELPER.createEntityT6();
+        var data = TEST_HELPER.createDataT6();
+        var output = TEST_HELPER.createOutputControlT6();
+        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi);
+        wrapper.createReferenced(new PropertyLink("t6p0", null), new PropertyLink("t6p5", "t6p0"));
+        var referenced = TEST_HELPER.createReferencedT6();
+        var task = DataGenerateTask.builder()
+                .countDownLatch(countDownLatch)
+                .entityWrapper(wrapper)
+                .config(config)
+                .referenced(referenced)
+                .build();
+        assertThrows(DataGenerateException.class, task::call);
+    }
+
+
 }

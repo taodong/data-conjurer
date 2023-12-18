@@ -16,6 +16,7 @@ import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Interval;
 import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.LinkedTypedValue;
 import tao.dong.dataconjurer.common.model.NumberCorrelation;
 import tao.dong.dataconjurer.common.model.Precision;
 import tao.dong.dataconjurer.common.model.PropertyInputControl;
@@ -25,6 +26,8 @@ import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.model.PropertyValueDistribution;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.SecondMark;
+import tao.dong.dataconjurer.common.model.SimpleTypedValue;
+import tao.dong.dataconjurer.common.model.TypedValue;
 import tao.dong.dataconjurer.common.model.UnfixedSize;
 import tao.dong.dataconjurer.common.model.ValueCategory;
 
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.mock;
 import static tao.dong.dataconjurer.common.model.Dialect.MYSQL;
@@ -176,6 +180,23 @@ public class EntityTestHelper {
         );
     }
 
+    public Map<Reference, TypedValue> createReferencedT6() {
+        var refT6p5 = new SimpleTypedValue(SEQUENCE);
+        var refT6p6 = new SimpleTypedValue(SEQUENCE);
+        var refT6p7 = new LinkedTypedValue(SEQUENCE, "t5p1");
+        IntStream.range(1, 11).mapToLong(Long::valueOf).forEach(l -> {
+            refT6p5.addValue(l);
+            refT6p6.addValue(l);
+        });
+        IntStream.range(1, 40).forEach(i -> refT6p7.addLinkedValue(String.valueOf(i % 3), (long)i));
+
+        return Map.of(
+                new Reference("t7", "t7p0", null), refT6p5,
+                new Reference("t8", "t8p0", null), refT6p6,
+                new Reference("t5", "t5p0", "t5p1"), refT6p7
+        );
+    }
+
     public EntityData createDataT6() {
         var start = new SecondMark();
         start.setYear(2023);
@@ -211,6 +232,14 @@ public class EntityTestHelper {
                                     .constraints(
                                             List.of(new NumberCorrelation(Set.of("t6p2"), "PAST_TIME_AFTER(t6p2)"))
                                     )
+                                    .build(),
+                            PropertyInputControl.builder()
+                                    .name("t6p7")
+                                    .referenceStrategy("loop")
+                                    .build(),
+                            PropertyInputControl.builder()
+                                    .name("t6p8")
+                                    .referenceStrategy("loop")
                                     .build()
                         )
                 )
