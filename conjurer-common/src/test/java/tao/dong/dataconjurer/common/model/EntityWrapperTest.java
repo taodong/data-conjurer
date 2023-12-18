@@ -269,7 +269,7 @@ class EntityWrapperTest {
         assertEquals(3, wrapper.getIndexes().size());
         assertEquals(1, wrapper.getHiddenIndex().size());
         assertEquals(1, wrapper.getAliases().size());
-        assertEquals(1, wrapper.getRefStrategy().size());
+        assertEquals(3, wrapper.getRefStrategy().size());
         assertEquals(1, wrapper.getEntries().size());
         assertEquals(1, wrapper.getCorrelated().size());
     }
