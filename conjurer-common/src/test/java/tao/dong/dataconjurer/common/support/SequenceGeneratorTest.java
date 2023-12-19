@@ -41,6 +41,12 @@ class SequenceGeneratorTest {
     }
 
     @Test
+    void testCalculateGeneratedValue_NegativeRound() {
+        var generator = new SequenceGenerator(0L, 1L);
+        assertThrows(IllegalArgumentException.class, () -> generator.calculateGeneratedValue(-1));
+    }
+
+    @Test
     void testErrorOnZeroLeap() {
         assertThrows(IllegalArgumentException.class, () -> new SequenceGenerator(1L, 0L));
     }
