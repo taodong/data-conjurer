@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static tao.dong.dataconjurer.common.model.PropertyType.BOOLEAN;
 import static tao.dong.dataconjurer.common.model.PropertyType.DATE;
 import static tao.dong.dataconjurer.common.model.PropertyType.DATETIME;
 import static tao.dong.dataconjurer.common.model.PropertyType.NUMBER;
@@ -66,6 +67,14 @@ class DefaultStringPropertyValueConverterTest {
                             assertEquals("2023-11-17", converted.get(0));
                             assertEquals("abc", converted.get(1));
                             assertEquals("测试", converted.get(2));
+                        }
+                ),
+                Arguments.of(List.of("true", "FALSE", "True"), BOOLEAN,
+                        (Consumer<List<Object>>)(converted) -> {
+                            assertEquals(3, converted.size());
+                            assertEquals(true, converted.get(0));
+                            assertEquals(false, converted.get(1));
+                            assertEquals(true, converted.get(2));
                         }
                 )
         );

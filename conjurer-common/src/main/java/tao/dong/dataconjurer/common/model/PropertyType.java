@@ -13,7 +13,8 @@ public enum PropertyType {
     SEQUENCE("sequence", Long.class),
     NUMBER("number", BigDecimal.class),
     DATE("date", Long.class),
-    DATETIME("datetime", Long.class)
+    DATETIME("datetime", Long.class),
+    BOOLEAN("boolean", Boolean.class, d -> d == Dialect.GENERAL)
     ;
 
     @JsonValue

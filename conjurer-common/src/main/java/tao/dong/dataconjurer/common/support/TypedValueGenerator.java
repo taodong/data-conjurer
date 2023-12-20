@@ -7,6 +7,7 @@ import tao.dong.dataconjurer.common.model.NumberCorrelation;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 import static tao.dong.dataconjurer.common.model.ConstraintType.CORRELATION;
 
@@ -24,6 +25,7 @@ public interface TypedValueGenerator {
             case SEQUENCE -> new MutableSequenceGenerator(property.getPropertyConstraints());
             case NUMBER -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new BigDecimalGenerator(property.getPropertyConstraints());
             case DATETIME, DATE -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new DatetimeGenerator(property.getPropertyConstraints());
+            case BOOLEAN -> new ElectedValueSelector(Set.of(true, false));
         };
     }
 }

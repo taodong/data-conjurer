@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import tao.dong.dataconjurer.common.model.ConvertError;
 import tao.dong.dataconjurer.common.model.PropertyType;
 
@@ -24,6 +25,7 @@ public class DefaultStringPropertyValueConverter extends StringPropertyValueConv
                 case NUMBER -> new BigDecimal(val);
                 case DATE -> DataHelper.convertFormattedStringToMillisecond(val, DATE_FORMAT.getFormat());
                 case DATETIME -> DataHelper.convertFormattedStringToMillisecond(val, DATETIME_FORMAT.getFormat());
+                case BOOLEAN -> BooleanUtils.toBoolean(val);
                 case TEXT -> val;
             };
         } catch (Exception e) {
