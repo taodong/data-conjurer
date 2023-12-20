@@ -32,7 +32,7 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
                 return new MySQLDateTimeValue((Long)value);
             case TEXT:
             default:
-                String pv = (String)value;
+                String pv = String.valueOf(value);
                 if (StringUtils.containsAnyIgnoreCase(pv, "<?default?>")) {
                     return new MySQLDefaultValue();
                 } else {
