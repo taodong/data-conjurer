@@ -15,7 +15,7 @@ public class Interval extends ValueRange<Long> {
         if (base != null && base >= 0L) {
             this.base = base;
         } else {
-            this.base = 0L;
+            this.base = 1L;
         }
     }
 

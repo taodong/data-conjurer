@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class IntervalTest {
     private static Stream<Arguments> testIsMet() {
         return Stream.of(
-                Arguments.of(5L, null, 10L, true),
+                Arguments.of(5L, null, 11L, true),
                 Arguments.of(3L, 7L, 10L, true),
                 Arguments.of(3L, 7L, 6L, false),
                 Arguments.of(3L, 7L, 9L, false)

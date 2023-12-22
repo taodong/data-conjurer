@@ -3,9 +3,6 @@ package tao.dong.dataconjurer.common.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import lombok.Data;
-
-import java.math.BigDecimal;
 
 import static tao.dong.dataconjurer.common.model.ConstraintType.NUMBER_RANGE;
 
