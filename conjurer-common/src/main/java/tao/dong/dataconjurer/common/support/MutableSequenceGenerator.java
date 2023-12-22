@@ -20,12 +20,12 @@ public class MutableSequenceGenerator extends ValueGeneratorDecorator<Long> {
 
     @Override
     protected ValueGenerator<Long> getDefaultGenerator() {
-        return new SequenceGenerator(0L, 1L);
+        return new SequenceGenerator(1L, 1L);
     }
 
     @Override
     protected ValueGenerator<Long> createGenerator(Set<Constraint<?>> constraints) {
-        long current = 0;
+        long current = 1;
         long leap = 1;
         for (var constraint : constraints) {
             if (INTERVAL == constraint.getType()) {

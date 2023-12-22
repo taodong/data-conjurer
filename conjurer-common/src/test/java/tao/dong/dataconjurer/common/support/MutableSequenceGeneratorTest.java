@@ -16,7 +16,7 @@ class MutableSequenceGeneratorTest {
 
     private static Stream<Arguments> testConstructor() {
         return Stream.of(
-                Arguments.of(Set.of(new Precision(10)), 0L, 1L),
+                Arguments.of(Set.of(new Precision(10)), 1L, 1L),
                 Arguments.of(Set.of(new Interval(5L, 2L)), 2L, 5L)
         );
     }
