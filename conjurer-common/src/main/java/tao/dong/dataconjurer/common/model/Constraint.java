@@ -12,7 +12,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Duration.class, name="duration"),
         @JsonSubTypes.Type(value = CharacterGroup.class, name="char_group"),
         @JsonSubTypes.Type(value = ValueCategory.class, name="category"),
-        @JsonSubTypes.Type(value = NumberCorrelation.class, name="correlation")
+        @JsonSubTypes.Type(value = NumberCorrelation.class, name="correlation"),
+        @JsonSubTypes.Type(value = Interval.class, name="interval")
 })
 public interface Constraint<T> {
     boolean isMet(T val);

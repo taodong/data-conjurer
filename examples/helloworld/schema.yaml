@@ -6,6 +6,10 @@ entities:
         type: "sequence"
         index:
           id: 0
+        constraints:
+          - type: "interval"
+            base: 3
+            leap: 2
       - name: "name"
         type: "text"
         constraints:
