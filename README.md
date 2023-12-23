@@ -58,5 +58,6 @@ When generating large rows of the data, you may want to increase max-collision, 
 
 *partial-result* allows the tool to generate data for next entity after max-collision of current entity is reached. It's experimental, use it with caution.
 
-
+## Wiki
+https://github.com/taodong/data-conjurer/wiki/Data-Conjurer-Wiki
 
