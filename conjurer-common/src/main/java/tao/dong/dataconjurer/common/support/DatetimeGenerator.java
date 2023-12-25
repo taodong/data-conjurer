@@ -6,10 +6,11 @@ import tao.dong.dataconjurer.common.model.Duration;
 
 import java.util.Set;
 
+import static tao.dong.dataconjurer.common.model.ConstraintType.CHAIN;
 import static tao.dong.dataconjurer.common.model.ConstraintType.DURATION;
 
 public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
-    private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(DURATION);
+    private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(DURATION, CHAIN);
 
     public DatetimeGenerator(Set<Constraint<?>> constraints) {
         super(constraints);
