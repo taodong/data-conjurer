@@ -4,30 +4,26 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Random;
 
-public abstract class LinkedValueGenerator<T> implements ValueGenerator<T> {
+public abstract class ChainedValueGenerator<T> implements ValueGenerator<T> {
     private final Random random = new Random();
-    protected boolean head = true;
     protected final int direction;
 
     protected final double seed;
     protected final int style;
     protected T current;
 
-    public LinkedValueGenerator(int direction, double seed, int style, @NotNull T first) {
+    public ChainedValueGenerator(int direction, double seed, int style, @NotNull T head) {
         this.direction = Integer.compare(direction, 0);
         this.seed = seed;
         this.style = style;
-        this.current = first;
+        this.current = head;
     }
 
     @Override
     public T generate() {
-        if (head) {
-            head = false;
-        } else {
-            current = getNextValue();
-        }
-        return current;
+        var previous = current;
+        current = getNextValue();
+        return previous;
     }
 
     protected abstract T getNextValue();

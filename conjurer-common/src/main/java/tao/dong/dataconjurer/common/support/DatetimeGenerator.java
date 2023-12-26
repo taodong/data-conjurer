@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import tao.dong.dataconjurer.common.model.ChainedValue;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.ConstraintType;
 import tao.dong.dataconjurer.common.model.Duration;
@@ -25,15 +26,26 @@ public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
     protected ValueGenerator<Long> createGenerator(Set<Constraint<?>> constraints) {
         var min = Duration.OLDEST_TIME;
         var max = System.currentTimeMillis();
+        ChainedValue chainedValue = null;
         for (var constraint : constraints) {
             if (constraint.getType() == DURATION) {
                 var duration = (Duration) constraint;
-                min = duration.getMin();
-                max = duration.getMax();
-                break;
+                min = Math.max(min, duration.getMin());
+                max = Math.min(max, duration.getMax());
+            } else if (constraint.getType() == CHAIN) {
+                chainedValue = (ChainedValue)  constraint;
             }
         }
-        return createRandomLongGenerator(min, max);
+
+        if (chainedValue != null) {
+            return switch (Integer.compare(0, chainedValue.getDirection())) {
+                case 1 -> new ChainedLongGenerator(1, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(min, min + (long) (chainedValue.getSeed() * 2)).generate());
+                case -1 -> new ChainedLongGenerator(-1, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(max - (long) (2 * chainedValue.getSeed()), max).generate());
+                default -> new ChainedLongGenerator(0, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(min, max).generate());
+            };
+        } else {
+            return createRandomLongGenerator(min, max);
+        }
     }
 
     @Override
