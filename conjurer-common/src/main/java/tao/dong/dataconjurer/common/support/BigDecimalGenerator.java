@@ -45,7 +45,7 @@ public class BigDecimalGenerator extends ValueGeneratorDecorator<BigDecimal>{
         }
 
         if (chain != null) {
-            return switch (Integer.compare(0, chain.getDirection())) {
+            return switch (Integer.compare(chain.getDirection(), 0)) {
                 case 1 -> new ChainedBigDecimalGenerator(1, chain.getSeed(), chain.getStyle(), createRandomNumberGenerator(min, min + Double.valueOf(2 * chain.getSeed()).longValue(), precision).generate());
                 case -1 -> new ChainedBigDecimalGenerator(-1, chain.getSeed(), chain.getStyle(), createRandomNumberGenerator(max - Double.valueOf(2 * chain.getSeed()).longValue(), max, precision).generate());
                 default -> new ChainedBigDecimalGenerator(0, chain.getSeed(), chain.getStyle(), createRandomNumberGenerator(min, max, precision).generate());

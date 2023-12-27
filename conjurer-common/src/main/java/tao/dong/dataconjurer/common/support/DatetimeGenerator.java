@@ -38,7 +38,7 @@ public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
         }
 
         if (chainedValue != null) {
-            return switch (Integer.compare(0, chainedValue.getDirection())) {
+            return switch (Integer.compare(chainedValue.getDirection(), 0)) {
                 case 1 -> new ChainedLongGenerator(1, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(min, min + (long) (chainedValue.getSeed() * 2)).generate());
                 case -1 -> new ChainedLongGenerator(-1, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(max - (long) (2 * chainedValue.getSeed()), max).generate());
                 default -> new ChainedLongGenerator(0, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(min, max).generate());
