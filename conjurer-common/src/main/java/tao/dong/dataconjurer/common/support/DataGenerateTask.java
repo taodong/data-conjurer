@@ -66,16 +66,21 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         var recordNum = 0L;
         var collision = 0;
         while (recordNum < entityWrapper.getCount() && collision < config.getMaxIndexCollision()) {
-            var dataRow = generateRecord(referenceIndexTracker, deferredProperties, recordNum);
-            generateDeferredProperties(dataRow, referenceIndexTracker, deferredProperties);
-            populateReferencedValues(dataRow);
-            if (isValidRecord(dataRow)) {
-                entityWrapper.getValues().add(dataRow);
-                recordNum++;
-            } else {
+            try {
+                var dataRow = generateRecord(referenceIndexTracker, deferredProperties, recordNum);
+                generateDeferredProperties(dataRow, referenceIndexTracker, deferredProperties);
+                populateReferencedValues(dataRow);
+                if (isValidRecord(dataRow)) {
+                    entityWrapper.getValues().add(dataRow);
+                    recordNum++;
+                } else {
+                    collision++;
+                    LOG.warn("Index collision occurs for generated {} record. record number: {}, collision number: {}",
+                             entityWrapper.getId(), recordNum, collision);
+                }
+            } catch (ConstraintViolationException e) {
                 collision++;
-                LOG.warn("Index collision occurs for generated {} record. record number: {} collision number: {}",
-                         entityWrapper.getId(), recordNum, collision);
+                LOG.warn("Generated value failed constraint for {}. record number: {}, collision number {}", entityWrapper.getId(), recordNum, collision, e);
             }
         }
 

@@ -67,4 +67,13 @@ public class BigDecimalGenerator extends ValueGeneratorDecorator<BigDecimal>{
                 .precision(precision)
                 .build();
     }
+
+    @Override
+    protected void testConstraints(BigDecimal val) {
+        testConstraints(val, constraint -> switch (constraint.getType()) {
+            case NUMBER_RANGE -> !((NumberRange) constraint).isMet(val.longValue());
+            case PRECISION -> !((Precision) constraint).isMet(Math.max(0, val.stripTrailingZeros().scale()));
+            default -> false;
+        });
+    }
 }

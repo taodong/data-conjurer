@@ -46,4 +46,9 @@ public class MutableSequenceGenerator extends ValueGeneratorDecorator<Long> {
     public SequenceGenerator getSequenceGenerator() {
         return (SequenceGenerator) this.generator;
     }
+
+    @Override
+    protected void testConstraints(Long val) {
+        // Do nothing
+    }
 }

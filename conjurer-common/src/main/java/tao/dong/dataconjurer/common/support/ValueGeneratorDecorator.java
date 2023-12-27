@@ -5,8 +5,11 @@ import lombok.Getter;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.ConstraintType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
@@ -15,6 +18,7 @@ public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
 
     @Getter(AccessLevel.PACKAGE)
     protected final ValueGenerator<T> generator;
+    protected final List<Constraint<?>> qualifiedConstraints = new ArrayList<>();
 
     /**
      * Short circuit for another abstract child only
@@ -30,6 +34,7 @@ public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
     protected ValueGenerator<T> createGeneratorByConstraints(Set<Constraint<?>> constraints) {
         var qualified = filterConstraints(constraints);
         if (!qualified.isEmpty()) {
+            qualifiedConstraints.addAll(qualified);
             return createGenerator(qualified);
         } else {
             return getDefaultGenerator();
@@ -42,6 +47,19 @@ public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
 
     @Override
     public T generate() {
-        return generator.generate();
+        var val = generator.generate();
+        testConstraints(val);
+        return val;
+    }
+
+    protected abstract void testConstraints(T val);
+
+    protected void testConstraints(T val, Predicate<Constraint<?>> metFun) {
+        var violation = qualifiedConstraints.stream().filter(metFun).findFirst();
+
+        if (violation.isPresent()) {
+            throw new ConstraintViolationException(
+                    "Generated value %s violated constraint %s".formatted(val.toString(), violation.get().getType().name()));
+        }
     }
 }

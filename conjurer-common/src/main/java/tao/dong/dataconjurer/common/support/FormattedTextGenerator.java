@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.CharacterPredicate;
 import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
@@ -57,5 +58,14 @@ public class FormattedTextGenerator extends StringValueGeneratorDecorator {
     @Override
     protected Set<Constraint<?>> filterConstraints(Set<Constraint<?>> constraints) {
         return FILTER_CONSTRAINTS.apply(constraints, CONSTRAINT_TYPES);
+    }
+
+    @Override
+    protected void testConstraints(String val) {
+        testConstraints(val, constraint -> switch (constraint.getType()) {
+            case SIZE -> !((UnfixedSize)constraint).isMet((long) StringUtils.length(val));
+            case LENGTH -> !((Length)constraint).isMet((long) StringUtils.length(val));
+            default -> false;
+        });
     }
 }

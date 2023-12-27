@@ -61,4 +61,8 @@ public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
                 .build();
     }
 
+    @Override
+    protected void testConstraints(Long val) {
+        testConstraints(val, constraint -> constraint.getType() == DURATION && !((Duration) constraint).isMet(val));
+    }
 }
