@@ -35,7 +35,7 @@ public abstract class ChainedValueGenerator<T> implements ValueGenerator<T> {
     protected double generateChangeRatio() {
         return switch (style) {
             case 1 ->  random.nextDouble();
-            case 2 -> (random.nextGaussian() + 5) / 5;
+            case 2 -> (Math.min(10, random.nextGaussian()) + 5) / 5;
             default -> 1.0;
         };
     }
