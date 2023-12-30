@@ -1,0 +1,11 @@
+name:
+    value: "java.lang.String"
+    firstname: "java.lang.String"
+    lastname: "java.lang.String"
+address:
+    value: "java.lang.String"
+    street: "java.lang.String"
+    city: "java.lang.String"
+    state: "java.lang.String"
+    zip: "java.lang.String"
+    country: "java.lang.String"

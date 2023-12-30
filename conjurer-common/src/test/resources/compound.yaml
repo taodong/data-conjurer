@@ -1,0 +1,6 @@
+compound1:
+    p1: "java.lang.String"
+    p2: "java.lang.Long"
+compound2:
+    p1: "java.lang.Double"
+    p3: "java.lang.String"
