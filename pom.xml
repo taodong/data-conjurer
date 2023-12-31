@@ -29,7 +29,7 @@
 		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
 		<jgrapht.version>1.5.2</jgrapht.version>
-		<java.faker.version>1.0.2</java.faker.version>
+		<data.faker.version>2.0.2</data.faker.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<evalex.version>3.1.0</evalex.version>
 	</properties>
@@ -87,26 +87,14 @@
 				<version>${jgrapht.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.javafaker</groupId>
-				<artifactId>javafaker</artifactId>
-				<version>${java.faker.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.yaml</groupId>
-						<artifactId>snakeyaml</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<!-- Replace vulnerable older version of snakeyaml used by javafaker -->
-			<dependency>
-				<groupId>org.yaml</groupId>
-				<artifactId>snakeyaml</artifactId>
-				<version>${snakeyaml.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>com.ezylang</groupId>
 				<artifactId>EvalEx</artifactId>
 				<version>${evalex.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.datafaker</groupId>
+				<artifactId>datafaker</artifactId>
+				<version>${data.faker.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

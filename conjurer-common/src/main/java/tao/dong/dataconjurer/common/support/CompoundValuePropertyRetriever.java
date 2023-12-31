@@ -6,20 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
-import tao.dong.dataconjurer.common.model.ValueCompound;
+import tao.dong.dataconjurer.common.model.CompoundValue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class ValueCompoundPropertyRetriever {
+public class CompoundValuePropertyRetriever {
 
     private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder(new YAMLFactory()).build();
     static final Map<String, Map<String, String>> SUPPORTED = new HashMap<>();
 
     static {
-        try (var inputStream = ValueCompoundPropertyRetriever.class.getClassLoader().getResourceAsStream("compound.yaml")) {
+        try (var inputStream = CompoundValuePropertyRetriever.class.getClassLoader().getResourceAsStream("compound.yaml")) {
             Map<String, Map<String, String>> loaded = OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
             });
             SUPPORTED.putAll(loaded);
@@ -29,7 +29,7 @@ public class ValueCompoundPropertyRetriever {
 
     }
 
-    public Object getValue(ValueCompound obj, String compound, String property) {
+    public Object getValue(CompoundValue obj, String compound, String property) {
         var targetClass = getTargetClassName(compound, property);
         if (targetClass != null) {
             var jsonNode = OBJECT_MAPPER.valueToTree(obj);

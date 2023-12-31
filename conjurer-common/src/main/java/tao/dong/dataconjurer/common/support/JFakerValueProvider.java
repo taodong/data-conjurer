@@ -1,7 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
-import com.github.javafaker.Faker;
 import jakarta.validation.constraints.Min;
+import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
