@@ -9,3 +9,5 @@ address:
     state: "java.lang.String"
     zip: "java.lang.String"
     country: "java.lang.String"
+email:
+    value: "java.lang.String"
