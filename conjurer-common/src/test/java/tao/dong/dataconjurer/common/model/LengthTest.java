@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,16 +21,16 @@ class LengthTest {
 
     private static Stream<Arguments> testIsMet() {
         return Stream.of(
-            Arguments.of(1L, 1L),
-            Arguments.of(33L, 22L),
-            Arguments.of(100L, 97L)
+            Arguments.of(1L, 1L, true),
+            Arguments.of(33L, 22L, false),
+            Arguments.of(100L, 97L, false)
         );
     }
 
     @ParameterizedTest
     @MethodSource
-    void testIsMet(long length, long val) {
+    void testIsMet(long length, long val, boolean expected) {
         var l = new Length(length);
-        assertTrue(l.isMet(val));
+        assertEquals(expected, l.isMet(val));
     }
 }

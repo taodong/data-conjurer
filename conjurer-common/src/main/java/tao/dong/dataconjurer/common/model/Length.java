@@ -24,6 +24,11 @@ public class Length extends ValueRange<Long> {
     }
 
     @Override
+    public boolean isMet(Long val) {
+        return max.equals(val);
+    }
+
+    @Override
     public String toString() {
         return "Length{" + "max=" + max + '}';
     }

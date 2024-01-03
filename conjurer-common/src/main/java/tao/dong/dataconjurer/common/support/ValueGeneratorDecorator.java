@@ -54,8 +54,8 @@ public abstract class ValueGeneratorDecorator<T> implements ValueGenerator<T> {
 
     protected abstract void testConstraints(T val);
 
-    protected void testConstraints(T val, Predicate<Constraint<?>> metFun) {
-        var violation = qualifiedConstraints.stream().filter(metFun).findFirst();
+    protected void testConstraints(T val, Predicate<Constraint<?>> constraintFailure) {
+        var violation = qualifiedConstraints.stream().filter(constraintFailure).findFirst();
 
         if (violation.isPresent()) {
             throw new ConstraintViolationException(

@@ -1,6 +1,8 @@
 package tao.dong.dataconjurer.common.model;
 
-public record Email(String value) implements CompoundValue {
+import jakarta.validation.constraints.NotBlank;
+
+public record Email(@NotBlank String value) implements CompoundValue {
     @Override
     public String getCategory() {
         return "email";

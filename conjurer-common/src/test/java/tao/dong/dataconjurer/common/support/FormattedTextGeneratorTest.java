@@ -13,8 +13,10 @@ import tao.dong.dataconjurer.common.service.CharacterGroupService;
 import java.util.Set;
 
 import static org.apache.commons.text.CharacterPredicates.ARABIC_NUMERALS;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.mock;
@@ -71,6 +73,23 @@ class FormattedTextGeneratorTest {
         var generator = new FormattedTextGenerator(constraints, characterLookup);
         assertTrue(generator.getGenerator() instanceof  RangeLengthStringGenerator);
         verify(characterLookup, times(1)).lookupCharacterGroups(anySet());
+    }
+
+    @Test
+    void testTestConstraints() {
+        var generator = new FormattedTextGenerator(Set.of(
+                new Length(3L),
+                new UnfixedSize(1L, 15L)
+        ), null);
+        assertAll(() ->generator.testConstraints("abc"));
+    }
+
+    @Test
+    void testTestConstraints_FailedLengthCheck() {
+        var generator = new FormattedTextGenerator(Set.of(
+                new Length(3L)
+        ), null);
+        assertThrows(ConstraintViolationException.class, () -> generator.testConstraints("a"));
     }
 
 }

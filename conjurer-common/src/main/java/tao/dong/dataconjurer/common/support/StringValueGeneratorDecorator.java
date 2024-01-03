@@ -15,12 +15,7 @@ public abstract class StringValueGeneratorDecorator extends ValueGeneratorDecora
     protected StringValueGeneratorDecorator(Set<Constraint<?>> constraints, CharacterGroupLookup characterGroupLookup) {
         super((ValueGenerator<String>) null);
         this.characterGroupLookup = characterGroupLookup;
-        var qualified = filterConstraints(constraints);
-        if (!qualified.isEmpty()) {
-            generator = createGenerator(qualified);
-        } else {
-            generator = getDefaultGenerator();
-        }
+        generator = createGeneratorByConstraints(constraints);
     }
 
     @Override

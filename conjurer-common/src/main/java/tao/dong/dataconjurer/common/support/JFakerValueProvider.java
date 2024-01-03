@@ -2,14 +2,12 @@ package tao.dong.dataconjurer.common.support;
 
 import jakarta.validation.constraints.Min;
 import net.datafaker.Faker;
-import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.Address;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.PersonName;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 public class JFakerValueProvider implements LocaleValueCollector {
 
@@ -27,9 +25,5 @@ public class JFakerValueProvider implements LocaleValueCollector {
 
     private Faker createFaker(Locale locale) {
         return locale == null? new Faker() : new Faker(locale);
-    }
-
-    private String normalizeQualifier(String qualifier) {
-        return Optional.ofNullable(qualifier).map(StringUtils::lowerCase).orElse("");
     }
 }
