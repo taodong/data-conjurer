@@ -14,35 +14,35 @@ class JFakerValueProviderTest {
 
     private static Stream<Arguments> testGenerateAddresses() {
         return Stream.of(
-                Arguments.of(2, null, null),
-                Arguments.of(3, "street", Locale.JAPAN),
-                Arguments.of(4, "city", Locale.FRANCE),
-                Arguments.of(5, "country", null),
-                Arguments.of(6, "zip", Locale.CHINA),
-                Arguments.of(7, "address", Locale.CANADA),
-                Arguments.of(8, "state", Locale.US)
+                Arguments.of(2, null),
+                Arguments.of(3, Locale.JAPAN),
+                Arguments.of(4, Locale.FRANCE),
+                Arguments.of(5, null),
+                Arguments.of(6, Locale.CHINA),
+                Arguments.of(7, Locale.CANADA),
+                Arguments.of(8, Locale.US)
         );
     }
 
     @ParameterizedTest
     @MethodSource
-    void testGenerateAddresses(int count, String qualifier, Locale locale) {
-        assertEquals(count, provider.generateAddresses(count, qualifier, locale).size());
+    void testGenerateAddresses(int count, Locale locale) {
+        assertEquals(count, provider.generateAddresses(count, locale).size());
     }
 
     private static Stream<Arguments> testGenerateNames() {
         return Stream.of(
-                Arguments.of(1, null, null),
-                Arguments.of(5, "firstname", new Locale("zh", "tw")),
-                Arguments.of(3, "lastname", Locale.JAPANESE),
-                Arguments.of(7, "abc", Locale.US)
+                Arguments.of(1, null),
+                Arguments.of(5, Locale.forLanguageTag("zh-tw")),
+                Arguments.of(3, Locale.JAPANESE),
+                Arguments.of(7, Locale.US)
         );
     }
 
     @ParameterizedTest
     @MethodSource
-    void testGenerateNames(int count, String qualifier, Locale locale) {
-        assertEquals(count, provider.generateNames(count, qualifier, locale).size());
+    void testGenerateNames(int count, Locale locale) {
+        assertEquals(count, provider.generateNames(count, locale).size());
     }
 
 }

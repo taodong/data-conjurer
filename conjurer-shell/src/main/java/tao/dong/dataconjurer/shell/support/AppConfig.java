@@ -9,16 +9,16 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
-import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.service.CharacterGroupService;
 import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
+import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
+import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
+import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DefaultAddressProvider;
 import tao.dong.dataconjurer.common.support.DefaultEmailProvider;
-import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DefaultNameProvider;
 import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
@@ -61,23 +61,23 @@ public class AppConfig {
 
 
     @Bean
-    public CategorizedStringValueProvider emailProvider() {
+    public CategorizedValueProvider emailProvider() {
         return new DefaultEmailProvider();
     }
 
     @Bean
-    public CategorizedStringValueProvider nameProvider() {
+    public CategorizedValueProvider nameProvider() {
         return new DefaultNameProvider();
     }
 
     @Bean
-    public CategorizedStringValueProvider addressProvider() {
+    public CategorizedValueProvider addressProvider() {
         return new DefaultAddressProvider();
     }
 
     @Bean
-    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup, CategorizedStringValueProvider emailProvider,
-                                             CategorizedStringValueProvider nameProvider, CategorizedStringValueProvider addressProvider) {
+    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup, CategorizedValueProvider emailProvider,
+                                             CategorizedValueProvider nameProvider, CategorizedValueProvider addressProvider) {
         return DefaultDataProviderService.builder()
                 .characterGroupLookup(characterGroupLookup)
                 .emailProvider(emailProvider)

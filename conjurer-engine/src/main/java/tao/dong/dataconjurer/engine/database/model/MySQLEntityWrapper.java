@@ -12,8 +12,8 @@ import tao.dong.dataconjurer.engine.database.support.MySQLTypedValueGenerator;
 
 public class MySQLEntityWrapper extends EntityWrapper {
 
-    public MySQLEntityWrapper(DataEntity entity, EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi) {
-        super(entity, data, outputControl, dataProviderApi);
+    public MySQLEntityWrapper(DataEntity entity, EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi, int bufferSize) {
+        super(entity, data, outputControl, dataProviderApi, bufferSize);
     }
 
     @Override

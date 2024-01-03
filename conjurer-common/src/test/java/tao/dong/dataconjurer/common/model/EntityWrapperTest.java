@@ -40,7 +40,7 @@ class EntityWrapperTest {
                         new PropertyOutputControl("t5p2", false, "p2")
                 )
         );
-        var wrapper = new EntityWrapper(entity, plan, outputControl, dataProviderApi);
+        var wrapper = new EntityWrapper(entity, plan, outputControl, dataProviderApi, 0);
         assertEquals(1, wrapper.getHiddenIndex().size());
         assertEquals(1, wrapper.getAliases().size());
         assertEquals(2, wrapper.getIndexes().size());
@@ -48,7 +48,7 @@ class EntityWrapperTest {
 
     @Test
     void testUpdateStatus() {
-        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi);
+        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi, 0);
         assertEquals(0, test.getStatus());
         test.updateStatus(2);
         assertEquals(0, test.getStatus());
@@ -73,7 +73,7 @@ class EntityWrapperTest {
     @ParameterizedTest
     @MethodSource
     void testFailProcess(int[] sequence, int expected) {
-        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi);
+        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi, 0);
         for (var status : sequence) {
             test.updateStatus(status);
         }
@@ -84,17 +84,17 @@ class EntityWrapperTest {
     private static Stream<Arguments> testEquals() {
         return Stream.of(
                 Arguments.of(
-                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null),
-                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null, 0),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null, 0),
                         true
                 ),
                 Arguments.of(
-                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null),
-                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleDataWithId(null, null, 1), null, null),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null, 0),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleDataWithId(null, null, 1), null, null, 0),
                         false
                 ),
                 Arguments.of(
-                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null),
+                        new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, null, 0),
                         "ABC", false
 
                 )
@@ -118,7 +118,7 @@ class EntityWrapperTest {
     @ParameterizedTest
     @MethodSource
     void testCreateReferenced(String[] props, int expected) {
-        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi);
+        var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderApi, 0);
         test.createReferenced(new PropertyLink("t1p1", null), new PropertyLink("t1p2", null));
         var res = test.getReferencedByProperties(props);
         assertEquals(expected, res.size());
@@ -133,7 +133,7 @@ class EntityWrapperTest {
                         new EntityEntry(List.of("t1p2", "t1p3"), List.of(List.of("1", "test1"), List.of("1", "test2"), List.of("abc", "abc")))
                 )
                 .build();
-        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi, 0);
         assertEquals(2, wrapper.getEntries().size());
         assertEquals(2, wrapper.getEntries().get("t1p2").size());
     }
@@ -149,7 +149,7 @@ class EntityWrapperTest {
                         )
                 )
                 .build();
-        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi, 0);
         for (var i = 0; i < 10; i++) {
             assertEquals("abc", wrapper.getGenerators().get("t1p3").generate());
         }
@@ -166,7 +166,7 @@ class EntityWrapperTest {
                         )
                 )
                 .build();
-        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi, 0);
         assertNotEquals("abc", wrapper.getGenerators().get("t1p2").generate());
     }
 
@@ -183,7 +183,7 @@ class EntityWrapperTest {
                         )
                 )
                 .build();
-        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi, 0);
         for (var i = 0; i < 10; i++) {
             assertEquals("abc", wrapper.getGenerators().get("t1p3").generate());
         }
@@ -202,7 +202,7 @@ class EntityWrapperTest {
                         )
                 )
                 .build();
-        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderApi, 0);
         assertNotEquals("abc", wrapper.getGenerators().get("t1p2").generate());
     }
 
@@ -261,7 +261,7 @@ class EntityWrapperTest {
     @Test
     void testComplicatedWrapper() {
         var wrapper = new EntityWrapper(TEST_HELPER.createEntityT6(), TEST_HELPER.createDataT6(), TEST_HELPER.createOutputControlT6(),
-                DefaultDataProviderService.builder().characterGroupLookup(new CharacterGroupService()).nameProvider(new DefaultNameProvider()).build());
+                DefaultDataProviderService.builder().characterGroupLookup(new CharacterGroupService()).nameProvider(new DefaultNameProvider()).build(), 0);
         assertEquals(10, wrapper.getCount());
         assertEquals(4, wrapper.getReferences().size());
         assertEquals(3, wrapper.getDependencies().size());

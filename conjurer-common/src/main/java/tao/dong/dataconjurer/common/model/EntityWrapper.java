@@ -7,13 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
-import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
+import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
 import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.DataGenerationErrorType;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.DefaultStringPropertyValueConverter;
+import tao.dong.dataconjurer.common.support.DeferredCompoundValueGenerator;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
 import tao.dong.dataconjurer.common.support.NumberCalculator;
+import tao.dong.dataconjurer.common.support.PropertyCategorySupplier;
 import tao.dong.dataconjurer.common.support.StringPropertyValueConverter;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
@@ -46,6 +48,7 @@ public class EntityWrapper {
      */
     private final AtomicInteger status = new AtomicInteger(0);
     private final long count;
+    private final int bufferSize;
 
     private final Map<String, TypedValue> referenced = new HashMap<>();
     private final Map<String, Reference> references = new HashMap<>();
@@ -61,16 +64,19 @@ public class EntityWrapper {
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, Integer> propertyOrders = new HashMap<>();
     private final Set<String> correlated = new HashSet<>();
+    private final Map<String, DeferredCompoundValueGenerator> compoundValueGenerators = new HashMap<>();
+    private final Set<String> provided = new HashSet<>();
     private String msg;
 
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, PropertyType> typeMap = new HashMap<>();
     protected final V1DataProviderApi dataProviderApi;
 
-    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi) {
+    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi, int bufferSize) {
         this.dataProviderApi = dataProviderApi;
         this.entity = entity;
         this.count = data.count();
+        this.bufferSize = bufferSize;
         this.id = new EntityWrapperId(entity.name(), data.dataId());
         var indexedProps = new HashMap<Integer, Map<Integer, EntityIndex>>();
         var hiddenProps = new HashSet<String>();
@@ -271,8 +277,18 @@ public class EntityWrapper {
             if (valueCategory.isPresent()) {
                 var vc = valueCategory.get();
                 var dataProvider = getDataProvider(DataProviderType.getByTypeName(vc.name()), dataProviderApi);
-                var values = dataProvider.fetch(Math.toIntExact(count), vc.qualifier(), vc.locale(), null);
-                return new ElectedValueSelector(values, ReferenceStrategy.LOOP);
+                var deferredGenerator = compoundValueGenerators.computeIfAbsent(vc.name(),
+                        k -> new DeferredCompoundValueGenerator(dataProvider, Math.toIntExact(count) + bufferSize, vc.locale())
+                );
+
+                deferredGenerator.addConstraints(vc.qualifier(),
+                        property.constraints().stream()
+                                .filter(constraint -> constraint.getType() != ConstraintType.CATEGORY)
+                                .toList()
+                );
+
+                provided.add(property.name());
+                return new PropertyCategorySupplier(vc);
             }
         } catch (Exception e) {
             LOG.warn("Failed to create generator for Value Category of {}.{}", getEntityName(), property.name(), e);
@@ -280,7 +296,7 @@ public class EntityWrapper {
         return null;
     }
 
-    protected CategorizedStringValueProvider getDataProvider(DataProviderType type, V1DataProviderApi dataProviderApi) {
+    protected CategorizedValueProvider getDataProvider(DataProviderType type, V1DataProviderApi dataProviderApi) {
         return switch (type) {
             case NAME -> dataProviderApi.getNameProvider();
             case EMAIL -> dataProviderApi.getEmailProvider();

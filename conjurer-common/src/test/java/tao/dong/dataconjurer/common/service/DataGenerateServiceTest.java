@@ -173,7 +173,7 @@ class DataGenerateServiceTest {
                         EntityTestHelper.entityPropertyBuilder().name("t3p1").reference(new Reference("t4", "t4p0", null)).build()
                 )
         );
-        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderApi);
+        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderApi, 0);
         data.put(wrapper5.getId(), wrapper5);
         DataHelper.appendToSetValueInMap(idMap, wrapper5.getEntityName(), wrapper5.getId());
     }

@@ -10,7 +10,7 @@ class DefaultNameProviderTest {
 
     @Test
     void testFetch() {
-        assertEquals(7, provider.fetch(7, "name", null, Collections.emptyList()).size());
+        assertEquals(7, provider.fetch(7, null, null).size());
     }
 
 }

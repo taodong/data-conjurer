@@ -64,7 +64,7 @@ class DataGenerateTaskTest {
            )
         );
 
-        var wrapper =  new EntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper =  new EntityWrapper(entity, data, null, dataProviderApi, 0);
         wrapper.createReferenced(new PropertyLink("p1", null));
         return wrapper;
     }
@@ -77,7 +77,7 @@ class DataGenerateTaskTest {
         var entity = TEST_HELPER.createEntityT6();
         var data = TEST_HELPER.createDataT6();
         var output = TEST_HELPER.createOutputControlT6();
-        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi);
+        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi, 0);
         wrapper.createReferenced(new PropertyLink("t6p0", null), new PropertyLink("t6p5", "t6p0"));
         var referenced = TEST_HELPER.createReferencedT6();
         var task = DataGenerateTask.builder()
@@ -99,7 +99,7 @@ class DataGenerateTaskTest {
         var entity = TEST_HELPER.createEntityT6();
         var data = TEST_HELPER.createDataT6();
         var output = TEST_HELPER.createOutputControlT6();
-        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi);
+        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi, 0);
         wrapper.createReferenced(new PropertyLink("t6p0", null), new PropertyLink("t6p5", "t6p0"));
         var referenced = TEST_HELPER.createReferencedT6();
         var task = DataGenerateTask.builder()

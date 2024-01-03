@@ -14,7 +14,7 @@ public class MySQLDataPlanService extends DataPlanService {
     }
 
     @Override
-    protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData, EntityOutputControl control) {
-        return new MySQLEntityWrapper(dataEntity, entityData, control, dataProviderApi);
+    protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData, EntityOutputControl control, int bufferSize) {
+        return new MySQLEntityWrapper(dataEntity, entityData, control, dataProviderApi, bufferSize);
     }
 }

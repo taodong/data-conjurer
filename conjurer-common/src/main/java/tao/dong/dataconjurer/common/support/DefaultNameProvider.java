@@ -1,15 +1,17 @@
 package tao.dong.dataconjurer.common.support;
 
+import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.Constraint;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class DefaultNameProvider implements CategorizedStringValueProvider {
+public class DefaultNameProvider implements CategorizedValueProvider {
     private final JFakerValueProvider provider = new JFakerValueProvider();
 
     @Override
-    public List<String> fetch(int count, String qualifier, Locale locale, @SuppressWarnings("unused") List<Constraint<?>> constraints) {
-        return provider.generateNames(count, qualifier, locale);
+    public List<CompoundValue> fetch(int count, Locale locale, @SuppressWarnings("unused") Map<String, List<Constraint<?>>> constraints) {
+        return provider.generateNames(count, locale);
     }
 }

@@ -69,7 +69,7 @@ class DataBlueprintTest {
         Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         var wrapperId = new EntityWrapperId("t3", 1);
-        data.put(wrapperId, new EntityWrapper(TEST_HELPER.createEntityT3(), TEST_HELPER.createSimpleDataWithId("t3", 10L, 1), null, dataProviderApi));
+        data.put(wrapperId, new EntityWrapper(TEST_HELPER.createEntityT3(), TEST_HELPER.createSimpleDataWithId("t3", 10L, 1), null, dataProviderApi, 0));
         DataHelper.appendToSetValueInMap(idMap, "t3", wrapperId);
         TEST_HELPER.createSimpleBlueprintDataWithReference(data, idMap);
         var blueprint = new DataBlueprint();

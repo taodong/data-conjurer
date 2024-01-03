@@ -1,6 +1,6 @@
 package tao.dong.dataconjurer.common.api;
 
-import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
+import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
 import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 
 import java.util.Optional;
@@ -9,11 +9,11 @@ public interface V1DataProviderApi {
 
     CharacterGroupLookup getCharacterGroupLookup();
 
-    CategorizedStringValueProvider getEmailProvider();
+    CategorizedValueProvider getEmailProvider();
 
-    CategorizedStringValueProvider getNameProvider();
+    CategorizedValueProvider getNameProvider();
 
-    CategorizedStringValueProvider getAddressProvider();
+    CategorizedValueProvider getAddressProvider();
 
     default <T> T getSupportedProvider(T provider, String providerName) {
         return Optional.ofNullable(provider).orElseThrow(() -> new UnsupportedOperationException(providerName + " isn't supported"));

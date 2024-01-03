@@ -2,20 +2,19 @@ package tao.dong.dataconjurer.common.service;
 
 import lombok.Builder;
 import tao.dong.dataconjurer.common.api.V1DataProviderApi;
-import tao.dong.dataconjurer.common.model.DataProviderType;
-import tao.dong.dataconjurer.common.support.CategorizedStringValueProvider;
+import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
 import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 
 @Builder
 public class DefaultDataProviderService implements V1DataProviderApi {
 
     private final CharacterGroupLookup characterGroupLookup;
-    private final CategorizedStringValueProvider emailProvider;
-    private final CategorizedStringValueProvider nameProvider;
-    private final CategorizedStringValueProvider addressProvider;
+    private final CategorizedValueProvider emailProvider;
+    private final CategorizedValueProvider nameProvider;
+    private final CategorizedValueProvider addressProvider;
 
-    public DefaultDataProviderService(CharacterGroupLookup characterGroupLookup, CategorizedStringValueProvider emailProvider,
-                                      CategorizedStringValueProvider nameProvider, CategorizedStringValueProvider addressProvider) {
+    public DefaultDataProviderService(CharacterGroupLookup characterGroupLookup, CategorizedValueProvider emailProvider,
+                                      CategorizedValueProvider nameProvider, CategorizedValueProvider addressProvider) {
         this.characterGroupLookup = characterGroupLookup;
         this.emailProvider = emailProvider;
         this.nameProvider = nameProvider;
@@ -28,17 +27,17 @@ public class DefaultDataProviderService implements V1DataProviderApi {
     }
 
     @Override
-    public CategorizedStringValueProvider getEmailProvider() {
+    public CategorizedValueProvider getEmailProvider() {
         return getSupportedProvider(this.emailProvider, "EmailProvider");
     }
 
     @Override
-    public CategorizedStringValueProvider getNameProvider() {
+    public CategorizedValueProvider getNameProvider() {
         return getSupportedProvider(this.nameProvider, "NameProvider");
     }
 
     @Override
-    public CategorizedStringValueProvider getAddressProvider() {
+    public CategorizedValueProvider getAddressProvider() {
         return getSupportedProvider(this.addressProvider, "AddressProvider");
     }
 

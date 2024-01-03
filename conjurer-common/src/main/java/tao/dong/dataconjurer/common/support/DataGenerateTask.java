@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.DeferredPropertyType;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
@@ -12,6 +13,7 @@ import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.ReferenceStrategy;
 import tao.dong.dataconjurer.common.model.SimpleTypedValue;
 import tao.dong.dataconjurer.common.model.TypedValue;
+import tao.dong.dataconjurer.common.model.ValueCategory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +42,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     private Map<Reference, TypedValue> referenced = new HashMap<>();
     @Builder.Default
     private Map<Reference, Boolean> referenceReady = new HashMap<>();
+    private final CompoundValuePropertyRetriever compoundValuePropertyRetriever = new CompoundValuePropertyRetriever();
 
     @Override
     public EntityProcessResult call() {
@@ -222,12 +225,17 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
         List<Object> dataRow = new ArrayList<>(entityWrapper.getProperties().size());
         var deferred = deferredProperties.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+        var compoundValues = new HashMap<String, CompoundValue>();
         for (String propertyName : entityWrapper.getProperties()) {
             Object val;
             if (entityWrapper.getEntries().containsKey(propertyName) && entityWrapper.getEntries().get(propertyName).size() > recordNum) {
               val = entityWrapper.getEntries().get(propertyName).get((int)recordNum);
             } else if (deferred.contains(propertyName)) {
                 val = null;
+            } else if (entityWrapper.getProvided().contains(propertyName)) {
+                var cat = (ValueCategory)entityWrapper.getGenerators().get(propertyName).generate();
+                var compoundValue = compoundValues.computeIfAbsent(cat.name(), k -> entityWrapper.getCompoundValueGenerators().get(k).generate());
+                val = compoundValuePropertyRetriever.getValue(compoundValue, cat.name(), cat.qualifier());
             } else if (entityWrapper.getReferences().containsKey(propertyName)) {
                 var reference = entityWrapper.getReferences().get(propertyName);
                 var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);

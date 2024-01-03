@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Slf4j
 public class CompoundValuePropertyRetriever {
-
+    public static String DEFAULT_QUALIFIER = "value";
     private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder(new YAMLFactory()).build();
     static final Map<String, Map<String, String>> SUPPORTED = new HashMap<>();
 
@@ -30,6 +30,9 @@ public class CompoundValuePropertyRetriever {
     }
 
     public Object getValue(CompoundValue obj, String compound, String property) {
+        if (property == null) {
+            property = DEFAULT_QUALIFIER;
+        }
         var targetClass = getTargetClassName(compound, property);
         if (targetClass != null) {
             var jsonNode = OBJECT_MAPPER.valueToTree(obj);
@@ -50,7 +53,7 @@ public class CompoundValuePropertyRetriever {
         };
     }
 
-    public String getTargetClassName(String compound, String property) {
+    public static String getTargetClassName(String compound, String property) {
         if (SUPPORTED.containsKey(compound)) {
             return SUPPORTED.get(compound).get(property);
         }

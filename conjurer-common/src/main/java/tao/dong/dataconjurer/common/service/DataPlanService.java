@@ -16,8 +16,8 @@ import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.PropertyLink;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
-import tao.dong.dataconjurer.common.support.SequenceGenerator;
 import tao.dong.dataconjurer.common.support.MutableSequenceGenerator;
+import tao.dong.dataconjurer.common.support.SequenceGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class DataPlanService {
 
         for (var dataPlan : dataPlans) {
             if (StringUtils.equals(schema.name(), dataPlan.schema()))
-                constructBlueprint(blueprint, entityDefinitions, outputControl, dataPlan);
+                constructBlueprint(blueprint, entityDefinitions, outputControl, dataPlan, config.getMaxIndexCollision());
             else {
                 LOG.warn("Data plan {} is ignored due to target schema {} doesn't match current schema {}", dataPlan.name(), dataPlan.schema(), schema.name());
             }
@@ -101,7 +101,7 @@ public class DataPlanService {
         }
     }
 
-    private void constructBlueprint(DataBlueprint blueprint, Map<String, DataEntity> entityDefinitions, DataOutputControl outputControl, DataPlan dataPlan) {
+    private void constructBlueprint(DataBlueprint blueprint, Map<String, DataEntity> entityDefinitions, DataOutputControl outputControl, DataPlan dataPlan, int bufferSize) {
         var entityWrapperMap = blueprint.getEntities();
         var entityWrapperIdMap = blueprint.getEntityWrapperIds();
         Map<String, EntityOutputControl> entityOutputs = new HashMap<>();
@@ -118,7 +118,7 @@ public class DataPlanService {
                 var wrapperId = new EntityWrapperId(dataEntity.name(), entityData.dataId());
                 if (!entityWrapperMap.containsKey(wrapperId)) {
                     DataHelper.appendToSetValueInMap(entityWrapperIdMap, dataEntity.name(), wrapperId);
-                    entityWrapperMap.put(wrapperId, createEntityWrapper(dataEntity, entityData, entityOutputs.get(dataEntity.name())));
+                    entityWrapperMap.put(wrapperId, createEntityWrapper(dataEntity, entityData, entityOutputs.get(dataEntity.name()), bufferSize));
                 } else {
                     LOG.warn("Duplicated id found for plan {} entity {}", dataPlan.name(), entityData.entity());
                 }
@@ -132,8 +132,8 @@ public class DataPlanService {
         return schema.entities().stream().collect(Collectors.toMap(DataEntity::name, Function.identity()));
     }
 
-    protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData, EntityOutputControl control) {
-        return new EntityWrapper(dataEntity, entityData, control, dataProviderApi);
+    protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData, EntityOutputControl control, int bufferSize) {
+        return new EntityWrapper(dataEntity, entityData, control, dataProviderApi, bufferSize);
     }
 
 }

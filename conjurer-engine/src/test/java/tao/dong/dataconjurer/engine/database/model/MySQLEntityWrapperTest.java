@@ -24,7 +24,7 @@ class MySQLEntityWrapperTest {
         ));
 
         var data = new EntityData("t1", 10L, null, null);
-        var wrapper = new MySQLEntityWrapper(entity, data, null, dataProviderApi);
+        var wrapper = new MySQLEntityWrapper(entity, data, null, dataProviderApi, 0);
         assertTrue(wrapper.getGenerators().get("p0") instanceof MySQLMutableSequenceGenerator);
     }
 

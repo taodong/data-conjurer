@@ -89,21 +89,21 @@ public class EntityTestHelper {
                 new EntityOutputControl("t2", Set.of(
                         new PropertyOutputControl("t2p0", false, "id"),
                         new PropertyOutputControl("t2p1", true, null)
-                )), dataProviderApi);
+                )), dataProviderApi, 0);
         data.put(wrapper2.getId(), wrapper2);
         DataHelper.appendToSetValueInMap(idMap, wrapper2.getEntityName(), wrapper2.getId());
 
-        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null, null), null, dataProviderApi);
+        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null, null), null, dataProviderApi, 0);
         data.put(wrapper3.getId(), wrapper3);
         DataHelper.appendToSetValueInMap(idMap, wrapper3.getEntityName(), wrapper3.getId());
 
-        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null, null), null, dataProviderApi);
+        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null, null), null, dataProviderApi, 0);
         data.put(wrapper4.getId(), wrapper4);
         DataHelper.appendToSetValueInMap(idMap, wrapper4.getEntityName(), wrapper4.getId());
     }
 
     public EntityWrapper getSimpleEntityWrapper() {
-        return new EntityWrapper(createEntityT1(), createSimpleData(null, null), null, dataProviderApi);
+        return new EntityWrapper(createEntityT1(), createSimpleData(null, null), null, dataProviderApi, 0);
     }
 
     public DataEntity createEntityT4() {

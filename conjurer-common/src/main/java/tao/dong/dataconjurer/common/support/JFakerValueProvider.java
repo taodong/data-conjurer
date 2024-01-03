@@ -3,32 +3,25 @@ package tao.dong.dataconjurer.common.support;
 import jakarta.validation.constraints.Min;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
+import tao.dong.dataconjurer.common.model.Address;
+import tao.dong.dataconjurer.common.model.CompoundValue;
+import tao.dong.dataconjurer.common.model.PersonName;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-public class JFakerValueProvider implements LocaleStringValueCollector {
+public class JFakerValueProvider implements LocaleValueCollector {
 
-    public List<String> generateNames(@Min(1) int count, String qualifier, Locale locale) {
+    public List<CompoundValue> generateNames(@Min(1) int count, Locale locale) {
         final var faker = createFaker(locale);
-        return collect(count, () -> switch (normalizeQualifier(qualifier)) {
-            case "firstname" -> faker.name().firstName();
-            case "lastname" -> faker.name().lastName();
-            default -> faker.name().name();
-        });
+        return collect(count, () -> new PersonName(faker.name().name(), faker.name().firstName(), faker.name().lastName()));
     }
 
-    public List<String> generateAddresses(@Min(1) int count, String qualifier, Locale locale) {
+    public List<CompoundValue> generateAddresses(@Min(1) int count, Locale locale) {
         final var faker = createFaker(locale);
-        return collect(count, () -> switch (normalizeQualifier(qualifier)) {
-            case "street" -> faker.address().streetAddress();
-            case "city" -> faker.address().city();
-            case "country" -> faker.address().country();
-            case "state" -> faker.address().state();
-            case "zip" -> faker.address().zipCode();
-            default -> faker.address().fullAddress();
-        });
+        return collect(count, () -> new Address(faker.address().fullAddress(), faker.address().streetAddress(), faker.address().city(),
+                faker.address().state(), faker.address().zipCode(), faker.address().country()));
     }
 
 
