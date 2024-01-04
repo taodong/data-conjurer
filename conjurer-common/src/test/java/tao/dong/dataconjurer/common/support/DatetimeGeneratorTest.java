@@ -1,6 +1,9 @@
 package tao.dong.dataconjurer.common.support;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import tao.dong.dataconjurer.common.model.ChainedValue;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.Duration;
 import tao.dong.dataconjurer.common.model.Length;
@@ -35,6 +38,14 @@ class DatetimeGeneratorTest {
     void testGenerateDefault() {
         var generator = new DatetimeGenerator(null);
         assertNotNull(generator.getGenerator());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 1})
+    void testChainedGenerator(int direction) {
+        Set<Constraint<?>> constraints = Set.of(new ChainedValue(10.0, direction, 1));
+        var generator = new DatetimeGenerator(constraints);
+        assertTrue(generator.getGenerator() instanceof ChainedLongGenerator);
     }
 
 }
