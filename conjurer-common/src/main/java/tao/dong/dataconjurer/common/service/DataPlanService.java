@@ -30,6 +30,7 @@ public class DataPlanService {
 
     public DataPlanService(DataProviderService dataProviderService) {
         this.dataProviderService = dataProviderService;
+        LOG.info("Data provider service name: {}", dataProviderService.getName());
     }
 
     public DataBlueprint createDataBlueprint(DataSchema schema, DataGenerateConfig config, DataOutputControl outputControl, DataPlan... dataPlans) {

@@ -24,7 +24,7 @@ public class DefaultDataProviderService implements DataProviderService {
     public DefaultDataProviderService(@NotNull CharacterGroupLookup characterGroupLookup, @NotNull CategorizedValueProvider... providers) {
         this.characterGroupLookup = characterGroupLookup;
         supportedProviders.putAll(
-            Arrays.stream(providers).collect(toMap(p -> p.getDataProviderType().name(), Function.identity()))
+            Arrays.stream(providers).collect(toMap(CategorizedValueProvider::getDataProviderType, Function.identity()))
         );
     }
 

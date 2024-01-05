@@ -11,3 +11,5 @@ address:
     country: "java.lang.String"
 email:
     value: "java.lang.String"
+newsTitle:
+    value: "java.lang.String"

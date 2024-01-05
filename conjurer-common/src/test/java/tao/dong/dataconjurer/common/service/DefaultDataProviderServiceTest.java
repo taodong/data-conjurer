@@ -24,7 +24,7 @@ class DefaultDataProviderServiceTest {
     void testGetValueProviderByType(String typeName) {
         DataProviderService providerService = new DefaultDataProviderService(mock(CharacterGroupLookup.class), new DefaultEmailProvider());
         var provider = providerService.getValueProviderByType(typeName);
-        assertEquals(ConjurerDataProviderType.EMAIL.name(), provider.getDataProviderType().name());
+        assertEquals(ConjurerDataProviderType.EMAIL.name(), provider.getDataProviderType());
     }
 
     @ParameterizedTest

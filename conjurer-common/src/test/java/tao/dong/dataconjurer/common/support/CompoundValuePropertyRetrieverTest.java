@@ -33,15 +33,7 @@ class CompoundValuePropertyRetrieverTest {
     }
 
     record compound1Value(String p1, Long p2) implements CompoundValue {
-        @Override
-        public String getCategory() {
-            return "compound1Value";
-        }
     }
     record compound2Value(Double p1, String p3) implements CompoundValue {
-        @Override
-        public String getCategory() {
-            return "compound2Value";
-        }
     }
 }
