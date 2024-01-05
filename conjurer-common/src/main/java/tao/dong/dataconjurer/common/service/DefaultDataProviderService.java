@@ -1,45 +1,46 @@
 package tao.dong.dataconjurer.common.service;
 
-import lombok.Builder;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import tao.dong.dataconjurer.common.model.ConjurerDataProviderType;
+import tao.dong.dataconjurer.common.model.DataProviderType;
 import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
 import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 
-@Builder
-public class DefaultDataProviderService implements V1DataProviderApi {
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
+import static java.util.stream.Collectors.toMap;
+
+public class DefaultDataProviderService implements DataProviderService {
+    private static final Function<String, DataProviderType> CHECK_FUN = ConjurerDataProviderType::getByTypeName;
+
+    @Getter
     private final CharacterGroupLookup characterGroupLookup;
-    private final CategorizedValueProvider emailProvider;
-    private final CategorizedValueProvider nameProvider;
-    private final CategorizedValueProvider addressProvider;
+    private final Map<String, CategorizedValueProvider> supportedProviders = new HashMap<>();
 
-    public DefaultDataProviderService(CharacterGroupLookup characterGroupLookup, CategorizedValueProvider emailProvider,
-                                      CategorizedValueProvider nameProvider, CategorizedValueProvider addressProvider) {
+    public DefaultDataProviderService(@NotNull CharacterGroupLookup characterGroupLookup, @NotNull CategorizedValueProvider... providers) {
         this.characterGroupLookup = characterGroupLookup;
-        this.emailProvider = emailProvider;
-        this.nameProvider = nameProvider;
-        this.addressProvider = addressProvider;
+        supportedProviders.putAll(
+            Arrays.stream(providers).collect(toMap(p -> p.getDataProviderType().name(), Function.identity()))
+        );
     }
 
     @Override
-    public CharacterGroupLookup getCharacterGroupLookup() {
-        return getSupportedProvider(this.characterGroupLookup, "CharacterGroupLookup");
+    public CategorizedValueProvider getValueProviderByType(String providerType) {
+        if (isProviderSupported(CHECK_FUN, providerType)) {
+            var provider = supportedProviders.get(CHECK_FUN.apply(providerType).name());
+            if (provider != null) {
+                return provider;
+            }
+        }
+        throw new UnsupportedOperationException("Data provider " + providerType + " isn't supported");
     }
 
     @Override
-    public CategorizedValueProvider getEmailProvider() {
-        return getSupportedProvider(this.emailProvider, "EmailProvider");
+    public String getName() {
+        return "Default Data Provider Service";
     }
-
-    @Override
-    public CategorizedValueProvider getNameProvider() {
-        return getSupportedProvider(this.nameProvider, "NameProvider");
-    }
-
-    @Override
-    public CategorizedValueProvider getAddressProvider() {
-        return getSupportedProvider(this.addressProvider, "AddressProvider");
-    }
-
-
 }

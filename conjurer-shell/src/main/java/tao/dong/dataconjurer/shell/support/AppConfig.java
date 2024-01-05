@@ -9,10 +9,10 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.service.CharacterGroupService;
 import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
+import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
 import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
 import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
@@ -76,19 +76,14 @@ public class AppConfig {
     }
 
     @Bean
-    public V1DataProviderApi dataProviderApi(CharacterGroupLookup characterGroupLookup, CategorizedValueProvider emailProvider,
-                                             CategorizedValueProvider nameProvider, CategorizedValueProvider addressProvider) {
-        return DefaultDataProviderService.builder()
-                .characterGroupLookup(characterGroupLookup)
-                .emailProvider(emailProvider)
-                .nameProvider(nameProvider)
-                .addressProvider(addressProvider)
-                .build();
+    public DataProviderService dataProviderService(CharacterGroupLookup characterGroupLookup, CategorizedValueProvider emailProvider,
+                                                   CategorizedValueProvider nameProvider, CategorizedValueProvider addressProvider) {
+        return new DefaultDataProviderService(characterGroupLookup, emailProvider, nameProvider, addressProvider);
     }
 
     @Bean
-    public DataPlanService dataPlanService(V1DataProviderApi dataProviderApi) {
-        return new MySQLDataPlanService(dataProviderApi);
+    public DataPlanService dataPlanService(DataProviderService dataProviderService) {
+        return new MySQLDataPlanService(dataProviderService);
     }
 
     @Bean

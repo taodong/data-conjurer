@@ -1,7 +1,6 @@
 package tao.dong.dataconjurer.common.service;
 
 import org.junit.jupiter.api.Test;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataOutputControl;
 import tao.dong.dataconjurer.common.model.DataPlan;
@@ -24,11 +23,11 @@ import static tao.dong.dataconjurer.common.model.Dialect.MYSQL;
 class DataPlanServiceTest {
 
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
-    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
+    private final DataProviderService dataProviderService = mock(DataProviderService.class);
 
     @Test
     void testCreateDataBlueprint() {
-        var service = new DataPlanService(dataProviderApi);
+        var service = new DataPlanService(dataProviderService);
         var schema = TEST_HELPER.createSimpleTestSchema();
         var plans = TEST_HELPER.createSimpleTestPlans();
         var config = DataGenerateConfig.builder()
@@ -48,7 +47,7 @@ class DataPlanServiceTest {
 
     @Test
     void testCreateDataBlueprint_IgnorePlans() {
-        var service = new DataPlanService(dataProviderApi);
+        var service = new DataPlanService(dataProviderService);
         var schema = TEST_HELPER.createSimpleTestSchema();
         var plans = new DataPlan[]{
                 new DataPlan("plan1", "test1", MYSQL, List.of(
@@ -75,7 +74,7 @@ class DataPlanServiceTest {
         Map<EntityWrapperId, EntityWrapper> data = new HashMap<>();
         Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
         TEST_HELPER.createSimpleBlueprintData(data, idMap);
-        var service = new DataPlanService(dataProviderApi);
+        var service = new DataPlanService(dataProviderService);
         var blueprint = new DataBlueprint();
         blueprint.getEntities().putAll(data);
         blueprint.getEntityWrapperIds().putAll(idMap);

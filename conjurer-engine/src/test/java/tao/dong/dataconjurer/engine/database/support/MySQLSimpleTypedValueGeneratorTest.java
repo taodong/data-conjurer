@@ -3,7 +3,7 @@ package tao.dong.dataconjurer.engine.database.support;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.EntityIndex;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.support.MutableSequenceGenerator;
@@ -16,7 +16,7 @@ import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 
 public class MySQLSimpleTypedValueGeneratorTest {
 
-    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
+    private final DataProviderService dataProviderApi = mock(DataProviderService.class);
 
     private static Stream<Arguments> testMatchDefaultGeneratorByType() {
         return Stream.of(

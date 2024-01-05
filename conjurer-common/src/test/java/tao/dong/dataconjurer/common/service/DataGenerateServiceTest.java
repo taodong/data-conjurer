@@ -2,7 +2,6 @@ package tao.dong.dataconjurer.common.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 class DataGenerateServiceTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
-    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
+    private final DataProviderService dataProviderService = mock(DataProviderService.class);
 
     @Test
     void testGenerateData() {
@@ -173,7 +172,7 @@ class DataGenerateServiceTest {
                         EntityTestHelper.entityPropertyBuilder().name("t3p1").reference(new Reference("t4", "t4p0", null)).build()
                 )
         );
-        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderApi, 0);
+        var wrapper5 = new EntityWrapper(entity5, new EntityData("t3", 1, 5L, null, null), null, dataProviderService, 0);
         data.put(wrapper5.getId(), wrapper5);
         DataHelper.appendToSetValueInMap(idMap, wrapper5.getEntityName(), wrapper5.getId());
     }

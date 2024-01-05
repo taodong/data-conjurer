@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
-import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
+import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.DataGenerationErrorType;
 import tao.dong.dataconjurer.common.support.DataHelper;
@@ -70,10 +69,10 @@ public class EntityWrapper {
 
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, PropertyType> typeMap = new HashMap<>();
-    protected final V1DataProviderApi dataProviderApi;
+    protected final DataProviderService dataProviderService;
 
-    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl, V1DataProviderApi dataProviderApi, int bufferSize) {
-        this.dataProviderApi = dataProviderApi;
+    public EntityWrapper(@NotNull DataEntity entity, @NotNull EntityData data, EntityOutputControl outputControl, DataProviderService dataProviderService, int bufferSize) {
+        this.dataProviderService = dataProviderService;
         this.entity = entity;
         this.count = data.count();
         this.bufferSize = bufferSize;
@@ -276,7 +275,7 @@ public class EntityWrapper {
             var valueCategory = lookupValueCategoryConstraint(property);
             if (valueCategory.isPresent()) {
                 var vc = valueCategory.get();
-                var dataProvider = getDataProvider(DataProviderType.getByTypeName(vc.name()), dataProviderApi);
+                var dataProvider = dataProviderService.getValueProviderByType(vc.name());
                 var deferredGenerator = compoundValueGenerators.computeIfAbsent(vc.name(),
                         k -> new DeferredCompoundValueGenerator(dataProvider, Math.toIntExact(count) + bufferSize, vc.locale())
                 );
@@ -296,23 +295,14 @@ public class EntityWrapper {
         return null;
     }
 
-    protected CategorizedValueProvider getDataProvider(DataProviderType type, V1DataProviderApi dataProviderApi) {
-        return switch (type) {
-            case NAME -> dataProviderApi.getNameProvider();
-            case EMAIL -> dataProviderApi.getEmailProvider();
-            case ADDRESS -> dataProviderApi.getAddressProvider();
-            default -> throw new UnsupportedOperationException("No match provider for " + type);
-        };
-    }
-
     protected ValueGenerator<?> matchFallbackValueGenerator(EntityProperty property) {
         var typedValueGenerator = new TypedValueGenerator() {
             @Override
-            public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, V1DataProviderApi dataProvider) {
-                return TypedValueGenerator.super.matchDefaultGeneratorByType(property, dataProvider);
+            public ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, DataProviderService dataProviderService) {
+                return TypedValueGenerator.super.matchDefaultGeneratorByType(property, dataProviderService);
             }
         };
-        return typedValueGenerator.matchDefaultGeneratorByType(property, dataProviderApi);
+        return typedValueGenerator.matchDefaultGeneratorByType(property, dataProviderService);
     }
 
     public int getStatus() {

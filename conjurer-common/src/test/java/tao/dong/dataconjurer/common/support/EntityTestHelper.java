@@ -1,6 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.DataEntity;
@@ -46,7 +46,7 @@ import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
 public class EntityTestHelper {
-    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
+    private final DataProviderService dataProviderService = mock(DataProviderService.class);
 
     public DataSchema createSimpleTestSchema() {
         return new DataSchema("test1", Set.of(
@@ -89,21 +89,21 @@ public class EntityTestHelper {
                 new EntityOutputControl("t2", Set.of(
                         new PropertyOutputControl("t2p0", false, "id"),
                         new PropertyOutputControl("t2p1", true, null)
-                )), dataProviderApi, 0);
+                )), dataProviderService, 0);
         data.put(wrapper2.getId(), wrapper2);
         DataHelper.appendToSetValueInMap(idMap, wrapper2.getEntityName(), wrapper2.getId());
 
-        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null, null), null, dataProviderApi, 0);
+        var wrapper3 = new EntityWrapper(createEntityT3(), new EntityData("t3", 5L, null, null), null, dataProviderService, 0);
         data.put(wrapper3.getId(), wrapper3);
         DataHelper.appendToSetValueInMap(idMap, wrapper3.getEntityName(), wrapper3.getId());
 
-        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null, null), null, dataProviderApi, 0);
+        var wrapper4 = new EntityWrapper(createEntityT4(), new EntityData("t4", 5L, null, null), null, dataProviderService, 0);
         data.put(wrapper4.getId(), wrapper4);
         DataHelper.appendToSetValueInMap(idMap, wrapper4.getEntityName(), wrapper4.getId());
     }
 
     public EntityWrapper getSimpleEntityWrapper() {
-        return new EntityWrapper(createEntityT1(), createSimpleData(null, null), null, dataProviderApi, 0);
+        return new EntityWrapper(createEntityT1(), createSimpleData(null, null), null, dataProviderService, 0);
     }
 
     public DataEntity createEntityT4() {

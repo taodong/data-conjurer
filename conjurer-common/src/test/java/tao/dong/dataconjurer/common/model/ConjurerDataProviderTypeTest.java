@@ -7,18 +7,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static tao.dong.dataconjurer.common.model.DataProviderType.ADDRESS;
-import static tao.dong.dataconjurer.common.model.DataProviderType.EMAIL;
-import static tao.dong.dataconjurer.common.model.DataProviderType.NAME;
-import static tao.dong.dataconjurer.common.model.DataProviderType.UNKNOWN;
+import static tao.dong.dataconjurer.common.model.ConjurerDataProviderType.ADDRESS;
+import static tao.dong.dataconjurer.common.model.ConjurerDataProviderType.EMAIL;
+import static tao.dong.dataconjurer.common.model.ConjurerDataProviderType.NAME;
 
-class DataProviderTypeTest {
+class ConjurerDataProviderTypeTest {
 
     private static Stream<Arguments> testGetByTypeName() {
         return Stream.of(
-                Arguments.of(null, UNKNOWN),
-                Arguments.of("", UNKNOWN),
-                Arguments.of("abc", UNKNOWN),
+                Arguments.of(null, null),
+                Arguments.of("", null),
+                Arguments.of("abc", null),
                 Arguments.of("Name", NAME),
                 Arguments.of("ADDRESS", ADDRESS),
                 Arguments.of("email", EMAIL),
@@ -28,7 +27,7 @@ class DataProviderTypeTest {
 
     @ParameterizedTest
     @MethodSource
-    void testGetByTypeName(String type, DataProviderType expected) {
-        assertEquals(expected, DataProviderType.getByTypeName(type));
+    void testGetByTypeName(String type, ConjurerDataProviderType expected) {
+        assertEquals(expected, ConjurerDataProviderType.getByTypeName(type));
     }
 }

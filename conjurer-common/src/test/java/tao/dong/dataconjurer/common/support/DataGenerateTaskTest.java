@@ -1,7 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import org.junit.jupiter.api.Test;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
@@ -28,7 +28,7 @@ import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 class DataGenerateTaskTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
 
-    private final V1DataProviderApi dataProviderApi = mock(V1DataProviderApi.class);
+    private final DataProviderService dataProviderService = mock(DataProviderService.class);
 
     @Test
     void testCall_GenerateData() {
@@ -64,20 +64,20 @@ class DataGenerateTaskTest {
            )
         );
 
-        var wrapper =  new EntityWrapper(entity, data, null, dataProviderApi, 0);
+        var wrapper =  new EntityWrapper(entity, data, null, dataProviderService, 0);
         wrapper.createReferenced(new PropertyLink("p1", null));
         return wrapper;
     }
 
     @Test
     void testCall_DelayedProperties() {
-        when(dataProviderApi.getNameProvider()).thenReturn(new DefaultNameProvider());
+        when(dataProviderService.getValueProviderByType("name")).thenReturn(new DefaultNameProvider());
         var countDownLatch = new CountDownLatch(1);
         var config = DataGenerateConfig.builder().build();
         var entity = TEST_HELPER.createEntityT6();
         var data = TEST_HELPER.createDataT6();
         var output = TEST_HELPER.createOutputControlT6();
-        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi, 0);
+        var wrapper =  new EntityWrapper(entity, data, output, dataProviderService, 0);
         wrapper.createReferenced(new PropertyLink("t6p0", null), new PropertyLink("t6p5", "t6p0"));
         var referenced = TEST_HELPER.createReferencedT6();
         var task = DataGenerateTask.builder()
@@ -93,13 +93,13 @@ class DataGenerateTaskTest {
 
     @Test
     void testCall_MaxCollision() {
-        when(dataProviderApi.getNameProvider()).thenReturn(new DefaultNameProvider());
+        when(dataProviderService.getValueProviderByType("name")).thenReturn(new DefaultNameProvider());
         var countDownLatch = new CountDownLatch(1);
         var config = DataGenerateConfig.builder().maxIndexCollision(1).build();
         var entity = TEST_HELPER.createEntityT6();
         var data = TEST_HELPER.createDataT6();
         var output = TEST_HELPER.createOutputControlT6();
-        var wrapper =  new EntityWrapper(entity, data, output, dataProviderApi, 0);
+        var wrapper =  new EntityWrapper(entity, data, output, dataProviderService, 0);
         wrapper.createReferenced(new PropertyLink("t6p0", null), new PropertyLink("t6p5", "t6p0"));
         var referenced = TEST_HELPER.createReferencedT6();
         var task = DataGenerateTask.builder()

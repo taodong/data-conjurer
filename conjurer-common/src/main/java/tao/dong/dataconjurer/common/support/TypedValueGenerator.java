@@ -1,6 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
+import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.EntityProperty;
 import tao.dong.dataconjurer.common.model.NumberCorrelation;
@@ -18,10 +18,10 @@ public interface TypedValueGenerator {
                 .findFirst().map(NumberCorrelation.class::cast).orElse(null);
     }
 
-    default ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, V1DataProviderApi dataProviderApi) {
+    default ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, DataProviderService dataProviderService) {
         var cor = filterNumberCorrelation(property.getPropertyConstraints());
         return switch (property.type()) {
-            case TEXT-> new FormattedTextGenerator(property.getPropertyConstraints(), Optional.ofNullable(dataProviderApi).map(V1DataProviderApi::getCharacterGroupLookup).orElse(null));
+            case TEXT-> new FormattedTextGenerator(property.getPropertyConstraints(), Optional.ofNullable(dataProviderService).map(DataProviderService::getCharacterGroupLookup).orElse(null));
             case SEQUENCE -> new MutableSequenceGenerator(property.getPropertyConstraints());
             case NUMBER -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new BigDecimalGenerator(property.getPropertyConstraints());
             case DATETIME, DATE -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new DatetimeGenerator(property.getPropertyConstraints());

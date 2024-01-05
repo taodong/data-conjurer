@@ -3,7 +3,6 @@ package tao.dong.dataconjurer.common.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import tao.dong.dataconjurer.common.api.V1DataProviderApi;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataOutputControl;
@@ -27,10 +26,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class DataPlanService {
-    protected final V1DataProviderApi dataProviderApi;
+    protected final DataProviderService dataProviderService;
 
-    public DataPlanService(V1DataProviderApi dataProviderApi) {
-        this.dataProviderApi = dataProviderApi;
+    public DataPlanService(DataProviderService dataProviderService) {
+        this.dataProviderService = dataProviderService;
     }
 
     public DataBlueprint createDataBlueprint(DataSchema schema, DataGenerateConfig config, DataOutputControl outputControl, DataPlan... dataPlans) {
@@ -133,7 +132,7 @@ public class DataPlanService {
     }
 
     protected EntityWrapper createEntityWrapper(DataEntity dataEntity, EntityData entityData, EntityOutputControl control, int bufferSize) {
-        return new EntityWrapper(dataEntity, entityData, control, dataProviderApi, bufferSize);
+        return new EntityWrapper(dataEntity, entityData, control, dataProviderService, bufferSize);
     }
 
 }
