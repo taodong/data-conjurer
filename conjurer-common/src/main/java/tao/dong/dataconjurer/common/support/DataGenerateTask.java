@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.DeferredPropertyType;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
@@ -42,7 +43,8 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     private Map<Reference, TypedValue> referenced = new HashMap<>();
     @Builder.Default
     private Map<Reference, Boolean> referenceReady = new HashMap<>();
-    private final CompoundValuePropertyRetriever compoundValuePropertyRetriever = new CompoundValuePropertyRetriever();
+    @Builder.Default
+    private CompoundValuePropertyRetriever compoundValuePropertyRetriever = new CompoundValuePropertyRetriever();
 
     @Override
     public EntityProcessResult call() {
@@ -143,7 +145,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
     private void generateDeferredIndexProperties(List<Object> dataRow, Map<String, IndexValueGenerator> referenceIndexTracker,
                                     Collection<String> deferredProperties) {
-        var propVals = new HashMap<String, Object>();
+        Map<String, Object> propVals = new HashMap<>();
         if (!deferredProperties.isEmpty()) {
             var pillars = new HashMap<String, LinkedPair>();
             try {
@@ -193,7 +195,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     private Map<DeferredPropertyType, Collection<String>> getDeferredProperties() {
-        var deferred = new HashMap<DeferredPropertyType, Collection<String>>();
+        Map<DeferredPropertyType, Collection<String>> deferred = new HashMap<>();
         deferred.put(DeferredPropertyType.CORRELATION, entityWrapper.getCorrelated());
         var linked = entityWrapper.getReferences().entrySet().stream().filter(entry -> entry.getValue().linked() != null)
                 .map(Map.Entry::getKey).distinct().toList();
@@ -225,7 +227,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
         List<Object> dataRow = new ArrayList<>(entityWrapper.getProperties().size());
         var deferred = deferredProperties.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
-        var compoundValues = new HashMap<String, CompoundValue>();
+        Map<String, CompoundValue> compoundValues = new HashMap<>();
         for (String propertyName : entityWrapper.getProperties()) {
             Object val;
             if (entityWrapper.getEntries().containsKey(propertyName) && entityWrapper.getEntries().get(propertyName).size() > recordNum) {
@@ -276,5 +278,17 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     record LinkedPair(String key, Object value){}
+
+    public static class DataGenerateTaskBuilder {
+        public DataGenerateTaskBuilder compoundConfig(Map<String, Map<String, String>> extraConfig) {
+            var retriever = new CompoundValuePropertyRetriever();
+            if (MapUtils.isNotEmpty(extraConfig)) {
+                retriever.loadCompoundValueConfiguration(extraConfig);
+            }
+            this.compoundValuePropertyRetriever$value = retriever;
+            this.compoundValuePropertyRetriever$set = true;
+            return this;
+        }
+    }
 
 }

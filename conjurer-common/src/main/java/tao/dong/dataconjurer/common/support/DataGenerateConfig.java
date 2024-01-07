@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Builder
 @Data
@@ -18,4 +20,6 @@ public class DataGenerateConfig {
     private Duration dataGenCheckInterval = Duration.ofSeconds(10); // Wait interval of data generation service to check entity status updates
     @Builder.Default
     private Duration dataGenTimeOut = Duration.ofMinutes(15); // Overall time out for data generating process
+    @Builder.Default
+    private Map<String, Map<String, String>> compoundConfig = new HashMap<>();
 }

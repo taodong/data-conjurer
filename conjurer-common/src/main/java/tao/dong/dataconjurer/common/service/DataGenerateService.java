@@ -107,6 +107,7 @@ public class DataGenerateService {
                 .countDownLatch(latch)
                 .entityWrapper(target)
                 .referenced(referenceValues)
+                .compoundConfig(config.getCompoundConfig())
                 .build();
     }
 

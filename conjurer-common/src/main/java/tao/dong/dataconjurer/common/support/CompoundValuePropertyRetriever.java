@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 
 import java.io.IOException;
@@ -16,17 +17,20 @@ import java.util.Map;
 public class CompoundValuePropertyRetriever {
     public static String DEFAULT_QUALIFIER = "value";
     private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder(new YAMLFactory()).build();
-    static final Map<String, Map<String, String>> SUPPORTED = new HashMap<>();
+    private final Map<String, Map<String, String>> supported = new HashMap<>();
 
-    static {
+    public CompoundValuePropertyRetriever() {
+       loadDefaultConfig();
+    }
+
+    private void loadDefaultConfig() {
         try (var inputStream = CompoundValuePropertyRetriever.class.getClassLoader().getResourceAsStream("compound.yaml")) {
             Map<String, Map<String, String>> loaded = OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
             });
-            SUPPORTED.putAll(loaded);
+            supported.putAll(loaded);
         } catch (IOException e) {
             LOG.error("Failed to load compound.yaml in class path, compound value support is disabled.", e);
         }
-
     }
 
     public Object getValue(CompoundValue obj, String compound, String property) {
@@ -45,6 +49,12 @@ public class CompoundValuePropertyRetriever {
         return null;
     }
 
+    public void loadCompoundValueConfiguration(Map<String, Map<String, String>> extraConfig) {
+        if (MapUtils.isNotEmpty(extraConfig)) {
+            supported.putAll(extraConfig);
+        }
+    }
+
     private Object extractPropertyValue(JsonNode valueNode, String type) {
         return switch (type) {
             case "java.lang.Long" -> valueNode.asLong();
@@ -53,9 +63,9 @@ public class CompoundValuePropertyRetriever {
         };
     }
 
-    public static String getTargetClassName(String compound, String property) {
-        if (SUPPORTED.containsKey(compound)) {
-            return SUPPORTED.get(compound).get(property);
+    public String getTargetClassName(String compound, String property) {
+        if (supported.containsKey(compound)) {
+            return supported.get(compound).get(property);
         }
         return null;
     }
