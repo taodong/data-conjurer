@@ -16,4 +16,8 @@ class DefaultAddressProviderTest {
         assertEquals(9, provider.fetch(9, Locale.JAPAN, Map.of("street", List.of())).size());
     }
 
+    @Test
+    void testGetDataProviderType() {
+        assertEquals("ADDRESS", provider.getDataProviderType());
+    }
 }

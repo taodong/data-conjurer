@@ -1,10 +1,12 @@
 package tao.dong.dataconjurer.common.support;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,5 +37,12 @@ class CompoundValuePropertyRetrieverTest {
     record compound1Value(String p1, Long p2) implements CompoundValue {
     }
     record compound2Value(Double p1, String p3) implements CompoundValue {
+    }
+
+    @Test
+    void testLoadCompoundValueConfiguration() {
+        CompoundValuePropertyRetriever retriever = new CompoundValuePropertyRetriever();
+        retriever.loadCompoundValueConfiguration(Map.of("extra", Map.of("p1", "test")));
+        assertEquals(3, retriever.getSupported().size());
     }
 }

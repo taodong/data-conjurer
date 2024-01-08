@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import tao.dong.dataconjurer.common.model.CompoundValue;
@@ -17,6 +19,7 @@ import java.util.Map;
 public class CompoundValuePropertyRetriever {
     public static String DEFAULT_QUALIFIER = "value";
     private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder(new YAMLFactory()).build();
+    @Getter(AccessLevel.PACKAGE)
     private final Map<String, Map<String, String>> supported = new HashMap<>();
 
     public CompoundValuePropertyRetriever() {
