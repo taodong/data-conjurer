@@ -279,14 +279,15 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
     record LinkedPair(String key, Object value){}
 
+    @SuppressWarnings("unused")
     public static class DataGenerateTaskBuilder {
         public DataGenerateTaskBuilder compoundConfig(Map<String, Map<String, String>> extraConfig) {
-            var retriever = new CompoundValuePropertyRetriever();
             if (MapUtils.isNotEmpty(extraConfig)) {
+                var retriever = new CompoundValuePropertyRetriever();
                 retriever.loadCompoundValueConfiguration(extraConfig);
+                this.compoundValuePropertyRetriever$value = retriever;
+                this.compoundValuePropertyRetriever$set = true;
             }
-            this.compoundValuePropertyRetriever$value = retriever;
-            this.compoundValuePropertyRetriever$set = true;
             return this;
         }
     }
