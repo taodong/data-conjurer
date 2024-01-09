@@ -14,11 +14,10 @@ import tao.dong.dataconjurer.common.service.DataGenerateService;
 import tao.dong.dataconjurer.common.service.DataPlanService;
 import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.service.DefaultDataProviderService;
-import tao.dong.dataconjurer.common.support.CategorizedValueProvider;
-import tao.dong.dataconjurer.common.support.CharacterGroupLookup;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DefaultAddressProvider;
 import tao.dong.dataconjurer.common.support.DefaultEmailProvider;
+import tao.dong.dataconjurer.common.support.DefaultIdProvider;
 import tao.dong.dataconjurer.common.support.DefaultNameProvider;
 import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
@@ -55,30 +54,9 @@ public class AppConfig {
     }
 
     @Bean
-    public CharacterGroupLookup characterGroupLookup() {
-        return new CharacterGroupService();
-    }
-
-
-    @Bean
-    public CategorizedValueProvider emailProvider() {
-        return new DefaultEmailProvider();
-    }
-
-    @Bean
-    public CategorizedValueProvider nameProvider() {
-        return new DefaultNameProvider();
-    }
-
-    @Bean
-    public CategorizedValueProvider addressProvider() {
-        return new DefaultAddressProvider();
-    }
-
-    @Bean
-    public DataProviderService dataProviderService(CharacterGroupLookup characterGroupLookup, CategorizedValueProvider emailProvider,
-                                                   CategorizedValueProvider nameProvider, CategorizedValueProvider addressProvider) {
-        return new DefaultDataProviderService(characterGroupLookup, emailProvider, nameProvider, addressProvider);
+    public DataProviderService dataProviderService() {
+        return new DefaultDataProviderService(new CharacterGroupService(), new DefaultEmailProvider(), new DefaultNameProvider(),
+                new DefaultAddressProvider(), new DefaultIdProvider());
     }
 
     @Bean

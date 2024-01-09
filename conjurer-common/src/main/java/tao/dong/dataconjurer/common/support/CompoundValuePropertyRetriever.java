@@ -37,14 +37,18 @@ public class CompoundValuePropertyRetriever {
     }
 
     public Object getValue(CompoundValue obj, String compound, String property) {
-        if (property == null) {
-            property = DEFAULT_QUALIFIER;
+        if (!isCompoundSupported(compound)) {
+            LOG.warn("Compound type {} isn't supported", compound);
+            return null;
         }
-        var targetClass = getTargetClassName(compound, property);
+
+        var appliedProperty = isCompoundPropertySupported(compound, property) ? property : DEFAULT_QUALIFIER;
+
+        var targetClass = getTargetClassName(compound, appliedProperty);
         if (targetClass != null) {
             var jsonNode = OBJECT_MAPPER.valueToTree(obj);
-            if (jsonNode.has(property)) {
-                return extractPropertyValue(jsonNode.findValue(property), targetClass);
+            if (jsonNode.has(appliedProperty)) {
+                return extractPropertyValue(jsonNode.findValue(appliedProperty), targetClass);
             }
         } else {
             LOG.warn("{}.{} is not supported", compound, property);
@@ -71,5 +75,13 @@ public class CompoundValuePropertyRetriever {
             return supported.get(compound).get(property);
         }
         return null;
+    }
+
+    private boolean isCompoundSupported(String compound) {
+        return supported.containsKey(compound);
+    }
+
+    private boolean isCompoundPropertySupported(String compound, String property) {
+        return property != null && supported.get(compound).containsKey(property);
     }
 }

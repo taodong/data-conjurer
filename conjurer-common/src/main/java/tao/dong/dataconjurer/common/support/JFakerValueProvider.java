@@ -5,6 +5,7 @@ import net.datafaker.Faker;
 import tao.dong.dataconjurer.common.model.Address;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.PersonName;
+import tao.dong.dataconjurer.common.model.TextId;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,6 +21,11 @@ public class JFakerValueProvider implements LocaleValueCollector {
         final var faker = createFaker(locale);
         return collect(count, () -> new Address(faker.address().fullAddress(), faker.address().streetAddress(), faker.address().city(),
                 faker.address().state(), faker.address().zipCode(), faker.address().country()));
+    }
+
+    public List<CompoundValue> generateExpressionValues(@Min(1) int count, String template) {
+        final var faker = createFaker(null);
+        return collect(count, () -> new TextId(faker.bothify(template)));
     }
 
 
