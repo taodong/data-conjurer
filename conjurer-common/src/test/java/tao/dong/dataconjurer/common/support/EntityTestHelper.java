@@ -175,7 +175,7 @@ public class EntityTestHelper {
                     entityPropertyBuilder().name("t6p6").index(entityIndexBuilder().id(1).type(1).build()).reference(new Reference("t8", "t8p0", null)).build(),
                     entityPropertyBuilder().name("t6p7").index(entityIndexBuilder().id(2).type(2).qualifier(1).build()).reference(new Reference("t5", "t5p0", "t5p1")).build(),
                     entityPropertyBuilder().name("t6p8").index(entityIndexBuilder().id(2).type(2).qualifier(2).build()).reference(new Reference("t5", "t5p0", "t5p1")).build(),
-                    entityPropertyBuilder().name("t6p9").type(TEXT).constraints(List.of(new UnfixedSize(32L), new ValueCategory("name", null, null))).build()
+                    entityPropertyBuilder().name("t6p9").type(TEXT).constraints(List.of(new UnfixedSize(32L), new ValueCategory("name", null, null, 0))).build()
                 )
         );
     }

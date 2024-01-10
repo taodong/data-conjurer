@@ -234,9 +234,9 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
               val = entityWrapper.getEntries().get(propertyName).get((int)recordNum);
             } else if (deferred.contains(propertyName)) {
                 val = null;
-            } else if (entityWrapper.getProvided().contains(propertyName)) {
+            } else if (entityWrapper.getProvided().containsKey(propertyName)) {
                 var cat = (ValueCategory)entityWrapper.getGenerators().get(propertyName).generate();
-                var compoundValue = compoundValues.computeIfAbsent(cat.name(), k -> entityWrapper.getCompoundValueGenerators().get(k).generate());
+                var compoundValue = compoundValues.computeIfAbsent(cat.getValueId(), k -> entityWrapper.getCompoundValueGenerators().get(k).generate());
                 val = compoundValuePropertyRetriever.getValue(compoundValue, cat.name(), cat.qualifier());
             } else if (entityWrapper.getReferences().containsKey(propertyName)) {
                 var reference = entityWrapper.getReferences().get(propertyName);

@@ -64,7 +64,7 @@ public class EntityWrapper {
     private final Map<String, Integer> propertyOrders = new HashMap<>();
     private final Set<String> correlated = new HashSet<>();
     private final Map<String, DeferredCompoundValueGenerator> compoundValueGenerators = new HashMap<>();
-    private final Set<String> provided = new HashSet<>();
+    private final Map<String, Integer> provided = new HashMap<>();
     private String msg;
 
     @Getter(AccessLevel.PRIVATE)
@@ -276,7 +276,7 @@ public class EntityWrapper {
             if (valueCategory.isPresent()) {
                 var vc = valueCategory.get();
                 var dataProvider = dataProviderService.getValueProviderByType(vc.name());
-                var deferredGenerator = compoundValueGenerators.computeIfAbsent(vc.name(),
+                var deferredGenerator = compoundValueGenerators.computeIfAbsent(vc.getValueId(),
                         k -> new DeferredCompoundValueGenerator(dataProvider, Math.toIntExact(count) + bufferSize, vc.locale())
                 );
 
@@ -286,7 +286,7 @@ public class EntityWrapper {
                                 .toList()
                 );
 
-                provided.add(property.name());
+                provided.put(property.name(), vc.compoundId());
                 return new PropertyCategorySupplier(vc);
             }
         } catch (Exception e) {

@@ -52,3 +52,39 @@ entities:
         reference:
           entity: "country"
           property: "id"
+  - name: "records"
+    properties:
+      - name: "id"
+        type: "text"
+        constraints:
+          - type: "category"
+            name: "id"
+      - name: "city"
+        type: "sequence"
+        reference:
+          entity: "city"
+          property: "id"
+      - name: "mayor"
+        type: "text"
+        constraints:
+          - type: "category"
+            name: "name"
+      - name: "minister"
+        type: "text"
+        constraints:
+          - type: "category"
+            name: "name"
+      - name: "vice-mayor"
+        type: "text"
+        constraints:
+          - type: "category"
+            name: "name"
+            compoundId: 1
+      - name: "refId"
+        type: "text"
+        constraints:
+          - type: "category"
+            name: "id"
+            qualifier: "ref-##?##"
+            compoundId: 1
+

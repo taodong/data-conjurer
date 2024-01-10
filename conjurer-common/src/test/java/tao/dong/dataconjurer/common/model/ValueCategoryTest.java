@@ -29,18 +29,18 @@ public class ValueCategoryTest {
     @MethodSource
     void testJacksonDeserialize(String json, String name, String qualifier, Locale locale) throws JsonProcessingException {
         ValueCategory category = objectMapper.readerFor(ValueCategory.class).readValue(json);
-        assertEquals(new ValueCategory(name, qualifier, locale), category);
+        assertEquals(new ValueCategory(name, qualifier, locale, 0), category);
     }
 
     @Test
     void testIsMet() {
-        var test = new ValueCategory("abc", null, null);
+        var test = new ValueCategory("abc", null, null, 0);
         assertTrue(test.isMet("abc"));
     }
 
     @Test
     void testGetType() {
-        var test = new ValueCategory("abc", null, null);
+        var test = new ValueCategory("abc", null, null, 0);
         assertEquals(CATEGORY, test.getType());
     }
 }

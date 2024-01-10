@@ -6,3 +6,5 @@ plan:
       count: 10
     - entity: "city"
       count: 100
+    - entity: "records"
+      count: 10
