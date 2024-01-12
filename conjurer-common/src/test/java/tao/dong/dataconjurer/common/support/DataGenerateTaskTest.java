@@ -15,11 +15,14 @@ import tao.dong.dataconjurer.common.model.TypedValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
@@ -111,5 +114,34 @@ class DataGenerateTaskTest {
         assertThrows(DataGenerateException.class, task::call);
     }
 
-
+    @Test
+    void testCall_CompoundValues() {
+        when(dataProviderService.getValueProviderByType("name")).thenReturn(new DefaultIdProvider());
+        when(dataProviderService.getValueProviderByType("id")).thenReturn(new DefaultIdProvider());
+        var config = DataGenerateConfig.builder().build();
+        var entity = TEST_HELPER.createCompoundValueEntity();
+        var data = EntityTestHelper.entityDataBuilder().entity(entity.name()).count(10L).build();
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderService, 5);
+        var countDownLatch = new CountDownLatch(1);
+        var task = DataGenerateTask.builder()
+                .countDownLatch(countDownLatch)
+                .entityWrapper(wrapper)
+                .config(config)
+                .compoundConfig(Map.of("id", Map.of("value", "java.lang.String"), "name", Map.of("value", "java.lang.String")))
+                .build();
+        var result = task.call();
+        assertEquals(2, result.status());
+        assertEquals(10, wrapper.getValues().size());
+        for (var row : wrapper.getValues()) {
+            var name1 = String.valueOf(row.get(wrapper.getPropertyOrder("name1")));
+            var name2 = String.valueOf(row.get(wrapper.getPropertyOrder("name2")));
+            var name1Copy = String.valueOf(row.get(wrapper.getPropertyOrder("name1_copy")));
+            var id1 = String.valueOf(row.get(wrapper.getPropertyOrder("id1")));
+            var id2 = String.valueOf(row.get(wrapper.getPropertyOrder("id2")));
+            assertEquals(name1, name1Copy);
+            assertNotEquals(name1, name2);
+            assertEquals(UUID.fromString(id1).toString(), id1);
+            assertTrue(id2.matches("[0-9]+"));
+        }
+    }
 }

@@ -33,6 +33,7 @@ import tao.dong.dataconjurer.common.model.ValueCategory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -141,6 +142,26 @@ public class EntityTestHelper {
                         entityPropertyBuilder().name("t1p4").reference(new Reference("t3", "t3p0", null)).build()
                 )
         );
+    }
+
+    public DataEntity createCompoundValueEntity() {
+        return new DataEntity("compounds", Set.of(
+                entityPropertyBuilder().name("name1").type(TEXT).constraints(List.of(
+                        new ValueCategory("name", null, Locale.JAPAN, 1)
+                )).build(),
+                entityPropertyBuilder().name("name2").type(TEXT).constraints(List.of(
+                        new ValueCategory("name", null, null, 0)
+                )).build(),
+                entityPropertyBuilder().name("name1_copy").type(TEXT).constraints(List.of(
+                        new ValueCategory("name", null, Locale.JAPAN, 1)
+                )).build(),
+                entityPropertyBuilder().name("id1").type(TEXT).constraints(List.of(
+                        new ValueCategory("id", "uuid", null, 0)
+                )).build(),
+                entityPropertyBuilder().name("id2").type(TEXT).constraints(List.of(
+                        new ValueCategory("id", "####", null, 1)
+                )).build()
+        ));
     }
 
     public EntityData createSimpleData(String entityName, Long count) {
