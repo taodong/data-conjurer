@@ -43,4 +43,10 @@ public class ValueCategoryTest {
         var test = new ValueCategory("abc", null, null, 0);
         assertEquals(CATEGORY, test.getType());
     }
+
+    @Test
+    void testGetValueId() {
+        var test = new ValueCategory("abc", null, null, 0);
+        assertEquals("abc_0", test.getValueId());
+    }
 }
