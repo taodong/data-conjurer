@@ -20,7 +20,7 @@ public class JFakerValueProvider implements LocaleValueCollector {
     public List<CompoundValue> generateAddresses(@Min(1) int count, Locale locale) {
         final var faker = createFaker(locale);
         return collect(count, () -> new Address(faker.address().fullAddress(), faker.address().streetAddress(), faker.address().city(),
-                faker.address().state(), faker.address().zipCode(), faker.address().country()));
+                faker.address().state(), faker.address().zipCode(), locale == null ? faker.address().country() : locale.getDisplayCountry(locale)));
     }
 
     public List<CompoundValue> generateExpressionValues(@Min(1) int count, String template) {

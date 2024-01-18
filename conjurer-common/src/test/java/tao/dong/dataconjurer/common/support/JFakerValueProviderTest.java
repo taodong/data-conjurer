@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import tao.dong.dataconjurer.common.model.Address;
 import tao.dong.dataconjurer.common.model.TextId;
 
 import java.util.Locale;
@@ -31,7 +32,13 @@ class JFakerValueProviderTest {
     @ParameterizedTest
     @MethodSource
     void testGenerateAddresses(int count, Locale locale) {
-        assertEquals(count, provider.generateAddresses(count, locale).size());
+        var result = provider.generateAddresses(count, locale);
+        assertEquals(count, result.size());
+        if (locale != null) {
+            for (var address : result) {
+                assertEquals(locale.getDisplayCountry(locale), ((Address)address).country());
+            }
+        }
     }
 
     private static Stream<Arguments> testGenerateNames() {
