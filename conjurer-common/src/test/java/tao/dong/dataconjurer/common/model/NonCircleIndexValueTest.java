@@ -31,7 +31,7 @@ class NonCircleIndexValueTest {
     @ParameterizedTest
     @MethodSource
     void testAddValue(List<Object> entry, boolean expected) {
-        UniqueIndex<?> indexes = new NonCircleIndexValue(new int[] {0, 3, 4}, 3, 4);
+        UniqueIndex<?> indexes = new NonCircleIndexValue(new int[] {0, 3, 4}, 3, 4, false);
         indexes.addValue(List.of("A", "SX", "BI", "D", "E"));
         indexes.addValue(Arrays.asList("[_NULL_]", "XX", "YY", "1", "2"));
         assertEquals(expected, indexes.addValue(entry));
@@ -39,7 +39,7 @@ class NonCircleIndexValueTest {
 
     @Test
     void testAddValue_SingleParent() {
-        UniqueIndex<?> indexes = new NonCircleIndexValue(new int[] {0, 1}, 0, 1);
+        UniqueIndex<?> indexes = new NonCircleIndexValue(new int[] {0, 1}, 0, 1, false);
         indexes.addValue(List.of(50,66,3));
         assertFalse(indexes.addValue(List.of(25, 66, 33)));
     }
@@ -47,6 +47,6 @@ class NonCircleIndexValueTest {
     @ParameterizedTest
     @CsvSource({"0, 0", "-1, 0", "0, -1"})
     void testValidate(int parentIndex, int childIndex) {
-        assertThrows(IllegalArgumentException.class, () -> new NonCircleIndexValue(new int[]{0, 1, 2}, parentIndex, childIndex));
+        assertThrows(IllegalArgumentException.class, () -> new NonCircleIndexValue(new int[]{0, 1, 2}, parentIndex, childIndex, false));
     }
 }

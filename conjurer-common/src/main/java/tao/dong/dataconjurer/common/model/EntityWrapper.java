@@ -155,7 +155,8 @@ public class EntityWrapper {
         Function<List<Integer>, int[]> convertToArray = list -> list.stream().mapToInt(x -> x).toArray();
         return switch (type) {
             case 1 -> new UnorderedIndexedValue(convertToArray.apply(ids));
-            case 2 -> new NonCircleIndexValue(convertToArray.apply(ids), parent, child);
+            case 2 -> new NonCircleIndexValue(convertToArray.apply(ids), parent, child, false);
+            case 3 -> new NonCircleIndexValue(convertToArray.apply(ids), parent, child, true);
             default -> new IndexedValue(convertToArray.apply(ids));
         };
 

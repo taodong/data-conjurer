@@ -22,13 +22,16 @@ public class NonCircleIndexValue extends UnorderedIndexedValue{
     private final Map<String, Set<String>> nodes = new HashMap<>();
     @Getter(AccessLevel.NONE)
     private final Set<String> children = new HashSet<>();
+    @Getter
+    private final boolean ordered;
 
 
-    public NonCircleIndexValue(int[] indexOrders, int parentIndex, int childIndex) {
+    public NonCircleIndexValue(int[] indexOrders, int parentIndex, int childIndex, boolean ordered) {
         super(indexOrders);
         validate(parentIndex, childIndex);
         this.parentIndex = parentIndex;
         this.childIndex = childIndex;
+        this.ordered = ordered;
     }
 
     private void validate(int parentIndex, int childIndex) {
