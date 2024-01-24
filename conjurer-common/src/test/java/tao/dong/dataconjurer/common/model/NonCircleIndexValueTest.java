@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -48,5 +49,23 @@ class NonCircleIndexValueTest {
     @CsvSource({"0, 0", "-1, 0", "0, -1"})
     void testValidate(int parentIndex, int childIndex) {
         assertThrows(IllegalArgumentException.class, () -> new NonCircleIndexValue(new int[]{0, 1, 2}, parentIndex, childIndex, false));
+    }
+
+    private static Stream<Arguments> testAddValue_OrderedIndex() {
+        return Stream.of(
+                Arguments.of(new ArrayList<>(Arrays.asList(12L, 7L, 8L, 9L)), 7L, 8L),
+                Arguments.of(new ArrayList<>(Arrays.asList(5L, 5L, 4L, "abc", 6.0D, 300)), 4L, 5L),
+                Arguments.of(new ArrayList<>(Arrays.asList("abc", null, "efg")), null, "efg"),
+                Arguments.of(new ArrayList<>(Arrays.asList("sxd", 1L, "eff")), 1L, "eff")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testAddValue_OrderedIndex(List<Object> entry, Object parent, Object child) {
+        var index = new NonCircleIndexValue(new int[] {1, 2}, 1, 2, true);
+        index.addValue(entry);
+        assertEquals(parent, entry.get(1));
+        assertEquals(child, entry.get(2));
     }
 }
