@@ -93,7 +93,7 @@ entities:
         type: "sequence"
         index:
           id: 1
-          type: 2
+          type: 3
           qualifier: 1
         reference:
           entity: "comment"
@@ -103,7 +103,7 @@ entities:
         type: "sequence"
         index:
           id: 1
-          type: 2
+          type: 3
           qualifier: 2
         reference:
           entity: "comment"

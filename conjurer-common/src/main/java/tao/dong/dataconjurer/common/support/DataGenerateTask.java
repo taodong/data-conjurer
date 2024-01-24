@@ -10,6 +10,7 @@ import tao.dong.dataconjurer.common.model.DeferredPropertyType;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.LinkedTypedValue;
+import tao.dong.dataconjurer.common.model.NonCircleIndexValue;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.ReferenceStrategy;
 import tao.dong.dataconjurer.common.model.SimpleTypedValue;

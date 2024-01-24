@@ -140,9 +140,9 @@ public class EntityWrapper {
                         "Multiple index types defined under the same id %d in %s".formatted(def.id(), getEntityName()));
             }
 
-            if (type == 2 && def.qualifier() == 1) {
+            if ((type == 2 || type == 3) && def.qualifier() == 1) {
                 parent = propIndex;
-            } else if (type == 2 && def.qualifier() == 2) {
+            } else if ((type == 2 || type == 3) && def.qualifier() == 2) {
                 child = propIndex;
             }
         }
