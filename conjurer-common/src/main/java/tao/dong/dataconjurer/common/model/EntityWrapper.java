@@ -128,6 +128,7 @@ public class EntityWrapper {
         int parent = -1;
         int child = -1;
         var ids = new ArrayList<Integer>();
+        List<Integer> distinctEls = new ArrayList<>();
         for (var entry : indexDefs.entrySet()) {
             var propIndex = entry.getKey();
             ids.add(propIndex);
@@ -144,6 +145,8 @@ public class EntityWrapper {
                 parent = propIndex;
             } else if ((type == 2 || type == 3) && def.qualifier() == 2) {
                 child = propIndex;
+            } else if (type == 4 && def.qualifier() == 1) {
+                distinctEls.add(propIndex);
             }
         }
 
@@ -153,10 +156,12 @@ public class EntityWrapper {
         }
 
         Function<List<Integer>, int[]> convertToArray = list -> list.stream().mapToInt(x -> x).toArray();
+        var idArr = convertToArray.apply(ids);
         return switch (type) {
-            case 1 -> new UnorderedIndexedValue(convertToArray.apply(ids));
-            case 2 -> new NonCircleIndexValue(convertToArray.apply(ids), parent, child, false);
-            case 3 -> new NonCircleIndexValue(convertToArray.apply(ids), parent, child, true);
+            case 1 -> new UnorderedIndexedValue(idArr);
+            case 2 -> new NonCircleIndexValue(idArr, parent, child, false);
+            case 3 -> new NonCircleIndexValue(idArr, parent, child, true);
+            case 4 -> new DistinctElementIndexedValue(idArr, convertToArray.apply(distinctEls));
             default -> new IndexedValue(convertToArray.apply(ids));
         };
 

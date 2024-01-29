@@ -10,7 +10,10 @@ public class IndexedValue extends UniqueIndex<String> {
     private static final String DELIMITER = "<->";
 
     public boolean addValue(@NotNull final List<Object> properties) {
+        return addNewEntry(properties);
+    }
 
+    protected boolean addNewEntry(final List<Object> properties) {
         try {
             var val = Arrays.stream(indexOrders)
                     .mapToObj(properties::get)
