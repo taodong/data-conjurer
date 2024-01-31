@@ -219,7 +219,9 @@ class EntityWrapperTest {
         return Stream.of(
                 Arguments.of(Map.of(0, new EntityIndex(0, 0, 0)), IndexedValue.class),
                 Arguments.of(Map.of(1, new EntityIndex(1, 1, 0), 2, new EntityIndex(1, 1, 0)), UnorderedIndexedValue.class),
-                Arguments.of(Map.of(2, new EntityIndex(2, 2, 1), 3, new EntityIndex(2, 2, 2)), NonCircleIndexValue.class)
+                Arguments.of(Map.of(2, new EntityIndex(2, 2, 1), 3, new EntityIndex(2, 2, 2)), NonCircleIndexValue.class),
+                Arguments.of(Map.of(3, new EntityIndex(3, 3, 1), 4, new EntityIndex(3, 3, 2)), NonCircleIndexValue.class),
+                Arguments.of(Map.of(4, new EntityIndex(4, 4, 1), 5, new EntityIndex(5, 4, 1)), DistinctElementIndexedValue.class)
         );
     }
 
