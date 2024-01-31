@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -77,6 +78,7 @@ public class ConjureCommand  implements Callable<Integer> {
     @Override
     public Integer call() {
         var exitCode = OK;
+        var start = Instant.now();
         try {
             var schemaPath = this.schema.toPath();
             var schemaYaml = Files.readString(schemaPath, StandardCharsets.UTF_8);
@@ -99,6 +101,8 @@ public class ConjureCommand  implements Callable<Integer> {
             LOG.error("Invalid input", ioe);
             exitCode = USAGE;
         }
+        var end = Instant.now();
+        LOG.info("Generation completed in {} seconds with exit code {}", Duration.between(start, end).getSeconds(), exitCode);
         return exitCode;
     }
 
