@@ -1,22 +1,22 @@
 # data-conjurer
-A tool to generate data for MySQL Database
+A tool to generate insert statements for MySQL Database. The main purpose of this tool is enable data generation for a full relational schema in real time scenarios.
 ## Environment
-The tool needs java 21. The code is developed using Temurin 21 JDK.
+The tool requires java 21. The code is developed using Temurin 21 JDK.
 ## Installation
-Before stable release, the binary file can be created through maven command after cloning the repository
+To build the executable jar file from the source, the binary file can be created through maven command after cloning the repository
 ```shell
 mvn clean install
 ```
-It creates a **data-conjurer.jar** file under conjurer-shell/target folder
+It creates a **data-conjurer-<version>.jar** file under conjurer-shell/target folder. The current version is 1.0.0.
 ## Usage
 ```shell
-java -jar data-conjurer.jar schema.yaml plan.yaml 
+java -jar data-conjurer-<version>.jar schema.yaml plan.yaml 
 ```
 - **schema.yaml**: defines data structure
 - **plan.yaml**: defines data generation plan such as rows
 For example, to create data using yaml files defined under examples/helloworld folder
 ```shell
-java -jar conjurer-shell/target/data-conjurer.jar examples/helloworld/schema.yaml examples/helloworld/plan.yaml
+java -jar conjurer-shell/target/data-conjurer-1.0.0.jar examples/helloworld/schema.yaml examples/helloworld/plan.yaml
 ```
 The output files are named using format ${applyOrder}_${entityName}.sql.
 The above command will output two files
@@ -42,7 +42,7 @@ Command to generate data
       <plan>             Data generation plan
   -c, --max-collision=<maxCollision>
                          Max occurrence of generated records which violate
-                           index constraints
+                           index constraints for each entity
   -e, --entity-timeout=<timeOutInMinutes>
                          Single entity generation timeout in minutes
   -h, --help             Show this help message and exit.
@@ -58,6 +58,6 @@ When generating large rows of the data, you may want to increase max-collision, 
 
 *partial-result* allows the tool to generate data for next entity after max-collision of current entity is reached. It's experimental, use it with caution.
 
-## Wiki
-https://github.com/taodong/data-conjurer/wiki/Data-Conjurer-Wiki
+## Reference Document
+https://github.com/taodong/data-conjurer/wiki/Data-Conjurer-Reference
 
