@@ -104,7 +104,7 @@ public class ConjureCommand  implements Callable<Integer> {
         }
         var end = Instant.now();
         LOG.info("Generation completed in {} seconds with exit code {}", Duration.between(start, end).getSeconds(), exitCode);
-        System.out.println("Data generation completed");
+        System.out.println("Data generation completed with status " + (exitCode == 0 ? "Success" : "Failed"));
         return exitCode;
     }
 

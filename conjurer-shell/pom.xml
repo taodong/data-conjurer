@@ -6,7 +6,7 @@
         <artifactId>data-conjurer</artifactId>
         <groupId>tao.dong</groupId>
         <!--suppress MavenPropertyInParent -->
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

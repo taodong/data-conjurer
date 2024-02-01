@@ -11,12 +11,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tao.dong</groupId>
 	<artifactId>data-conjurer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>data-conjurer</name>
 	<description>Data Conjurer</description>
 	<properties>
@@ -100,7 +100,6 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>data-conjurer</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
