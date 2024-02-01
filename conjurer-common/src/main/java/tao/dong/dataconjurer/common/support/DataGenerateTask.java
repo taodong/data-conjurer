@@ -10,7 +10,6 @@ import tao.dong.dataconjurer.common.model.DeferredPropertyType;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.LinkedTypedValue;
-import tao.dong.dataconjurer.common.model.NonCircleIndexValue;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.ReferenceStrategy;
 import tao.dong.dataconjurer.common.model.SimpleTypedValue;
@@ -22,9 +21,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -75,8 +74,8 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
             try {
                 var dataRow = generateRecord(referenceIndexTracker, deferredProperties, recordNum);
                 generateDeferredProperties(dataRow, referenceIndexTracker, deferredProperties);
-                populateReferencedValues(dataRow);
                 if (isValidRecord(dataRow)) {
+                    populateReferencedValues(dataRow);
                     entityWrapper.getValues().add(dataRow);
                     recordNum++;
                 } else {
@@ -159,7 +158,8 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                         propVals.put(propertyName, pillarVal.value());
                     } else {
                         var key = pillars.get(linkedProp).key();
-                        var val = getLinkedValue(referenceIndexTracker, propertyName, reference, key);
+                        var pillarVal = pillars.get(linkedProp).value();
+                        var val = getLinkedValue(referenceIndexTracker, propertyName, reference, key, pillarVal);
                         propVals.put(propertyName, val);
                     }
                 }
@@ -174,15 +174,19 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         }
     }
 
-    private Object getLinkedValue(Map<String, IndexValueGenerator> referenceIndexTracker, String propertyName, Reference reference, String key) {
+    private Object getLinkedValue(Map<String, IndexValueGenerator> referenceIndexTracker, String propertyName, Reference reference, String key, Object pillarVal) {
         var typedValue = (LinkedTypedValue)referenced.get(reference);
         var strategy = entityWrapper.getRefStrategy().get(propertyName);
         var size = typedValue.getKeyedValues(key).size();
         var indexGen = getIndexValueGenerator(referenceIndexTracker, propertyName + ':' + key, strategy, typedValue.getKeyedValues(key).size());
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(0, Math.min(size, 15)); i++) {
-            indexGen.generate(); // shuffle values
+        var located = typedValue.getKeyedValues(key).get(indexGen.generate());
+        var count = 0;
+        var maxRetry = Math.min(size, 11);
+        while(Objects.equals(located, pillarVal) && count <= maxRetry) {
+            located = typedValue.getKeyedValues(key).get(indexGen.generate());
+            count++;
         }
-        return typedValue.getKeyedValues(key).get(indexGen.generate());
+        return located;
     }
 
     private LinkedPair getPillarValue(Map<String, IndexValueGenerator> referenceIndexTracker, String propertyName, String linkedProp, Reference reference) {

@@ -1,0 +1,121 @@
+plan:
+  name: "100 People Social Work"
+  schema: "social_network"
+  data:
+    - entity: "user"
+      count: 7000
+      properties:
+        - name: "name"
+          constraints:
+            - type: "category"
+              name: "name"
+              locale: "en-US"
+        - name: "city"
+          constraints:
+            - type: "category"
+              name: "address"
+              qualifier: "city"
+              locale: "en-US"
+        - name: "country"
+          constraints:
+            - type: "category"
+              name: "address"
+              qualifier: "country"
+              locale: "en-US"
+    - entity: "user"
+      dataId: 1
+      count: 3000
+      properties:
+        - name: "name"
+          constraints:
+            - type: "category"
+              name: "name"
+              locale: "ja-JP"
+        - name: "city"
+          constraints:
+            - type: "category"
+              name: "address"
+              qualifier: "city"
+              locale: "ja-JP"
+        - name: "country"
+          constraints:
+            - type: "category"
+              name: "address"
+              qualifier: "country"
+              locale: "ja-JP"
+    - entity: "post"
+      count: 35000
+      properties:
+        - name: "date"
+          constraints:
+            - type: "chain"
+              seed: 10000
+              direction: 1
+              style: 1
+            - type: "duration"
+              start:
+                year: 2023
+                month: 11
+                day: 1
+    - entity: "post"
+      count: 15000
+      dataId: 1
+      properties:
+        - name: "date"
+          constraints:
+            - type: "chain"
+              seed: 10000
+              direction: 1
+              style: 1
+            - type: "duration"
+              start:
+                year: 2023
+                month: 11
+                day: 3
+        - name: "content"
+          constraints:
+            - type: "char_group"
+              groups:
+                - "ea_hiragana"
+                - "ea_katakana"
+    - entity: "comment"
+      count: 175000
+      properties:
+        - name: "date"
+          constraints:
+            - type: "chain"
+              seed: 10000
+              direction: 1
+              style: 1
+            - type: "duration"
+              start:
+                year: 2023
+                month: 11
+                day: 3
+    - entity: "comment"
+      count: 75000
+      dataId: 1
+      properties:
+        - name: "date"
+          constraints:
+            - type: "chain"
+              seed: 10000
+              direction: 1
+              style: 1
+            - type: "duration"
+              start:
+                year: 2023
+                month: 11
+                day: 6
+        - name: "content"
+          constraints:
+            - type: "char_group"
+              groups:
+                - "ea_hiragana"
+                - "ea_katakana"
+    - entity: "follows"
+      count: 50000
+    - entity: "likes"
+      count: 100000
+    - entity: "commentChain"
+      count: 25000

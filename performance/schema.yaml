@@ -1,0 +1,148 @@
+name: "social_network"
+entities:
+  - name: "user"
+    properties:
+      - name: "id"
+        type: "sequence"
+        index:
+          id: 0
+      - name: "email"
+        type: "text"
+        constraints:
+          - type: "category"
+            name: "email"
+      - name: "name"
+        type: "text"
+      - name: "city"
+        type: "text"
+      - name: "country"
+        type: "text"
+      - name: "birthday"
+        type: "date"
+        constraints:
+          - type: "duration"
+            start:
+              year: 1970
+            end:
+              year: 2003
+  - name: "post"
+    properties:
+      - name: "id"
+        type: "sequence"
+        index:
+          id: 0
+      - name: "content"
+        type: "text"
+        constraints:
+          - type: "size"
+            min: 1
+            max: 280
+      - name: "userId"
+        type: "sequence"
+        reference:
+          entity: "user"
+          property: "id"
+      - name: "date"
+        type: "datetime"
+        constraints:
+          - type: "duration"
+            start:
+              year: 2023
+              month: 11
+              day: 1
+          - type: "chain"
+            seed: 10000
+            direction: 1
+            style: 1
+  - name: "follows"
+    properties:
+      - name: "from"
+        type: "sequence"
+        reference:
+          entity: "user"
+          property: "id"
+        index:
+          id: 2
+          type: 4
+          qualifier: 1
+      - name: "to"
+        type: "sequence"
+        reference:
+          entity: "user"
+          property: "id"
+        index:
+          id: 2
+          type: 4
+          qualifier: 1
+  - name: "likes"
+    properties:
+      - name: "postId"
+        type: "sequence"
+        reference:
+          entity: "post"
+          property: "id"
+        index:
+          id: 2
+      - name: "userId"
+        type: "sequence"
+        reference:
+          entity: "user"
+          property: "id"
+        index:
+          id: 2
+  - name: "comment"
+    properties:
+      - name: "id"
+        type: "sequence"
+        index:
+          id: 0
+      - name: "postId"
+        type: "sequence"
+        reference:
+          entity: "post"
+          property: "id"
+      - name: "userId"
+        type: "sequence"
+        reference:
+          entity: "user"
+          property: "id"
+      - name: "content"
+        type: "text"
+        constraints:
+          - type: "size"
+            min: 1
+            max: 280
+      - name: "date"
+        type: "datetime"
+        constraints:
+          - type: "duration"
+            start:
+              year: 2023
+              month: 12
+              day: 5
+          - type: "chain"
+            seed: 8000
+            direction: 1
+            style: 2
+  - name: "commentChain"
+    properties:
+      - name: "parentId"
+        type: "sequence"
+        reference:
+          entity: "comment"
+          property: "id"
+          linked: "postId"
+        index:
+          id: 2
+          type: 3
+          qualifier: 1
+      - name: "childId"
+        type: "sequence"
+        reference:
+          entity: "comment"
+          property: "id"
+          linked: "postId"
+        index:
+          id: 2
+          type: 3
+          qualifier: 2
