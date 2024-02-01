@@ -14,11 +14,33 @@
 		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>tao.dong</groupId>
+	<groupId>io.github.taodong</groupId>
 	<artifactId>data-conjurer</artifactId>
 	<version>1.0.0</version>
 	<name>data-conjurer</name>
-	<description>Data Conjurer</description>
+	<description>A java tool to generate insert statements for MySQL database</description>
+
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0</name>
+			<url>https://github.com/taodong/data-conjurer/blob/main/LICENSE</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Tao Dong</name>
+			<url>https://github.com/taodong</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/taodong/data-conjurer/data-conjurer.git</connection>
+		<developerConnection>scm:git:git://github.com/taodong/data-conjurer/data-conjurer.git</developerConnection>
+		<url>https://github.com/taodong/data-conjurer</url>
+	</scm>
+
 	<properties>
 		<java.version>21</java.version>
 		<maven.compiler.release>21</maven.compiler.release>
