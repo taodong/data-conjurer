@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="60">
+    <Properties>
+        <Property name="ENTRY_LAYOUT">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{%5p} %clr{--}{faint} %clr{[%15.15t]}{yellow} %clr{[%-30.30c{1.}]}{cyan} %clr{|}{faint} %m%ex%n</Property>
+    </Properties>
+    <Appenders>
+        <File name="FILE" fileName="./output.log">
+            <PatternLayout pattern="${ENTRY_LAYOUT}"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -15,8 +15,8 @@ public class DataConjurerApplication implements CommandLineRunner, ExitCodeGener
 		System.exit(SpringApplication.exit(SpringApplication.run(DataConjurerApplication.class, args)));
 	}
 
-	private IFactory commandLineFactory;
-	private ConjureCommand conjureCommand;
+	private final IFactory commandLineFactory;
+	private final ConjureCommand conjureCommand;
 	private int exitCode;
 
 	public DataConjurerApplication(IFactory commandLineFactory, ConjureCommand conjureCommand) {

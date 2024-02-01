@@ -77,6 +77,7 @@ public class ConjureCommand  implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        System.out.println("Start data generating");
         var exitCode = OK;
         var start = Instant.now();
         try {
@@ -103,6 +104,7 @@ public class ConjureCommand  implements Callable<Integer> {
         }
         var end = Instant.now();
         LOG.info("Generation completed in {} seconds with exit code {}", Duration.between(start, end).getSeconds(), exitCode);
+        System.out.println("Data generation completed");
         return exitCode;
     }
 
