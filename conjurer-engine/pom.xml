@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>tao.dong</groupId>
+            <groupId>io.github.taodong</groupId>
             <artifactId>conjurer-common</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -41,5 +41,18 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
