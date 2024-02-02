@@ -56,6 +56,7 @@
 		<snakeyaml.version>2.2</snakeyaml.version>
 		<evalex.version>3.1.0</evalex.version>
 		<maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
+		<maven.jacoco.plugin.version>0.8.11</maven.jacoco.plugin.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -181,6 +182,25 @@
 							<phase>verify</phase>
 							<goals>
 								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${maven.jacoco.plugin.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
 							</goals>
 						</execution>
 					</executions>
