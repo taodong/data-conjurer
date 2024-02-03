@@ -12,9 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -100,5 +98,16 @@ class EntityPropertyTest {
         assertEquals(expected, objectMapper.readerFor(EntityProperty.class).readValue(json));
     }
 
+    private static Stream<Arguments> testGetPropertyConstraints() {
+        return Stream.of(
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().constraints(null).build(), 0),
+                Arguments.of(EntityTestHelper.entityPropertyBuilder().constraints(List.of(new Length(5L))).build(), 1)
+        );
+    }
 
+    @ParameterizedTest
+    @MethodSource
+    void testGetPropertyConstraints(EntityProperty ep, int size) {
+        assertEquals(size, ep.getPropertyConstraints().size());
+    }
 }

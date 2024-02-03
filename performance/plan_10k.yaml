@@ -118,4 +118,4 @@ plan:
     - entity: "likes"
       count: 100000
     - entity: "commentChain"
-      count: 25000
+      count: 12500

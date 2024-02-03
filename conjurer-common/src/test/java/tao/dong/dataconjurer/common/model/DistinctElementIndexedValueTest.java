@@ -40,4 +40,11 @@ class DistinctElementIndexedValueTest {
         var rs = index.addValue(List.of(0, 1, 1, 2));
         assertTrue(rs);
     }
+
+    @Test
+    void testAddValue_NullDistinctElements() {
+        var index = new DistinctElementIndexedValue(new int[]{1, 2}, null);
+        var rs = index.addValue(List.of(0, 1, 1, 2));
+        assertTrue(rs);
+    }
 }
