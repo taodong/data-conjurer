@@ -119,3 +119,8 @@ plan:
       count: 100000
     - entity: "commentChain"
       count: 12500
+      properties:
+        - name: "parentId"
+          referenceStrategy: "loop"
+        - name: "childId"
+          referenceStrategy: "loop"
