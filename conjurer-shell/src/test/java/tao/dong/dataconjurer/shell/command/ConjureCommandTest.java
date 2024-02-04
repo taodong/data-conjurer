@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.shell.command;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
@@ -16,9 +17,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -82,6 +86,18 @@ class ConjureCommandTest {
         assertEquals(60, conjureCommand.getMaxTimeout());
         assertEquals(true, conjureCommand.getPartialResult());
     }
+
+    @Test
+    void testValidateInput() {
+        YamlFileService yamlFileService = mock(YamlFileService.class);
+        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        @SuppressWarnings("unchecked")
+        ConstraintViolation<String> violation = mock(ConstraintViolation.class);
+        when(violation.getMessage()).thenReturn("error");
+        when(validator.validate("Error")).thenReturn(Set.of(violation));
+        assertThrows(CommandLine.TypeConversionException.class, () -> conjureCommand.validateInput("Error", "field", Paths.get("test")));
+    }
+
 
     private String getFilePathForClassPathResource(String resource) throws URISyntaxException {
         return Path.of(ClassLoader.getSystemResource(resource).toURI()).toString();

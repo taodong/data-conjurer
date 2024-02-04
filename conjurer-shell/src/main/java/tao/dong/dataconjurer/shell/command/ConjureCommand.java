@@ -118,7 +118,7 @@ public class ConjureCommand  implements Callable<Integer> {
                 .build();
     }
 
-    private <T> void validateInput(T input, String name, Path filePath) {
+    <T> void validateInput(T input, String name, Path filePath) {
         var violations = validator.validate(input);
         if (!CollectionUtils.isEmpty(violations)) {
             throw new CommandLine.TypeConversionException(generateErrorMessage("Invalid " + name + " file: " + filePath, violations));

@@ -2,7 +2,6 @@ package tao.dong.dataconjurer.shell.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
 import tao.dong.dataconjurer.shell.model.MySQLDataPlan;
 

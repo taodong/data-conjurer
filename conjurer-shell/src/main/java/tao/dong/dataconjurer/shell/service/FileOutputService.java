@@ -31,7 +31,7 @@ public class FileOutputService {
         }
     }
 
-    private Path getOutputFilePath(EntityQueryOutput eqo) {
+    Path getOutputFilePath(EntityQueryOutput eqo) {
         return Paths.get(eqo.getOrder() + "_" + eqo.getEntity() + ".sql");
     }
 }
