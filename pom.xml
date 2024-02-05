@@ -161,6 +161,7 @@
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<configuration>
 						<detectJavaApiLink>false</detectJavaApiLink>
+						<doclint>-missing</doclint>
 					</configuration>
 					<executions>
 						<execution>
