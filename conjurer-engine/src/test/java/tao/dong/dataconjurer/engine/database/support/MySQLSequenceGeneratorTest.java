@@ -1,11 +1,13 @@
 package tao.dong.dataconjurer.engine.database.support;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MySQLSequenceGeneratorTest {
@@ -22,5 +24,11 @@ class MySQLSequenceGeneratorTest {
     @MethodSource
     void testInvalidSetting(Long current, Long leap) {
         assertThrows(IllegalArgumentException.class, () -> new MySQLSequenceGenerator(current, leap));
+    }
+
+    @Test
+    void testValidSetting() {
+        var generator = new MySQLSequenceGenerator(5L, 1L);
+        assertEquals(5, generator.generate());
     }
 }
