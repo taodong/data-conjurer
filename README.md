@@ -16,7 +16,7 @@ java -jar data-conjurer-<version>.jar schema.yaml plan.yaml
 - **plan.yaml**: defines data generation plan such as rows
 For example, to create data using yaml files defined under examples/helloworld folder
 ```shell
-java -jar conjurer-shell/target/data-conjurer-1.0.0.jar examples/helloworld/schema.yaml examples/helloworld/plan.yaml
+java -jar data-conjurer-1.0.0.jar examples/helloworld/schema.yaml examples/helloworld/plan.yaml
 ```
 The output files are named using format ${applyOrder}_${entityName}.sql.
 The above command will output two files
