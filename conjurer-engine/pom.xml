@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.taodong</groupId>
+            <groupId>io.github.taodong.data</groupId>
             <artifactId>conjurer-common</artifactId>
             <version>${project.version}</version>
         </dependency>
