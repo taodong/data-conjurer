@@ -26,6 +26,9 @@ jobs:
           gpg-passphrase: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
       - name: Build with Maven
         run: mvn -B package -P release --file pom.xml
+      - name: File Path Debugging
+        run: |
+          ls -R ${{ github.workspace }}
       - name: Create a Release
         uses: ncipollo/release-action@v1
         with:
