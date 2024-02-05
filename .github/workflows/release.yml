@@ -31,7 +31,7 @@ jobs:
         with:
           artifactErrorsFailBuild: true
           artifacts: "${{ github.workspace }}/data-conjurer/conjurer-shell/target/*.jar"
-          bodyFile: "${{ github.workspace }}/data-conjurer/release.md"
+          bodyFile: "${{ github.workspace }}/release.md"
       - name: Publish to Maven Central
         run: |
           mvn \
