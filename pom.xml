@@ -14,8 +14,8 @@
 		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>io.github.taodong.data</groupId>
-	<artifactId>data-conjurer</artifactId>
+	<groupId>io.github.taodong</groupId>
+	<artifactId>data-conjurer-parent</artifactId>
 	<version>1.0.0</version>
 	<name>data-conjurer</name>
 	<description>A java tool to generate insert statements for MySQL database</description>
@@ -218,7 +218,12 @@
 				<configuration>
 					<publishingServerId>central</publishingServerId>
 					<tokenAuth>true</tokenAuth>
+					<waitUntil>uploaded</waitUntil>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
