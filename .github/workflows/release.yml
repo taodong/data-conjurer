@@ -32,11 +32,11 @@ jobs:
 #          artifactErrorsFailBuild: true
 #          artifacts: "${{ github.workspace }}/conjurer-shell/target/data-conjurer-*.jar"
 #          bodyFile: "${{ github.workspace }}/release.md"
-      - name: create settings-security.xml
-        run: |
-          echo "<settingsSecurity>" > ~/.m2/settings-security.xml
-          echo "  <master>${{ secrets.OSSRH_GPG_PASSPHRASE }}</master>" >> ~/.m2/settings-security.xml
-          echo "</settingsSecurity>" >> ~/.m2/settings-security.xml
+#      - name: create settings-security.xml
+#        run: |
+#          echo "<settingsSecurity>" > ~/.m2/settings-security.xml
+#          echo "  <master>${{ secrets.OSSRH_GPG_PASSPHRASE }}</master>" >> ~/.m2/settings-security.xml
+#          echo "</settingsSecurity>" >> ~/.m2/settings-security.xml
       - name: Publish to Maven Central
         run: |
           mvn \
