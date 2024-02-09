@@ -1,4 +1,8 @@
 # data-conjurer
+[![Build](https://github.com/taodong/data-conjurer/actions/workflows/maven.yml/badge.svg)](https://github.com/taodong/data-conjurer/actions/workflows/maven.yml/badge.svg)
+[![codecov](https://codecov.io/gh/taodong/data-conjurer/graph/badge.svg?token=O4AYAUHEI3)](https://codecov.io/gh/taodong/data-conjurer)
+[![Maven Central](https://img.shields.io/badge/Maven_Central-v1.0.0-blue)](https://central.sonatype.com/artifact/io.github.taodong/data-conjurer)
+
 A tool to generate insert statements for MySQL Database. The main purpose of this tool is enable data generation for a full relational schema in real time scenarios.
 ## Environment
 The tool requires java 21. The code is developed using Temurin 21 JDK.

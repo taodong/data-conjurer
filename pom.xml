@@ -16,10 +16,9 @@
 	</parent>
 	<groupId>io.github.taodong</groupId>
 	<artifactId>data-conjurer-parent</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>data-conjurer</name>
 	<description>A java tool to generate insert statements for MySQL database</description>
-
 
 	<licenses>
 		<license>
