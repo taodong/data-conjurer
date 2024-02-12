@@ -13,6 +13,7 @@ import picocli.CommandLine.Parameters;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.Dialect;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
 import tao.dong.dataconjurer.shell.service.FileOutputService;
 import tao.dong.dataconjurer.shell.service.YamlFileService;
@@ -29,6 +30,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static picocli.CommandLine.ExitCode.OK;
+import static picocli.CommandLine.ExitCode.SOFTWARE;
 import static picocli.CommandLine.ExitCode.USAGE;
 
 @Component
@@ -101,6 +103,9 @@ public class ConjureCommand  implements Callable<Integer> {
         } catch (IOException ioe) {
             LOG.error("Invalid input", ioe);
             exitCode = USAGE;
+        } catch (DataGenerateException dge) {
+            LOG.error("Generation failed", dge);
+            exitCode = SOFTWARE;
         }
         var end = Instant.now();
         LOG.info("Generation completed in {} seconds with exit code {}", Duration.between(start, end).getSeconds(), exitCode);

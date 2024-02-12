@@ -57,6 +57,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         } catch (DataGenerateException dge) {
             throw dge;
         } catch (Exception e) {
+            entityWrapper.setMsg(e.getMessage());
             throw new DataGenerateException(MISC, String.format("Failed to generate data for %s", entityWrapper.getId()), entityWrapper.getId().getIdString(), e);
         } finally {
             countDownLatch.countDown();
@@ -90,6 +91,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         }
 
         if (collision >= config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
+            entityWrapper.setMsg("Collision limits reached.");
             throw new DataGenerateException(INDEX,
                                             String.format("Failed to generate unique index for %s. Collision number: %d, row number: %d",
                                                           entityWrapper.getId(), collision, recordNum),

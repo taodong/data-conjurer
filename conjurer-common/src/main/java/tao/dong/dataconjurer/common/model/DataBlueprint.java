@@ -2,6 +2,8 @@ package tao.dong.dataconjurer.common.model;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
+import tao.dong.dataconjurer.common.support.DataGenerationErrorType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +44,14 @@ public class DataBlueprint {
             result.addValues(wrapper.getOutputValues());
 
         }
+        verifyCompletion(results);
         return results;
+    }
+
+    void verifyCompletion(List<EntityDataOutput> results) {
+        if (results.size() < entityWrapperIds.size()) {
+            throw new DataGenerateException(DataGenerationErrorType.MISC, "Failed to generate certain entities");
+        }
     }
 
     List<EntityWrapper> sortEntityByDependencies() {

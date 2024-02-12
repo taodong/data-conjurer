@@ -3,6 +3,7 @@ package tao.dong.dataconjurer.common.model;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -65,6 +66,7 @@ public class EntityWrapper {
     private final Set<String> correlated = new HashSet<>();
     private final Map<String, DeferredCompoundValueGenerator> compoundValueGenerators = new HashMap<>();
     private final Map<String, Integer> provided = new HashMap<>();
+    @Setter
     private String msg;
 
     @Getter(AccessLevel.PRIVATE)
