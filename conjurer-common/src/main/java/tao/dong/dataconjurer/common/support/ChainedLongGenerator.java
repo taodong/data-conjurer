@@ -8,6 +8,6 @@ public class ChainedLongGenerator extends ChainedValueGenerator<Long> {
 
     @Override
     protected Long getNextValue() {
-        return current + Double.valueOf(generateLeap()).longValue();
+        return current + (long)generateLeap();
     }
 }

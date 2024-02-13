@@ -10,16 +10,16 @@ public abstract class StringValueGeneratorDecorator extends ValueGeneratorDecora
 
     protected final CharacterGroupLookup characterGroupLookup;
     @Getter(AccessLevel.PACKAGE)
-    protected final ValueGenerator<String> generator;
+    protected final ValueGenerator<String> strGenerator;
 
     protected StringValueGeneratorDecorator(Set<Constraint<?>> constraints, CharacterGroupLookup characterGroupLookup) {
         super((ValueGenerator<String>) null);
         this.characterGroupLookup = characterGroupLookup;
-        generator = createGeneratorByConstraints(constraints);
+        strGenerator = createGeneratorByConstraints(constraints);
     }
 
     @Override
     public String generate() {
-        return this.generator.generate();
+        return strGenerator.generate();
     }
 }

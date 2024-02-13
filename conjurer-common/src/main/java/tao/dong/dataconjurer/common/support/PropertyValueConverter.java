@@ -43,6 +43,9 @@ public abstract class PropertyValueConverter<T> {
             );
             return future.get();
         } catch (ExecutionException | InterruptedException e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             throw new DataGenerateException(MISC, "Failed to convert to MySQL string values", e);
         }
     }

@@ -59,6 +59,9 @@ public class DataGenerateService {
                                 } catch (InterruptedException | ExecutionException e) {
                                     LOG.error("Data generation failed", e);
                                     cleanup = true;
+                                    if (e instanceof InterruptedException) {
+                                        Thread.currentThread().interrupt();
+                                    }
                                 }
                             }
                         } else {

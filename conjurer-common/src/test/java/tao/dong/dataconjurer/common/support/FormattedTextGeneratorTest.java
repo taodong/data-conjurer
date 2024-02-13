@@ -50,8 +50,8 @@ class FormattedTextGeneratorTest {
     void testCreateDefaultGenerator() {
         Set<Constraint<?>> constraints = Set.of(new Precision(5));
         var generator = new FormattedTextGenerator(constraints, null);
-        assertTrue(generator.getGenerator() instanceof RangeLengthStringGenerator);
-        var internalGen = (RangeLengthStringGenerator)generator.generator;
+        assertTrue(generator.getStrGenerator() instanceof RangeLengthStringGenerator);
+        var internalGen = (RangeLengthStringGenerator)generator.strGenerator;
         assertEquals(1, internalGen.getMinLength());
         assertEquals(100, internalGen.getMaxLength());
     }
@@ -71,7 +71,7 @@ class FormattedTextGeneratorTest {
         Set<Constraint<?>> constraints = Set.of(new UnfixedSize(2L, 5L));
         when(characterLookup.lookupCharacterGroups(anySet())).thenReturn(new CharacterPredicate[]{ARABIC_NUMERALS});
         var generator = new FormattedTextGenerator(constraints, characterLookup);
-        assertTrue(generator.getGenerator() instanceof  RangeLengthStringGenerator);
+        assertTrue(generator.getStrGenerator() instanceof  RangeLengthStringGenerator);
         verify(characterLookup, times(1)).lookupCharacterGroups(anySet());
     }
 
