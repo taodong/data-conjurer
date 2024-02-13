@@ -4,13 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.util.concurrent.ThreadLocalRandom;
+import java.security.SecureRandom;
+import java.util.Random;
 
 @Builder
 @Getter
 public class RandomNumberGenerator implements ValueGenerator<BigDecimal> {
 
-    private static final ThreadLocalRandom RANDOM_GENERATOR = ThreadLocalRandom.current();
+    private static final Random RANDOM_GENERATOR = new SecureRandom();
 
     @Builder.Default
     private long maxExclusive = Long.MAX_VALUE;

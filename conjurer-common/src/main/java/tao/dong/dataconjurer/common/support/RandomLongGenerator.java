@@ -2,11 +2,12 @@ package tao.dong.dataconjurer.common.support;
 
 import lombok.Builder;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.security.SecureRandom;
+import java.util.Random;
 
 @Builder
 public class RandomLongGenerator implements ValueGenerator<Long> {
-    private static final ThreadLocalRandom RANDOM_GENERATOR = ThreadLocalRandom.current();
+    private static final Random RANDOM_GENERATOR = new SecureRandom();
 
     @Builder.Default
     private long minInclusive = Long.MIN_VALUE;

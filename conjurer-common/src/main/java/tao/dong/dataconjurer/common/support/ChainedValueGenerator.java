@@ -2,10 +2,11 @@ package tao.dong.dataconjurer.common.support;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 public abstract class ChainedValueGenerator<T> implements ValueGenerator<T> {
-    private final Random random = new Random();
+    private final Random random = new SecureRandom();
     protected final int direction;
 
     protected final double seed;
