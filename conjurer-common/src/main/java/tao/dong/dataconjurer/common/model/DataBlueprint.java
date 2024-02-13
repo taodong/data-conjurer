@@ -49,7 +49,8 @@ public class DataBlueprint {
     }
 
     void verifyCompletion(List<EntityDataOutput> results) {
-        if (results.size() < entityWrapperIds.size()) {
+        if (results.size() < entityWrapperIds.size() ||
+            results.stream().anyMatch(edo -> edo.getValues().isEmpty())) {
             throw new DataGenerateException(DataGenerationErrorType.MISC, "Failed to generate certain entities");
         }
     }

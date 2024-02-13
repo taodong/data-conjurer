@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import picocli.CommandLine;
-import tao.dong.dataconjurer.shell.command.ConjureCommand;
+import tao.dong.dataconjurer.shell.command.ConjurerCommand;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mockConstruction;
@@ -21,7 +21,7 @@ class DataConjurerApplicationTest {
     private CommandLine.IFactory commandLineFactory;
     @Mock
     @SuppressWarnings("unused")
-    private ConjureCommand conjureCommand;
+    private ConjurerCommand conjurerCommand;
     @InjectMocks
     private DataConjurerApplication dataConjurerApplication;
 

@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import picocli.CommandLine;
 import picocli.CommandLine.IFactory;
-import tao.dong.dataconjurer.shell.command.ConjureCommand;
+import tao.dong.dataconjurer.shell.command.ConjurerCommand;
 
 @SpringBootApplication
 public class DataConjurerApplication implements CommandLineRunner, ExitCodeGenerator {
@@ -16,17 +16,17 @@ public class DataConjurerApplication implements CommandLineRunner, ExitCodeGener
 	}
 
 	private final IFactory commandLineFactory;
-	private final ConjureCommand conjureCommand;
+	private final ConjurerCommand conjurerCommand;
 	private int exitCode;
 
-	public DataConjurerApplication(IFactory commandLineFactory, ConjureCommand conjureCommand) {
+	public DataConjurerApplication(IFactory commandLineFactory, ConjurerCommand conjurerCommand) {
 		this.commandLineFactory = commandLineFactory;
-		this.conjureCommand = conjureCommand;
+		this.conjurerCommand = conjurerCommand;
 	}
 
 	@Override
 	public void run(String... args) {
-		var commandLine = new CommandLine(conjureCommand, commandLineFactory);
+		var commandLine = new CommandLine(conjurerCommand, commandLineFactory);
 		exitCode = commandLine.execute(args);
 	}
 

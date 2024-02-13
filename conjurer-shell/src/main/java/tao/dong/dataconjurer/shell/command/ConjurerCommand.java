@@ -38,7 +38,7 @@ import static picocli.CommandLine.ExitCode.USAGE;
                      description = "Command to generate data")
 @Slf4j
 @Getter(AccessLevel.PACKAGE)
-public class ConjureCommand  implements Callable<Integer> {
+public class ConjurerCommand implements Callable<Integer> {
 
     @SuppressWarnings("unused")
     @Parameters(index = "0", description = "Data schema file")
@@ -69,7 +69,7 @@ public class ConjureCommand  implements Callable<Integer> {
     private final DataGenerateConfig dataGenerateConfig;
     private final FileOutputService fileOutputService;
 
-    public ConjureCommand(YamlFileService yamlFileService, Validator validator, SqlService sqlService, DataGenerateConfig dataGenerateConfig, FileOutputService fileOutputService) {
+    public ConjurerCommand(YamlFileService yamlFileService, Validator validator, SqlService sqlService, DataGenerateConfig dataGenerateConfig, FileOutputService fileOutputService) {
         this.yamlFileService = yamlFileService;
         this.validator = validator;
         this.sqlService = sqlService;

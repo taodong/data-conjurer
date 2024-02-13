@@ -4,9 +4,14 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
+import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.DataPlan;
 import tao.dong.dataconjurer.common.model.DataSchema;
+import tao.dong.dataconjurer.common.model.EntityProperty;
+import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
+import tao.dong.dataconjurer.common.support.DataGenerationErrorType;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
 import tao.dong.dataconjurer.shell.model.MySQLDataPlan;
 import tao.dong.dataconjurer.shell.service.FileOutputService;
@@ -31,7 +36,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ConjureCommandTest {
+class ConjurerCommandTest {
 
     private final PrintWriter printWriter = new PrintWriter(new StringWriter());
     private final Validator validator = mock(Validator.class);
@@ -43,10 +48,11 @@ class ConjureCommandTest {
     void testConjureCommand() throws URISyntaxException, IOException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
 
-        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         var mysqlPlan = new MySQLDataPlan();
         mysqlPlan.setPlan(new DataPlan("test", "test", null, Collections.emptyList()));
         when(yamlFileService.parsePlanFile(anyString())).thenReturn(mysqlPlan);
+        when(yamlFileService.parseSchemaFile(anyString())).thenReturn(new DataSchema("test", Set.of(new DataEntity("t1", Set.of(new EntityProperty("p1", PropertyType.SEQUENCE, null, null, null))))));
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 
@@ -62,9 +68,51 @@ class ConjureCommandTest {
     }
 
     @Test
+    void testConjureCommand_GenerationFailed() throws URISyntaxException, IOException {
+        YamlFileService yamlFileService = mock(YamlFileService.class);
+
+        var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        var mysqlPlan = new MySQLDataPlan();
+        mysqlPlan.setPlan(new DataPlan("test", "test", null, Collections.emptyList()));
+        when(yamlFileService.parsePlanFile(anyString())).thenReturn(mysqlPlan);
+        when(yamlFileService.parseSchemaFile(anyString())).thenReturn(new DataSchema("test", Set.of(new DataEntity("t1", Set.of(new EntityProperty("p1", PropertyType.SEQUENCE, null, null, null))))));
+        var cmd = new CommandLine(conjureCommand);
+        cmd.setOut(new PrintWriter(printWriter));
+
+        String schema = getFilePathForClassPathResource("schema.yaml");
+        String plan = getFilePathForClassPathResource("plan.yaml");
+
+        when(validator.validate(any(DataSchema.class))).thenReturn(Collections.emptySet());
+        when(sqlService.generateSQLs(any(DataSchema.class), any(DataGenerateConfig.class), isNull(), any(DataPlan.class))).thenThrow(new DataGenerateException(DataGenerationErrorType.MISC, "error"));
+
+        int exitCode = cmd.execute(schema, plan);
+        assertEquals(1, exitCode);
+    }
+
+    @Test
+    void testConjureCommand_IOException() throws URISyntaxException, IOException {
+        YamlFileService yamlFileService = mock(YamlFileService.class);
+
+        var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        var mysqlPlan = new MySQLDataPlan();
+        mysqlPlan.setPlan(new DataPlan("test", "test", null, Collections.emptyList()));
+        when(yamlFileService.parsePlanFile(anyString())).thenThrow(new IOException("error"));
+        var cmd = new CommandLine(conjureCommand);
+        cmd.setOut(new PrintWriter(printWriter));
+
+        String schema = getFilePathForClassPathResource("schema.yaml");
+        String plan = getFilePathForClassPathResource("plan.yaml");
+
+        when(validator.validate(any(DataSchema.class))).thenReturn(Collections.emptySet());
+
+        int exitCode = cmd.execute(schema, plan);
+        assertEquals(2, exitCode);
+    }
+
+    @Test
     void testOption() {
         YamlFileService yamlFileService = mock(YamlFileService.class);
-        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         String[] args = {"-e", "15", "-c", "200", "-i", "30", "-t", "60", "-p", "true", "schema.yaml"};
         new CommandLine(conjureCommand).parseArgs(args);
         assertEquals(15, conjureCommand.getTimeOutInMinutes());
@@ -77,7 +125,7 @@ class ConjureCommandTest {
     @Test
     void testOption_LongOption() {
         YamlFileService yamlFileService = mock(YamlFileService.class);
-        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         String[] args = {"--entity-timeout", "15", "--max-collision", "200", "--wait-interval", "30", "--timeout", "60", "--partial-result", "true", "schema.yaml"};
         new CommandLine(conjureCommand).parseArgs(args);
         assertEquals(15, conjureCommand.getTimeOutInMinutes());
@@ -90,7 +138,7 @@ class ConjureCommandTest {
     @Test
     void testValidateInput() {
         YamlFileService yamlFileService = mock(YamlFileService.class);
-        var conjureCommand = new ConjureCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
+        var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         @SuppressWarnings("unchecked")
         ConstraintViolation<String> violation = mock(ConstraintViolation.class);
         when(violation.getMessage()).thenReturn("error");

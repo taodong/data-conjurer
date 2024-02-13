@@ -1,16 +1,23 @@
 package tao.dong.dataconjurer.common.model;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.service.DataProviderService;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 class DataBlueprintTest {
@@ -63,6 +70,32 @@ class DataBlueprintTest {
         assertEquals(2, results.get(2).getValues().size());
         assertEquals("t1", results.get(3).getEntityName());
         assertEquals(1, results.get(3).getValues().size());
+    }
+
+    private static Stream<Arguments> testVerifyCompletion() {
+        return Stream.of(
+                Arguments.of(Collections.emptyList()),
+                Arguments.of(List.of(
+                        createTestEntityDataOutput("t1", Collections.emptyList(), Collections.emptyList(), List.of(List.of(1, 2))),
+                        createTestEntityDataOutput("t2", Collections.emptyList(), Collections.emptyList(), List.of(List.of(1, 2))),
+                        createTestEntityDataOutput("t3", Collections.emptyList(), Collections.emptyList(), List.of(List.of(1, 2))),
+                        createTestEntityDataOutput("t4", Collections.emptyList(), Collections.emptyList(), Collections.emptyList())
+                ))
+        );
+    }
+
+    static private EntityDataOutput createTestEntityDataOutput(String name, List<PropertyType> propertyTypes, List<String> properties, List<List<Object>> values) {
+        var output = new EntityDataOutput(name, propertyTypes, properties);
+        output.addValues(values);
+        return output;
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testVerifyCompletion(List<EntityDataOutput> results) {
+        var blueprint = createTestBlueprint();
+        assertThrows(DataGenerateException.class,
+                () -> blueprint.verifyCompletion(results));
     }
 
     private DataBlueprint createTestBlueprint() {
