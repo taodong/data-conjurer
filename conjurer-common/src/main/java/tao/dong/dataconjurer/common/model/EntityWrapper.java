@@ -143,9 +143,9 @@ public class EntityWrapper {
                         "Multiple index types defined under the same id %d in %s".formatted(def.id(), getEntityName()));
             }
 
-            if ((type == 2 || type == 3) && def.qualifier() == 1) {
+            if (updateParentId(type, def.qualifier())) {
                 parent = propIndex;
-            } else if ((type == 2 || type == 3) && def.qualifier() == 2) {
+            } else if (updateChildId(type, def.qualifier())) {
                 child = propIndex;
             } else if (type == 4 && def.qualifier() == 1) {
                 distinctEls.add(propIndex);
@@ -167,6 +167,14 @@ public class EntityWrapper {
             default -> new IndexedValue(convertToArray.apply(ids));
         };
 
+    }
+
+    private boolean updateParentId(int type, int qualifier) {
+        return (type == 2 || type == 3) && qualifier == 1;
+    }
+
+    private boolean updateChildId(int type, int qualifier) {
+        return (type == 2 || type == 3) && qualifier == 2;
     }
 
     void processOutputControl(EntityOutputControl outputControl, Set<String> hiddenProps) {
@@ -216,9 +224,7 @@ public class EntityWrapper {
     }
 
     protected ValueGenerator<?> matchValueGenerator(EntityProperty property, PropertyInputControl input) {
-        if (input != null && CollectionUtils.isNotEmpty(input.constraints())) {
-            property = property.addConstraints(input.constraints());
-        }
+        property = consolidateConstraints(property, input);
 
         var firstChoiceGenerator = getPossibleDataProviderBackedGenerator(property);
         if (firstChoiceGenerator != null) {
@@ -228,25 +234,7 @@ public class EntityWrapper {
         var fallbackGenerator = matchFallbackValueGenerator(property);
         if (input != null) {
             var propertyValueConverter = new DefaultStringPropertyValueConverter();
-            var providedValues = new ArrayList<WeightedValue>();
-            if (input.values() != null) {
-                var currentMin = 0.0;
-                for (var dist : input.values()) {
-                    var currentMax = currentMin + dist.weight();
-                    var converted = propertyValueConverter.convertValues(dist.values(), property.type());
-                    if (!converted.isEmpty()) {
-                        providedValues.add(
-                                new WeightedValue(
-                                        new ElectedValueSelector(new HashSet<>(converted)),
-                                        new RatioRange(currentMin, currentMax)
-                                )
-                        );
-                        currentMin = currentMax;
-                    } else {
-                        LOG.warn("Failed to parse any given value. Skip weighted value generation for {}.{} with weight {}", getEntityName(), property.name(), dist.weight());
-                    }
-                }
-            }
+            var providedValues = handleProvidedValues(input, propertyValueConverter, property);
             if (input.defaultValue() != null) {
                 var converted = propertyValueConverter.convert(input.defaultValue(), property.type());
                 if (converted instanceof ConvertError ce) {
@@ -260,11 +248,46 @@ public class EntityWrapper {
             }
         }
 
-        if (fallbackGenerator instanceof NumberCalculator) {
-            correlated.add(property.name());
-        }
+        handleCorrelation(fallbackGenerator, property.name());
 
         return fallbackGenerator;
+    }
+
+    private List<WeightedValue> handleProvidedValues(PropertyInputControl input, DefaultStringPropertyValueConverter propertyValueConverter, EntityProperty property) {
+        var providedValues = new ArrayList<WeightedValue>();
+        if (input.values() != null) {
+            var currentMin = 0.0;
+            for (var dist : input.values()) {
+                var currentMax = currentMin + dist.weight();
+                var converted = propertyValueConverter.convertValues(dist.values(), property.type());
+                if (!converted.isEmpty()) {
+                    providedValues.add(
+                            new WeightedValue(
+                                    new ElectedValueSelector(new HashSet<>(converted)),
+                                    new RatioRange(currentMin, currentMax)
+                            )
+                    );
+                    currentMin = currentMax;
+                } else {
+                    LOG.warn("Failed to parse any given value. Skip weighted value generation for {}.{} with weight {}", getEntityName(), property.name(), dist.weight());
+                }
+            }
+        }
+        return providedValues;
+    }
+
+    private <T> void handleCorrelation(ValueGenerator<T> generator, String propertyName) {
+        if (generator instanceof NumberCalculator) {
+            correlated.add(propertyName);
+        }
+    }
+
+    private EntityProperty consolidateConstraints(EntityProperty property, PropertyInputControl input) {
+        if (input != null && CollectionUtils.isNotEmpty(input.constraints())) {
+            return property.addConstraints(input.constraints());
+        } else {
+            return property;
+        }
     }
 
     private Optional<ValueCategory> lookupValueCategoryConstraint(EntityProperty property) {

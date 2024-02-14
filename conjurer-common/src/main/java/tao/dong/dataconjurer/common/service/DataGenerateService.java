@@ -8,9 +8,11 @@ import tao.dong.dataconjurer.common.model.EntityWrapperId;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.TypedValue;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
+import tao.dong.dataconjurer.common.support.DataGenerateException;
 import tao.dong.dataconjurer.common.support.DataGenerateTask;
 import tao.dong.dataconjurer.common.support.DataHelper;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +21,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +39,7 @@ public class DataGenerateService {
         var entityIdMap = blueprint.getEntityWrapperIds();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var processed = 0;
+            var processSucceed = true;
             var timeout = System.currentTimeMillis() + config.getDataGenTimeOut().toMillis();
             while (processed <= entityMap.size() - 1 && System.currentTimeMillis() < timeout) {
                 var runners = findReadyEntities(entityMap, entityIdMap);
@@ -42,51 +47,84 @@ public class DataGenerateService {
                 removeDropouts(runners, entityMap, entityIdMap);
                 processed += (candidateSize - runners.size());
                 if (!runners.isEmpty()) {
-                    var cleanup = false;
                     try {
-                        final var latch = new CountDownLatch(runners.size());
-                        var futures = runners.stream()
-                                        .map(target -> createDataGenerateTask(target, entityMap, entityIdMap, latch, config))
-                                        .map(executor::submit)
-                                        .toList();
-
-                        var lrs = latch.await(config.getEntityGenTimeOut().getSeconds(), TimeUnit.SECONDS);
-                        if (lrs) {
-                            for (var future : futures) {
-                                try {
-                                    var rs = future.get();
-                                    LOG.info("Data generation completed for {}, status {}", rs.id(), rs.status());
-                                } catch (InterruptedException | ExecutionException e) {
-                                    LOG.error("Data generation failed", e);
-                                    cleanup = true;
-                                    if (e instanceof InterruptedException) {
-                                        Thread.currentThread().interrupt();
-                                    }
-                                }
-                            }
-                        } else {
-                            failDataGeneration(runners, "Data generation timeout");
-                        }
+                        processSucceed = generateData(runners, config, entityMap, entityIdMap, executor);
                     } catch (InterruptedException e) {
                         LOG.error("Data generation is interrupted", e);
                         Thread.currentThread().interrupt();
-                        failDataGeneration(runners, "Data generation is interrupted");
+                        failDataGeneration(runners, "Data generation is interrupted.");
+                        processSucceed = false;
+                    } catch (ExecutionException e) {
+                        LOG.error("Data generation failed", e);
+                        failDataGeneration(runners, "Data generation failed.");
+                        processSucceed = false;
                     }
-                    if (cleanup) {
-                        failDataGeneration(runners, "Data generation failed");
+                    if (!config.isPartialResult() && !processSucceed) {
+                        break;
                     }
                     processed += runners.size();
                 } else {
-                    try {
-                        TimeUnit.SECONDS.sleep(config.getDataGenCheckInterval().getSeconds());
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                    }
+                    waitForNextCheck(config.getDataGenCheckInterval());
                 }
             }
-            if (processed < entityMap.size()) {
-                failDataGeneration(entityMap.values(), "Data generation timeout after " + config.getDataGenTimeOut().toSeconds() + " seconds.");
+
+            if (processSucceed) {
+                handlePossibleTimeout(processed, entityMap, config.getDataGenTimeOut());
             }
+        }
+    }
+
+    private boolean generateData(Set<EntityWrapper> runners, DataGenerateConfig config, Map<EntityWrapperId,
+            EntityWrapper> entityMap, Map<String, Set<EntityWrapperId>> entityIdMap, ExecutorService executor)
+            throws InterruptedException, ExecutionException {
+        final var latch = new CountDownLatch(runners.size());
+        var futures = runners.stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        runner -> {
+                            var task = createDataGenerateTask(runner, entityMap, entityIdMap, latch, config);
+                            return executor.submit(task);
+                        })
+                );
+
+
+        var lrs = latch.await(config.getEntityGenTimeOut().getSeconds() * runners.size(), TimeUnit.SECONDS);
+        Set<EntityWrapper> failed = new HashSet<>();
+        if (lrs) {
+            for (var entry : futures.entrySet()) {
+                try {
+                    var rs = entry.getValue().get();
+                    LOG.info("Data generation completed for {}, status {}", rs.id(), rs.status());
+                } catch (DataGenerateException e) {
+                    var entity = entry.getKey();
+                    LOG.error("Data generation failed for entity {} id {}.", entity.getId().entityName(), entity.getId().dataId(), e);
+                    failed.add(entity);
+                }
+            }
+        } else {
+            failDataGeneration(runners, "Data generation timeout");
+        }
+
+        var processSucceed = failed.isEmpty();
+
+        if (!config.isPartialResult() && processSucceed) {
+            failDataGeneration(failed, "Data generation failed");
+        }
+
+        return processSucceed;
+    }
+
+    private void waitForNextCheck(Duration interval) {
+        try {
+            TimeUnit.SECONDS.sleep(interval.getSeconds());
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void handlePossibleTimeout(int processed, Map<EntityWrapperId, EntityWrapper> entityMap, Duration allowed) {
+        if (processed < entityMap.size()) {
+            failDataGeneration(entityMap.values(), "Data generation timeout after " + allowed.toSeconds() + " seconds.");
         }
     }
 
