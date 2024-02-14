@@ -59,7 +59,7 @@ public class DataGenerateService {
                         failDataGeneration(runners, "Data generation failed.");
                         processSucceed = false;
                     }
-                    if (!config.isPartialResult() && !processSucceed) {
+                    if (shouldFastFail(config.isPartialResult(), !processSucceed)) {
                         break;
                     }
                     processed += runners.size();
@@ -72,6 +72,10 @@ public class DataGenerateService {
                 handlePossibleTimeout(processed, entityMap, config.getDataGenTimeOut());
             }
         }
+    }
+
+    private boolean shouldFastFail(boolean allowPartial, boolean foundPartial) {
+        return !allowPartial && foundPartial;
     }
 
     private boolean generateData(Set<EntityWrapper> runners, DataGenerateConfig config, Map<EntityWrapperId,
