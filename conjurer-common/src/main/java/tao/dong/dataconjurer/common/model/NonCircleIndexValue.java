@@ -75,10 +75,8 @@ public class NonCircleIndexValue extends UnorderedIndexedValue{
         var parent = entry.get(parentIndex);
         var child = entry.get(childIndex);
         try {
-            if (parent instanceof Comparable pv && child instanceof Comparable cv) {
-                if (pv.compareTo(cv) > 0) {
-                    Collections.swap(entry, parentIndex, childIndex);
-                }
+            if (parent instanceof Comparable pv && child instanceof Comparable cv && pv.compareTo(cv) > 0) {
+                Collections.swap(entry, parentIndex, childIndex);
             }
         } catch (Exception e) {
             LOG.warn("Failed to compare values of parent {} and child {} of ordered non circular index", VALUE_TO_STRING.apply(parent), VALUE_TO_STRING.apply(child));

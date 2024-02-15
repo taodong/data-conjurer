@@ -16,7 +16,7 @@ public abstract class PropertyValueConverter<T> {
     private final BiFunction<Object, PropertyType, T> convertFun;
 
 
-    public PropertyValueConverter(BiFunction<Object, PropertyType, T> convertFun) {
+    protected PropertyValueConverter(BiFunction<Object, PropertyType, T> convertFun) {
         this.convertFun = convertFun;
     }
 
@@ -38,7 +38,7 @@ public abstract class PropertyValueConverter<T> {
         try (final var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var future = executor.submit(
                     () -> records.parallelStream()
-                            .map(record -> convertEntityProperties(record, types))
+                            .map(r -> convertEntityProperties(r, types))
                             .toList()
             );
             return future.get();

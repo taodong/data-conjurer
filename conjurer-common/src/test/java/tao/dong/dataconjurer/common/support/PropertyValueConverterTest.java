@@ -18,9 +18,9 @@ class PropertyValueConverterTest {
     void testCovertEntityProperties_NonMatchSize() {
         PropertyValueConverter<String> converter = new PropertyValueConverter<String>(mock(BiFunction.class)) {
         };
-        assertThrows(IllegalArgumentException.class, () -> converter.convertEntityProperties(
-                List.of("abc", "efg"), List.of(TEXT)
-        ));
+        List<Object> values = List.of("abc", "efg");
+        var types = List.of(TEXT);
+        assertThrows(IllegalArgumentException.class, () -> converter.convertEntityProperties(values, types));
     }
 
     @Test

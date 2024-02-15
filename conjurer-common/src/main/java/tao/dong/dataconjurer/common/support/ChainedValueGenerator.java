@@ -13,7 +13,7 @@ public abstract class ChainedValueGenerator<T> implements ValueGenerator<T> {
     protected final int style;
     protected T current;
 
-    public ChainedValueGenerator(int direction, double seed, int style, @NotNull T head) {
+    protected ChainedValueGenerator(int direction, double seed, int style, @NotNull T head) {
         this.direction = Integer.compare(direction, 0);
         this.seed = seed;
         this.style = style;
@@ -30,7 +30,19 @@ public abstract class ChainedValueGenerator<T> implements ValueGenerator<T> {
     protected abstract T getNextValue();
 
     protected double generateLeap() {
-        return seed * generateChangeRatio() * (direction == 0 ? (random.nextDouble() > 0.5 ? -1 : 1) : direction);
+        var d = direction;
+        if (d == 0) {
+            d = random.nextDouble() > 0.5 ? -1 : 1;
+        }
+        return seed * generateChangeRatio() * getValueChangeDirection();
+    }
+
+    private int getValueChangeDirection() {
+        if (direction == 0) {
+            return random.nextDouble() > 0.5 ? -1 : 1;
+        } else {
+            return direction;
+        }
     }
 
     protected double generateChangeRatio() {
