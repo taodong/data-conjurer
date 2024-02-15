@@ -22,7 +22,7 @@ import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.HIRA
 import static tao.dong.dataconjurer.common.i18n.EastAsiaCharacterPredicates.KATAKANA;
 
 public class CharacterGroupService implements CharacterGroupLookup {
-    private final static Map<String, CharacterPredicate> CHARACTER_PREDICATE_MAP = Map.ofEntries(
+    private static final Map<String, CharacterPredicate> CHARACTER_PREDICATE_MAP = Map.ofEntries(
             Map.entry("ARABIC_NUMERALS", ARABIC_NUMERALS),
             Map.entry("ASCII_ALPHA_NUMERALS", ASCII_ALPHA_NUMERALS),
             Map.entry("ASCII_LETTERS", ASCII_LETTERS),

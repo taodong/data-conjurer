@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tao.dong.dataconjurer.common.model.ConstraintType.CATEGORY;
 
-public class ValueCategoryTest {
+class ValueCategoryTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static Stream<Arguments> testJacksonDeserialize() {

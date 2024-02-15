@@ -15,7 +15,7 @@ import static tao.dong.dataconjurer.common.model.PropertyType.NUMBER;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
-public class MySQLPropertyValueConverterTest {
+class MySQLPropertyValueConverterTest {
     private final MySQLPropertyValueConverter converter = new MySQLPropertyValueConverter();
 
     private static Stream<Arguments> testConvert() {

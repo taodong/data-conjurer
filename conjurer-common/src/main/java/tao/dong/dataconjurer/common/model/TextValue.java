@@ -17,6 +17,6 @@ public class TextValue extends StringValueSupplier<String> {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof TextValue) && StringUtils.equals(((TextValue) obj).get(), this.value);
+        return (obj instanceof TextValue tv) && StringUtils.equals(tv.get(), this.value);
     }
 }

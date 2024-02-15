@@ -18,6 +18,7 @@ import tao.dong.dataconjurer.common.model.ValueCategory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +128,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         }
     }
 
+    @SuppressWarnings(" java:S1301") // Temporarily allow switch for only two conditions. New cases are on the roadmap
     private void generateCorrelatedProperties(List<Object> dataRow, Collection<String> properties) {
         for (var property : properties) {
             var generator = (NumberCalculator)entityWrapper.getGenerators().get(property);
@@ -202,7 +204,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     private Map<DeferredPropertyType, Collection<String>> getDeferredProperties() {
-        Map<DeferredPropertyType, Collection<String>> deferred = new HashMap<>();
+        Map<DeferredPropertyType, Collection<String>> deferred = new EnumMap<>(DeferredPropertyType.class);
         deferred.put(DeferredPropertyType.CORRELATION, entityWrapper.getCorrelated());
         var linked = entityWrapper.getReferences().entrySet().stream().filter(entry -> entry.getValue().linked() != null)
                 .map(Map.Entry::getKey).distinct().toList();

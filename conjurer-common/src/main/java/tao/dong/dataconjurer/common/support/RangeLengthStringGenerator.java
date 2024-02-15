@@ -1,7 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
 import lombok.Getter;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.CharacterPredicate;
 
 @Getter

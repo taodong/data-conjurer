@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class EastAsiaCharacterPredicatesTest {
+class EastAsiaCharacterPredicatesTest {
 
     @ParameterizedTest
     @EnumSource(EastAsiaCharacterPredicates.class)

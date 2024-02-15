@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 
-public class TypedValueGeneratorTest {
+class TypedValueGeneratorTest {
     private final TypedValueGenerator generator = mock(TypedValueGenerator.class, CALLS_REAL_METHODS);
 
     private static Stream<Arguments> testMatchDefaultGeneratorByType() {

@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UnicodeCharacterPredicateTest {
+class UnicodeCharacterPredicateTest {
     private final UnicodeCharacterPredicate toTest = new UnicodeCharacterPredicate() {
         @Override
         public boolean test(int i) {

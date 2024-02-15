@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mock;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 
-public class MySQLSimpleTypedValueGeneratorTest {
+class MySQLSimpleTypedValueGeneratorTest {
 
     private final DataProviderService dataProviderApi = mock(DataProviderService.class);
 

@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CharacterGroupTest {
+class CharacterGroupTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static Stream<Arguments> testJsonCreator() {

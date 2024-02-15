@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tao.dong.dataconjurer.common.model.ConstraintType.CHAIN;
 
-public class ChainedValueTest {
+class ChainedValueTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static Stream<Arguments> testDeserialize() {

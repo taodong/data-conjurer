@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 public class CompoundValuePropertyRetriever {
-    public static String DEFAULT_QUALIFIER = "value";
+    public static final String DEFAULT_QUALIFIER = "value";
     private static final ObjectMapper OBJECT_MAPPER = JsonMapper.builder(new YAMLFactory()).build();
     @Getter(AccessLevel.PACKAGE)
     private final Map<String, Map<String, String>> supported = new HashMap<>();
