@@ -17,6 +17,7 @@ import tao.dong.dataconjurer.common.support.DataGenerateConfig;
 import tao.dong.dataconjurer.common.support.DataHelper;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -89,6 +90,25 @@ class DataGenerateServiceTest {
         verify(wrapper1, times(1)).failProcess("test error");
         verify(wrapper2, never()).failProcess(anyString());
         verify(wrapper3, never()).failProcess(anyString());
+    }
+
+    @Test
+    void testGenerateData_Timeout() {
+        Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder().dataGenTimeOut(Duration.ofNanos(1)).build();
+        DataGenerateService service = new DataGenerateService();
+        TEST_HELPER.createSimpleBlueprintDataWithReference(entityMap, idMap);
+        var blueprint = new DataBlueprint();
+        blueprint.init(entityMap, idMap);
+        service.generateData(blueprint, dataGenerateConfig);
+        var unprocessed = 0;
+        for (var entity : blueprint.getEntities().values()) {
+            if (entity.getStatus() == -1) {
+                unprocessed++;
+            }
+        }
+        assertTrue(unprocessed > 0);
     }
 
     private EntityWrapper mockWrapperWithStatus(int status) {
