@@ -1,3 +1,4 @@
-# Release Note v1.0.0
+# Release Note v1.0.1
 
-Initial release. data-conjurer-v1.0.0.jar is a fatty jar that contains the whole tool.
+1. Fix entity generation fast fail issue
+2. Clean up smell code
