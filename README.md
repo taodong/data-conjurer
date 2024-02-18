@@ -22,7 +22,7 @@ java -jar data-conjurer-<version>.jar schema.yaml plan.yaml
 
 Please refer to [Data Conjurer Reference](https://github.com/taodong/data-conjurer/wiki/Data-Conjurer-Reference) for details of how to create these two files.
 
-There are many samples under examples folder. For instance the following command is to create data using schema and plan files defined under `examples/helloworld` folder.
+There are many sample files under `examples` folder. For instance the following command is to create data using schema and plan files defined under `examples/helloworld` folder.
 ```shell
 java -jar data-conjurer-1.0.0.jar examples/helloworld/schema.yaml examples/helloworld/plan.yaml
 ```
