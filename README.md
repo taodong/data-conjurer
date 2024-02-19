@@ -2,12 +2,14 @@
 [![Build](https://github.com/taodong/data-conjurer/actions/workflows/maven.yml/badge.svg)](https://github.com/taodong/data-conjurer/actions/workflows/maven.yml/badge.svg)
 [![codecov](https://codecov.io/gh/taodong/data-conjurer/graph/badge.svg?token=O4AYAUHEI3)](https://codecov.io/gh/taodong/data-conjurer)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=taodong_data-conjurer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=taodong_data-conjurer)
-[![Maven Central](https://img.shields.io/badge/Maven_Central-v1.0.0-blue)](https://central.sonatype.com/artifact/io.github.taodong/data-conjurer)
+[![Maven Central](https://img.shields.io/badge/Maven_Central-v1.0.0-blue)](https://repo1.maven.org/maven2/io/github/taodong/data-conjurer/1.0.0/)
 
 A tool to generate insert statements for MySQL Database. The main purpose of this tool is enable data generation for a full relational schema in real time scenarios.
 ## Environment
 The tool requires java 21. The code is developed using Temurin 21 JDK.
 ## Installation
+The tool is packaged as an executable jar file named data-conjurer-<version>.jar. You can download the latest version either from [maven central](https://repo1.maven.org/maven2/io/github/taodong/data-conjurer/) or [github release](https://github.com/taodong/data-conjurer/releases) page.  
+## Compile From Source
 To build the executable jar file from the source, the binary file can be created through maven command after cloning the repository
 ```shell
 mvn clean install
@@ -30,6 +32,8 @@ The output files are named using format ${applyOrder}_${entityName}.sql.
 The above command will output two files
 - 0_country.sql: sql insert statements for country table which should be applied first 
 - 1_city.sql: sql insert statements for city table which should be applied after
+
+For each run the tool will also create an `output.log` under current directory with any execution logs.
 ### Other Configurations
 The following configurations can be used to control behaviors of this tool
 
