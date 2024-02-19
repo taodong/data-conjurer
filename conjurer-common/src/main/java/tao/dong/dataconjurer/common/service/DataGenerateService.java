@@ -40,7 +40,9 @@ public class DataGenerateService {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var processed = 0;
             var processSucceed = true;
+            var fastFail = false;
             var timeout = System.currentTimeMillis() + config.getDataGenTimeOut().toMillis();
+            var failMessage = "Data generation failed.";
             while (processed <= entityMap.size() - 1 && System.currentTimeMillis() < timeout) {
                 var runners = findReadyEntities(entityMap, entityIdMap);
                 var candidateSize = runners.size();
@@ -52,15 +54,15 @@ public class DataGenerateService {
                     } catch (InterruptedException e) {
                         LOG.error("Data generation is interrupted", e);
                         Thread.currentThread().interrupt();
-                        failDataGeneration(runners, "Data generation is interrupted.");
-                        processSucceed = false;
+                        failMessage = "Data generation is interrupted.";
+                        fastFail = true;
                     } catch (ExecutionException e) {
                         LOG.error("Data generation failed", e);
-                        failDataGeneration(runners, "Data generation failed.");
-                        processSucceed = false;
+                        fastFail = true;
                     }
-                    if (shouldFastFail(config.isPartialResult(), !processSucceed)) {
-                        break;
+                    if (fastFail || shouldFastFail(config.isPartialResult(), !processSucceed)) {
+                        failDataGeneration(entityMap.values(), failMessage);
+                        return;
                     }
                     processed += runners.size();
                 } else {
@@ -103,6 +105,9 @@ public class DataGenerateService {
                     var entity = entry.getKey();
                     LOG.error("Data generation failed for entity {} id {}.", entity.getId().entityName(), entity.getId().dataId(), e);
                     failed.add(entity);
+                    if (!config.isPartialResult()) {
+                        break;
+                    }
                 }
             }
         } else {

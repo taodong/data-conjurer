@@ -2,6 +2,11 @@ package tao.dong.dataconjurer.common.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
@@ -23,14 +28,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -172,6 +188,42 @@ class DataGenerateServiceTest {
         service.removeDropouts(runners, data, idMap);
         assertEquals(1, runners.size());
         assertEquals(-1, data.get(TEST_HELPER.createEntityWrapperIdNoOrder("t3")).getStatus());
+    }
+
+    private static Stream<Arguments> testGenerateData_FastFail() {
+        return Stream.of(
+                Arguments.of(mock(ExecutionException.class)),
+                Arguments.of(mock(InterruptedException.class))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    @SuppressWarnings({"unchecked", "unused"})
+    void testGenerateData_FastFail(Exception ex) throws ExecutionException, InterruptedException {
+        Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();
+        Map<String, Set<EntityWrapperId>> idMap = new HashMap<>();
+        DataGenerateConfig dataGenerateConfig = DataGenerateConfig.builder()
+                .dataGenTimeOut(Duration.ofSeconds(5))
+                .entityGenTimeOut(Duration.ofSeconds(1)).build();
+        DataGenerateService service = new DataGenerateService();
+        TEST_HELPER.createSimpleBlueprintData(entityMap, idMap);
+        var blueprint = new DataBlueprint();
+        blueprint.init(entityMap, idMap);
+        Future<List<List<String>>> future = mock(Future.class);
+        try (MockedStatic<Executors> executors = mockStatic(Executors.class);
+             var executorService = mock(ExecutorService.class);
+             MockedConstruction<CountDownLatch> latch = mockConstruction(CountDownLatch.class, (mock, context) ->
+                 when(mock.await(anyLong(), any(TimeUnit.class))).thenReturn(true)
+            )) {
+            executors.when(Executors::newVirtualThreadPerTaskExecutor).thenReturn(executorService);
+            when(executorService.submit(any(Callable.class))).thenReturn(future);
+            when(future.get()).thenThrow(ex);
+            service.generateData(blueprint, dataGenerateConfig);
+        }
+        for (var entity : blueprint.getEntities().values()) {
+            assertEquals(-1, entity.getStatus());
+        }
     }
 
     private void createTestDataForSelection(Map<EntityWrapperId, EntityWrapper> data, Map<String, Set<EntityWrapperId>> idMap) {
