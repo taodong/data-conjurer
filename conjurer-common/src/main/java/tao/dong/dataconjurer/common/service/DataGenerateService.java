@@ -37,31 +37,21 @@ public class DataGenerateService {
     private void generateEntityData(DataBlueprint blueprint, DataGenerateConfig config) {
         var entityMap = blueprint.getEntities();
         var entityIdMap = blueprint.getEntityWrapperIds();
+        var defaultFailureMessage = "Data generation failed.";
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var processed = 0;
             var processSucceed = true;
-            var fastFail = false;
             var timeout = System.currentTimeMillis() + config.getDataGenTimeOut().toMillis();
-            var failMessage = "Data generation failed.";
+
             while (processed <= entityMap.size() - 1 && System.currentTimeMillis() < timeout) {
                 var runners = findReadyEntities(entityMap, entityIdMap);
                 var candidateSize = runners.size();
                 removeDropouts(runners, entityMap, entityIdMap);
                 processed += (candidateSize - runners.size());
                 if (!runners.isEmpty()) {
-                    try {
-                        processSucceed = generateData(runners, config, entityMap, entityIdMap, executor);
-                    } catch (InterruptedException e) {
-                        LOG.error("Data generation is interrupted", e);
-                        Thread.currentThread().interrupt();
-                        failMessage = "Data generation is interrupted.";
-                        fastFail = true;
-                    } catch (ExecutionException e) {
-                        LOG.error("Data generation failed", e);
-                        fastFail = true;
-                    }
-                    if (fastFail || shouldFastFail(config.isPartialResult(), !processSucceed)) {
-                        failDataGeneration(entityMap.values(), failMessage);
+                    processSucceed = generateData(runners, config, entityMap, entityIdMap, executor);
+                    if (shouldFastFail(config.isPartialResult(), !processSucceed)) {
+                        failDataGeneration(entityMap.values(), defaultFailureMessage);
                         return;
                     }
                     processed += runners.size();
@@ -73,6 +63,14 @@ public class DataGenerateService {
             if (processSucceed) {
                 handlePossibleTimeout(processed, entityMap, config.getDataGenTimeOut());
             }
+        } catch (InterruptedException e) {
+            LOG.error("Data generation is interrupted", e);
+            Thread.currentThread().interrupt();
+            failDataGeneration(entityMap.values(), "Data generation is interrupted.");
+
+        } catch (ExecutionException e) {
+            LOG.error(defaultFailureMessage, e);
+            failDataGeneration(entityMap.values(), defaultFailureMessage);
         }
     }
 
