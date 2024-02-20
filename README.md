@@ -2,7 +2,7 @@
 [![Build](https://github.com/taodong/data-conjurer/actions/workflows/maven.yml/badge.svg)](https://github.com/taodong/data-conjurer/actions/workflows/maven.yml/badge.svg)
 [![codecov](https://codecov.io/gh/taodong/data-conjurer/graph/badge.svg?token=O4AYAUHEI3)](https://codecov.io/gh/taodong/data-conjurer)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=taodong_data-conjurer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=taodong_data-conjurer)
-[![Maven Central](https://img.shields.io/badge/Maven_Central-v1.0.0-blue)](https://repo1.maven.org/maven2/io/github/taodong/data-conjurer/1.0.0/)
+[![Maven Central](https://img.shields.io/badge/Maven_Central-v1.0.1-blue)](https://repo1.maven.org/maven2/io/github/taodong/data-conjurer/1.0.1/)
 
 A tool to generate insert statements for MySQL Database. The main purpose of this tool is enable data generation for a full relational schema in real time scenarios.
 ## Environment
