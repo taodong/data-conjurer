@@ -7,11 +7,13 @@ import java.util.function.Function;
 
 @Getter
 public enum KeyWord {
-    NULL_KEY((v) -> StringUtils.equalsIgnoreCase(StringUtils.trim(v), "<?null?>"));
+    NULL_KEY((v) -> StringUtils.equalsIgnoreCase(StringUtils.trim(v), "<?null?>"), "<?null?>");
 
     private final Function<String, Boolean> matcher;
+    private final String keyString;
 
-    KeyWord(Function<String, Boolean> matcher) {
+    KeyWord(Function<String, Boolean> matcher, String keyString) {
         this.matcher = matcher;
+        this.keyString = keyString;
     }
 }
