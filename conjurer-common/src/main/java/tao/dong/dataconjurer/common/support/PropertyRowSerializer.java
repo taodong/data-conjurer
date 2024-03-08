@@ -7,6 +7,7 @@ import org.apache.commons.lang3.SerializationException;
 import tao.dong.dataconjurer.common.model.PropertyType;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
@@ -22,21 +23,26 @@ public class PropertyRowSerializer {
     private PropertyRowSerializer() {
         throw new IllegalStateException("Utility class");
     }
-    
-    private static final BiFunction<String, PropertyType, Object> DESERIALIZE_FUN = (val, type) -> {
-        if (NULL_KEY.getMatcher().apply(val)) {
+
+    public static Object deserializeProperty(String value, PropertyType type) throws ParseException {
+        if (NULL_KEY.getMatcher().apply(value)) {
             return null;
         }
 
+
+        return switch (type) {
+            case SEQUENCE -> Long.valueOf(value);
+            case NUMBER -> new BigDecimal(value);
+            case DATE -> DataHelper.convertFormattedStringToMillisecond(value, DATE_FORMAT.getFormat());
+            case DATETIME -> DataHelper.convertFormattedStringToMillisecond(value, DATETIME_FORMAT.getFormat());
+            case BOOLEAN -> BooleanUtils.toBoolean(value);
+            case TEXT -> value;
+        };
+    }
+
+    private static final BiFunction<String, PropertyType, Object> DESERIALIZE_FUN = (val, type) -> {
         try {
-            return switch (type) {
-                case SEQUENCE -> Long.valueOf(val);
-                case NUMBER -> new BigDecimal(val);
-                case DATE -> DataHelper.convertFormattedStringToMillisecond(val, DATE_FORMAT.getFormat());
-                case DATETIME -> DataHelper.convertFormattedStringToMillisecond(val, DATETIME_FORMAT.getFormat());
-                case BOOLEAN -> BooleanUtils.toBoolean(val);
-                case TEXT -> val;
-            };
+            return deserializeProperty(val, type);
         } catch (Exception e) {
             throw new SerializationException("Failed to convert value %s to type %s.".formatted(val, type.getName()));
         }
