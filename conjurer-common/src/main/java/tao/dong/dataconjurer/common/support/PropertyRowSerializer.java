@@ -17,6 +17,12 @@ import static tao.dong.dataconjurer.common.model.KeyWord.NULL_KEY;
 
 @Slf4j
 public class PropertyRowSerializer {
+
+    // private constructor to prevent instantiation
+    private PropertyRowSerializer() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     private static final BiFunction<String, PropertyType, Object> DESERIALIZE_FUN = (val, type) -> {
         if (NULL_KEY.getMatcher().apply(val)) {
             return null;
