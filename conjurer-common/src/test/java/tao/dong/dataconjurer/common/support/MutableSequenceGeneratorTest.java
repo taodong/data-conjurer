@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -16,6 +17,7 @@ class MutableSequenceGeneratorTest {
 
     private static Stream<Arguments> testConstructor() {
         return Stream.of(
+                Arguments.of(null, 1L, 1L),
                 Arguments.of(Set.of(new Precision(10)), 1L, 1L),
                 Arguments.of(Set.of(new Interval(5L, 2L)), 2L, 5L)
         );
@@ -28,5 +30,14 @@ class MutableSequenceGeneratorTest {
         var internalGen = generator.getSequenceGenerator();
         assertEquals(expectedBase, internalGen.getCurrent());
         assertEquals(expectedLeap, internalGen.getLeap());
+    }
+
+    @Test
+    void testGenerate() {
+        var generator = new MutableSequenceGenerator(null);
+        var internalGen = generator.getSequenceGenerator();
+        for (long i = 1; i < 5; i++) {
+            assertEquals(i, internalGen.generate());
+        }
     }
 }
