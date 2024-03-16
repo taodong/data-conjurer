@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -149,6 +150,23 @@ class EntityWrapperTest {
         var wrapper = new EntityWrapper(entity, data, null, dataProviderService, 0);
         for (var i = 0; i < 10; i++) {
             assertEquals("abc", wrapper.getGenerators().get("t1p3").generate());
+        }
+    }
+
+    @Test
+    void testHandleDefaultValue_Null() {
+        var entity = TEST_HELPER.createEntityT1();
+        var data = EntityTestHelper.entityDataBuilder()
+                .entity("t1")
+                .properties(
+                        Set.of(
+                                new PropertyInputControl("t1p3", null, "<?null?>", null, null)
+                        )
+                )
+                .build();
+        var wrapper = new EntityWrapper(entity, data, null, dataProviderService, 0);
+        for (var i = 0; i < 10; i++) {
+            assertNull(wrapper.getGenerators().get("t1p3").generate());
         }
     }
 

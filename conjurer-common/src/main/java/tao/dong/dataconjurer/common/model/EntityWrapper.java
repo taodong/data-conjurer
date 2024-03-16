@@ -240,7 +240,9 @@ public class EntityWrapper {
                 if (converted instanceof ConvertError ce) {
                     LOG.warn("Failed to parse default value {} for {}.{}. Ignored. {}", input.defaultValue(), getEntityName(), property.name(), ce.message());
                 } else {
-                    fallbackGenerator = new ElectedValueSelector(Set.of(converted));
+                    Set<Object> convertedSet = new HashSet<>();
+                    convertedSet.add(converted);
+                    fallbackGenerator = new ElectedValueSelector(convertedSet);
                 }
             }
             if (!providedValues.isEmpty()) {
