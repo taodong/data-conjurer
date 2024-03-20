@@ -53,7 +53,7 @@
 		<jgrapht.version>1.5.2</jgrapht.version>
 		<data.faker.version>2.0.2</data.faker.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
-		<evalex.version>3.1.0</evalex.version>
+		<evalex.version>3.1.2</evalex.version>
 		<maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
 		<maven.jacoco.plugin.version>0.8.11</maven.jacoco.plugin.version>
 		<maven.central.publish.plugin.version>0.3.0</maven.central.publish.plugin.version>
