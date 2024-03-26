@@ -93,6 +93,12 @@ class TypedValueGeneratorTest {
                                 .type(PropertyType.BOOLEAN)
                                 .build(),
                         ElectedValueSelector.class
+                ),
+                Arguments.of(
+                        EntityTestHelper.entityPropertyBuilder()
+                                .type(PropertyType.TIME)
+                                .build(),
+                        tao.dong.dataconjurer.common.support.TimeGenerator.class
                 )
         );
     }

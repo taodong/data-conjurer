@@ -25,6 +25,7 @@ public interface TypedValueGenerator {
             case SEQUENCE -> new MutableSequenceGenerator(property.getPropertyConstraints());
             case NUMBER -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new BigDecimalGenerator(property.getPropertyConstraints());
             case DATETIME, DATE -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new DatetimeGenerator(property.getPropertyConstraints());
+            case TIME -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new TimeGenerator(property.getPropertyConstraints());
             case BOOLEAN -> new ElectedValueSelector(Set.of(true, false));
         };
     }

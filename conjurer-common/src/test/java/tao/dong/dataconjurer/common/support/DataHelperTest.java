@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DataHelperTest {
 
@@ -66,5 +69,71 @@ class DataHelperTest {
     void testStreamNullableCollection(Collection<Integer> col, int expected) {
         Set<Integer> res = DataHelper.streamNullableCollection(col).collect(Collectors.toSet());
         assertEquals(expected, res.size());
+    }
+
+    private static Stream<Arguments> testConvertTimeStringToSecond() {
+        return Stream.of(
+                Arguments.of("00:00:00", 0L),
+                Arguments.of("01:00:00", 3600L),
+                Arguments.of("01:01:01", 3661L),
+                Arguments.of("-23:59:59", -86399L),
+                Arguments.of("850:0:0", TimeGenerator.PLUS_850_HOURS - 1),
+                Arguments.of("-850:0:0", TimeGenerator.MINUS_850_HOURS)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testConvertTimeStringToSecond(String str, long expected) {
+        assertEquals(expected, DataHelper.convertTimeStringToSecond(str));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"00:00", "00:00:00:00", "00:00:00:00:00", "00:00:60", "00:60:00"})
+    void testConvertTimeStringToSecondInvalid(String invalidStr) {
+        assertThrows(NumberFormatException.class, () -> DataHelper.convertTimeStringToSecond(invalidStr));
+    }
+
+    private static Stream<Arguments> testFormatTimeInSeconds() {
+        return Stream.of(
+                Arguments.of(0L, "00:00:00"),
+                Arguments.of(3600L, "01:00:00"),
+                Arguments.of(3661L, "01:01:01"),
+                Arguments.of(86399L, "23:59:59"),
+                Arguments.of(86400L, "24:00:00"),
+                Arguments.of(-86400L, "-24:00:00"),
+                Arguments.of(TimeGenerator.PLUS_850_HOURS - 1, "850:00:00"),
+                Arguments.of(TimeGenerator.MINUS_850_HOURS, "-850:00:00")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFormatTimeInSeconds(long seconds, String expected) {
+        assertEquals(expected, DataHelper.formatTimeInSeconds(seconds));
+    }
+
+    private static Stream<Arguments> testOutputLongValue() {
+        return Stream.of(
+                Arguments.of(5L, 5L),
+                Arguments.of(5, 5L),
+                Arguments.of(5.0, 5L),
+                Arguments.of(5.1, 5L),
+                Arguments.of(5.9, 5L),
+                Arguments.of(5.999, 5L),
+                Arguments.of(BigDecimal.valueOf(5), 5L)
+        );
+
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testOutputLongValue(Object val, Long expected) {
+        assertEquals(expected, DataHelper.outputLongValue(val));
+    }
+
+    @Test
+    void testOutputLongValueInvalid() {
+        assertThrows(NumberFormatException.class, () -> DataHelper.outputLongValue("5"));
     }
 }

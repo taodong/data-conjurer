@@ -14,7 +14,8 @@ public enum PropertyType {
     NUMBER("number", BigDecimal.class),
     DATE("date", Long.class),
     DATETIME("datetime", Long.class),
-    BOOLEAN("boolean", Boolean.class, d -> d != Dialect.MYSQL)
+    BOOLEAN("boolean", Boolean.class, d -> d != Dialect.MYSQL),
+    TIME("time", Long.class)
     ;
 
     @JsonValue

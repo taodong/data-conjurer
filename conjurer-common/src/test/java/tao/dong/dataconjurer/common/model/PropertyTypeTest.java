@@ -12,6 +12,7 @@ import static tao.dong.dataconjurer.common.model.Dialect.MYSQL;
 import static tao.dong.dataconjurer.common.model.Dialect.SALESFORCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.BOOLEAN;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
+import static tao.dong.dataconjurer.common.model.PropertyType.TIME;
 
 class PropertyTypeTest {
 
@@ -21,7 +22,8 @@ class PropertyTypeTest {
                 Arguments.of(SEQUENCE, GENERAL, true),
                 Arguments.of(BOOLEAN, MYSQL, false),
                 Arguments.of(BOOLEAN, GENERAL, true),
-                Arguments.of(BOOLEAN, SALESFORCE, true)
+                Arguments.of(BOOLEAN, SALESFORCE, true),
+                Arguments.of(TIME, MYSQL, true)
         );
     }
 

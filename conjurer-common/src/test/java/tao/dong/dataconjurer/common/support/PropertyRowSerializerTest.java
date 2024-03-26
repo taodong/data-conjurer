@@ -25,15 +25,16 @@ class PropertyRowSerializerTest {
         row.add(true);
         row.add("test");
         row.add(null);
-        List<PropertyType> properties = List.of(PropertyType.SEQUENCE, PropertyType.NUMBER, PropertyType.DATE, PropertyType.DATETIME, PropertyType.BOOLEAN, PropertyType.TEXT, PropertyType.SEQUENCE);
+        row.add(0L);
+        List<PropertyType> properties = List.of(PropertyType.SEQUENCE, PropertyType.NUMBER, PropertyType.DATE, PropertyType.DATETIME, PropertyType.BOOLEAN, PropertyType.TEXT, PropertyType.SEQUENCE, PropertyType.TIME);
         List<String> result = PropertyRowSerializer.serialize(row, properties);
-        assertThat(result, equalTo(List.of("1", "3.2", "2023-11-11", "2023-11-11 22:45:37", "true", "test", "<?null?>")));
+        assertThat(result, equalTo(List.of("1", "3.2", "2023-11-11", "2023-11-11 22:45:37", "true", "test", "<?null?>", "00:00:00")));
     }
 
     @Test
     void deserialize() {
-        var row = List.of("1", "3.2", "2023-11-11", "2023-11-11 22:45:37", "true", "test", "<?null?>");
-        var properties = List.of(PropertyType.SEQUENCE, PropertyType.NUMBER, PropertyType.DATE, PropertyType.DATETIME, PropertyType.BOOLEAN, PropertyType.TEXT, PropertyType.SEQUENCE);
+        var row = List.of("1", "3.2", "2023-11-11", "2023-11-11 22:45:37", "true", "test", "<?null?>", "1:1:1");
+        var properties = List.of(PropertyType.SEQUENCE, PropertyType.NUMBER, PropertyType.DATE, PropertyType.DATETIME, PropertyType.BOOLEAN, PropertyType.TEXT, PropertyType.SEQUENCE, PropertyType.TIME);
         var result = PropertyRowSerializer.deserialize(row, properties);
         List<Object> expected = new ArrayList<>();
         expected.add(1L);
@@ -43,6 +44,7 @@ class PropertyRowSerializerTest {
         expected.add(true);
         expected.add("test");
         expected.add(null);
+        expected.add(3661L);
         assertThat(result, equalTo(expected));
     }
 
@@ -69,7 +71,7 @@ class PropertyRowSerializerTest {
         assertThrows(SerializationException.class, () -> PropertyRowSerializer.deserialize(row, properties));
     }
 
-    // Test the deserialize function with a invalid big decimal and expect a SerializationException
+    // Test the deserialize function with an invalid big decimal and expect a SerializationException
     @Test
     void testDeserializeWithInvalidBigDecimal() {
         var row = List.of("1", "3.2a", "2023-11-11", "2023-11-11 22:45:37", "true", "test", "<?null?>");
@@ -77,7 +79,7 @@ class PropertyRowSerializerTest {
         assertThrows(SerializationException.class, () -> PropertyRowSerializer.deserialize(row, properties));
     }
 
-    // Test the serialize function with a invalid date and expect a SerializationException
+    // Test the serialize function with an invalid date and expect a SerializationException
     @Test
     void testSerializeWithInvalidDate() {
         List<Object> row = new ArrayList<>();

@@ -14,6 +14,7 @@ import static tao.dong.dataconjurer.common.model.PropertyType.DATETIME;
 import static tao.dong.dataconjurer.common.model.PropertyType.NUMBER;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
+import static tao.dong.dataconjurer.common.model.PropertyType.TIME;
 
 class MySQLPropertyValueConverterTest {
     private final MySQLPropertyValueConverter converter = new MySQLPropertyValueConverter();
@@ -26,7 +27,11 @@ class MySQLPropertyValueConverterTest {
                 Arguments.of(new BigDecimal("7.8"), NUMBER, "7.8"),
                 Arguments.of("abc", TEXT, "'abc'"),
                 Arguments.of(1699742737481L, DATETIME, "'2023-11-11 22:45:37'"),
-                Arguments.of(1699742737481L, DATE, "'2023-11-11'")
+                Arguments.of(BigDecimal.valueOf(1699742737481L),  DATETIME, "'2023-11-11 22:45:37'"),
+                Arguments.of(1699742737481L, DATE, "'2023-11-11'"),
+                Arguments.of(BigDecimal.valueOf(1699742737481L), DATE, "'2023-11-11'"),
+                Arguments.of(3601L, TIME, "'01:00:01'"),
+                Arguments.of(BigDecimal.valueOf(3601L), TIME, "'01:00:01'")
         );
     }
 

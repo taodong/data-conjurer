@@ -29,13 +29,20 @@ public class PropertyRowSerializer {
             return null;
         }
 
-
         return switch (type) {
             case SEQUENCE -> Long.valueOf(value);
             case NUMBER -> new BigDecimal(value);
             case DATE -> DataHelper.convertFormattedStringToMillisecond(value, DATE_FORMAT.getFormat());
             case DATETIME -> DataHelper.convertFormattedStringToMillisecond(value, DATETIME_FORMAT.getFormat());
             case BOOLEAN -> BooleanUtils.toBoolean(value);
+            case TIME -> {
+                try {
+                    yield DataHelper.convertTimeStringToSecond(value);
+                } catch (Exception e) {
+                    LOG.error("Failed to convert time string {} to seconds, applying 0", value);
+                    yield  0L;
+                }
+            }
             case TEXT -> value;
         };
     }
@@ -59,6 +66,7 @@ public class PropertyRowSerializer {
                 case DATE -> DataHelper.formatMilliseconds((Long) val, DATE_FORMAT.getFormat());
                 case DATETIME -> DataHelper.formatMilliseconds((Long) val, DATETIME_FORMAT.getFormat());
                 case BOOLEAN -> String.valueOf(val);
+                case TIME -> DataHelper.formatTimeInSeconds((Long) val);
                 case TEXT -> (String) val;
             };
         } catch (Exception e) {
