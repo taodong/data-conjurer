@@ -46,13 +46,11 @@ public interface DataHelper {
      * @throws NumberFormatException if the value is not a Long or BigDecimal
      */
     static Long outputLongValue(@NotNull Object val) {
-        if (val instanceof Long longVal) {
-            return longVal;
-        } else if (val instanceof Number numberVal) {
-            return numberVal.longValue();
-        } else {
-            throw new NumberFormatException("Invalid number value: " + val);
-        }
+        return switch (val) {
+            case Long longVal -> longVal;
+            case Number numberVal -> numberVal.longValue();
+            default -> throw new NumberFormatException("Invalid number value: " + val);
+        };
     }
 
 
