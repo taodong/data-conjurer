@@ -41,15 +41,15 @@ public interface DataHelper {
 
     /**
      * Convert a Long or BigDecimal value to Long
-     * @param val
+     * @param val the value to convert
      * @return Long value
      * @throws NumberFormatException if the value is not a Long or BigDecimal
      */
     static Long outputLongValue(@NotNull Object val) {
-        if (val instanceof Long) {
-            return (Long) val;
-        } else if (val instanceof Number) {
-            return ((Number) val).longValue();
+        if (val instanceof Long longVal) {
+            return longVal;
+        } else if (val instanceof Number numberVal) {
+            return numberVal.longValue();
         } else {
             throw new NumberFormatException("Invalid number value: " + val);
         }
