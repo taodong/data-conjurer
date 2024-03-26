@@ -28,8 +28,8 @@ public class DefaultStringPropertyValueConverter extends StringPropertyValueConv
     }
 
     protected boolean filterConvertError(Object o) {
-        if (o instanceof ConvertError ce) {
-            LOG.warn("Drop unsuccessful converted value {}: {}", ce.value(), ce.message());
+        if (o instanceof ConvertError(String value, String message)) {
+            LOG.warn("Drop unsuccessful converted value {}: {}", value, message);
             return false;
         }
         return true;
