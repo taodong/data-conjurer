@@ -79,8 +79,8 @@ public interface DataHelper {
      * @param seconds the time in seconds
      * @return the formatted time string
      */
-    static String formatTimeInSeconds(long seconds) {
-        return String.format("%02d:%02d:%02d", seconds / 3600, Math.abs((seconds % 3600) / 60), Math.abs(seconds % 60));
+    static String formatTimeInSeconds(long seconds, @NotEmpty String format) {
+        return String.format(format, seconds / 3600, Math.abs((seconds % 3600) / 60), Math.abs(seconds % 60));
     }
 
     static <T> List<T> removeIndexFromList(@NotNull List<T> list, @NotEmpty Set<Integer> indexes) {

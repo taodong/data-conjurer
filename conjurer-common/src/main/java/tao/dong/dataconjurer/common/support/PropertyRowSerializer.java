@@ -66,7 +66,7 @@ public class PropertyRowSerializer {
                 case DATE -> DataHelper.formatMilliseconds((Long) val, DATE_FORMAT.getFormat());
                 case DATETIME -> DataHelper.formatMilliseconds((Long) val, DATETIME_FORMAT.getFormat());
                 case BOOLEAN -> String.valueOf(val);
-                case TIME -> DataHelper.formatTimeInSeconds((Long) val);
+                case TIME -> DataHelper.formatTimeInSeconds((Long) val, "%02d:%02d:%02d");
                 case TEXT -> (String) val;
             };
         } catch (Exception e) {

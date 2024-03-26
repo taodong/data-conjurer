@@ -27,7 +27,7 @@ public class MySQLPropertyValueConverter extends PropertyValueConverter<StringVa
             case NUMBER -> new TextValue(value.toString());
             case DATE -> new MySQLDateValue(DataHelper.outputLongValue(value));
             case DATETIME -> new MySQLDateTimeValue(DataHelper.outputLongValue(value));
-            case TIME -> new MySQLTextValue(DataHelper.formatTimeInSeconds(DataHelper.outputLongValue(value)));
+            case TIME -> new MySQLTextValue(DataHelper.formatTimeInSeconds(DataHelper.outputLongValue(value), "%02d:%02d:%02d"));
             case TEXT -> {
                 String pv = String.valueOf(value);
                 if (StringUtils.containsAnyIgnoreCase(pv, "<?default?>")) {

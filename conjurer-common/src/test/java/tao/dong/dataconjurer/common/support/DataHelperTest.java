@@ -110,7 +110,7 @@ class DataHelperTest {
     @ParameterizedTest
     @MethodSource
     void testFormatTimeInSeconds(long seconds, String expected) {
-        assertEquals(expected, DataHelper.formatTimeInSeconds(seconds));
+        assertEquals(expected, DataHelper.formatTimeInSeconds(seconds, "%02d:%02d:%02d"));
     }
 
     private static Stream<Arguments> testOutputLongValue() {
