@@ -9,8 +9,8 @@ import java.util.Set;
 import static tao.dong.dataconjurer.common.model.ConstraintType.NUMBER_RANGE;
 
 public class TimeGenerator extends ValueGeneratorDecorator<Long> {
-    public static final Long MINUS_850_HOURS = -850L * 60 * 60;
-    public static final Long PLUS_850_HOURS = 850L * 60 * 60 + 1;
+    public static final Long MINUS_839_HOURS = -(838L * 60 * 60 + 59 * 60 + 59);
+    public static final Long PLUS_839_HOURS = 839L * 60 * 60;
 
     private static final Set<ConstraintType> CONSTRAINT_TYPES = Set.of(NUMBER_RANGE);
     public TimeGenerator(Set<Constraint<?>> constraints) {
@@ -19,14 +19,14 @@ public class TimeGenerator extends ValueGeneratorDecorator<Long> {
 
     @Override
     protected ValueGenerator<Long> getDefaultGenerator() {
-        qualifiedConstraints.add(new NumberRange(MINUS_850_HOURS, PLUS_850_HOURS));
-        return createRandomLongGenerator(MINUS_850_HOURS, PLUS_850_HOURS);
+        qualifiedConstraints.add(new NumberRange(MINUS_839_HOURS, PLUS_839_HOURS));
+        return createRandomLongGenerator(MINUS_839_HOURS, PLUS_839_HOURS);
     }
 
     @Override
     protected ValueGenerator<Long> createGenerator(Set<Constraint<?>> constraints) {
-        var min = MINUS_850_HOURS;
-        var max = PLUS_850_HOURS;
+        var min = MINUS_839_HOURS;
+        var max = PLUS_839_HOURS;
         for (var constraint : constraints) {
             if (constraint.getType() == NUMBER_RANGE) {
                 var range = (NumberRange) constraint;

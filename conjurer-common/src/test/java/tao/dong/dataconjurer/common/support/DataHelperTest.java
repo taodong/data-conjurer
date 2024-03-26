@@ -77,8 +77,8 @@ class DataHelperTest {
                 Arguments.of("01:00:00", 3600L),
                 Arguments.of("01:01:01", 3661L),
                 Arguments.of("-23:59:59", -86399L),
-                Arguments.of("850:0:0", TimeGenerator.PLUS_850_HOURS - 1),
-                Arguments.of("-850:0:0", TimeGenerator.MINUS_850_HOURS)
+                Arguments.of("838:59:59", TimeGenerator.PLUS_839_HOURS - 1),
+                Arguments.of("-838:59:59", TimeGenerator.MINUS_839_HOURS)
         );
     }
 
@@ -102,8 +102,8 @@ class DataHelperTest {
                 Arguments.of(86399L, "23:59:59"),
                 Arguments.of(86400L, "24:00:00"),
                 Arguments.of(-86400L, "-24:00:00"),
-                Arguments.of(TimeGenerator.PLUS_850_HOURS - 1, "850:00:00"),
-                Arguments.of(TimeGenerator.MINUS_850_HOURS, "-850:00:00")
+                Arguments.of(TimeGenerator.PLUS_839_HOURS - 1, "838:59:59"),
+                Arguments.of(TimeGenerator.MINUS_839_HOURS, "-838:59:59")
         );
     }
 

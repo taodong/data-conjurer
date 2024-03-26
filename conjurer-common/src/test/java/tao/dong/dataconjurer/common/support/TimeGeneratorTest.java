@@ -16,13 +16,13 @@ class TimeGeneratorTest {
     @Test
     void getDefaultGenerator() {
         var generator = new TimeGenerator(null);
-        assertEquals(TimeGenerator.MINUS_850_HOURS, ((RandomLongGenerator)generator.getGenerator()).getMinInclusive());
-        assertEquals(TimeGenerator.PLUS_850_HOURS, ((RandomLongGenerator)generator.getGenerator()).getMaxExclusive());
+        assertEquals(TimeGenerator.MINUS_839_HOURS, ((RandomLongGenerator)generator.getGenerator()).getMinInclusive());
+        assertEquals(TimeGenerator.PLUS_839_HOURS, ((RandomLongGenerator)generator.getGenerator()).getMaxExclusive());
     }
 
     private static Stream<Arguments> testGenerate() {
         return Stream.of(
-                Arguments.of(new NumberRange(TimeGenerator.MINUS_850_HOURS, TimeGenerator.PLUS_850_HOURS)),
+                Arguments.of(new NumberRange(TimeGenerator.MINUS_839_HOURS, TimeGenerator.PLUS_839_HOURS)),
                 Arguments.of(new NumberRange(1L, 100L)),
                 Arguments.of(new NumberRange(0L, 86400L))
         );
