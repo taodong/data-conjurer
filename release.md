@@ -1,5 +1,6 @@
-# Release Note v1.0.1
+# Release Note v1.1.0
 
-1. Fix entity generation fast fail issue
-2. Change random generator to secured random
-3. Clean up smell code
+1. Extended dialect for more general support.
+2. Added support for Time and Boolean data type.
+3. Added property row serialization
+4. Fixed the big decimal serialization issue for date and datetime after correlation with the database.
