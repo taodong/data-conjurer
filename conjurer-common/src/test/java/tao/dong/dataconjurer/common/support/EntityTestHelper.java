@@ -87,7 +87,7 @@ public class EntityTestHelper {
         DataHelper.appendToSetValueInMap(idMap, wrapper1.getEntityName(), wrapper1.getId());
 
         var wrapper2 = new EntityWrapper(createEntityT2(), new EntityData("t2", 5L, null, null),
-                new EntityOutputControl("t2", Set.of(
+                new EntityOutputControl("t2", "t2-alias", Set.of(
                         new PropertyOutputControl("t2p0", false, "id"),
                         new PropertyOutputControl("t2p1", true, null)
                 )), dataProviderService, 0);
@@ -269,7 +269,7 @@ public class EntityTestHelper {
     }
 
     public EntityOutputControl createOutputControlT6() {
-        return new EntityOutputControl("control-t6", Set.of(
+        return new EntityOutputControl("control-t6", "t6-alias", Set.of(
                 new PropertyOutputControl("t6p1", false, "t6p1v1"),
                 new PropertyOutputControl("t6p8", true, null)
         ));

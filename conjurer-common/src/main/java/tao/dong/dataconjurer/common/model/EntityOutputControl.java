@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
-public record EntityOutputControl(String name, Set<PropertyOutputControl> properties) {
+public record EntityOutputControl(String name, String alias, Set<PropertyOutputControl> properties) {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof EntityOutputControl eoc) {

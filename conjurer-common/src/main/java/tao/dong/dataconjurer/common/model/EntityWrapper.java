@@ -68,6 +68,7 @@ public class EntityWrapper {
     private final Map<String, Integer> provided = new HashMap<>();
     @Setter
     private String msg;
+    private String entityOutputName;
 
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, PropertyType> typeMap = new HashMap<>();
@@ -91,6 +92,7 @@ public class EntityWrapper {
             saveEntries(data.entries());
         }
         createIndexes(indexedProps);
+        this.entityOutputName = outputControl != null && outputControl.alias() != null? outputControl.alias() : entity.name();
     }
 
     void saveEntries(@NotNull EntityEntry entry) {

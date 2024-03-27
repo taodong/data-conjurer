@@ -11,6 +11,7 @@ plan:
 output:
     entities:
       - name: "post"
+        alias: "帖子"
         properties:
           - name: "created_date"
             alias: "created"

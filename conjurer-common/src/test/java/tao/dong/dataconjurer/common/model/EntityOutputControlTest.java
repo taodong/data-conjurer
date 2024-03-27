@@ -13,9 +13,9 @@ class EntityOutputControlTest {
 
     private static Stream<Arguments> testEquals(){
         return Stream.of(
-                Arguments.of(new EntityOutputControl("entity1", Set.of()), new EntityOutputControl("entity1", null), true),
-                Arguments.of(new EntityOutputControl("entity1", Set.of()), new EntityOutputControl("entity2", Set.of()), false),
-                Arguments.of(new EntityOutputControl("entity1", Set.of()), "string", false)
+                Arguments.of(new EntityOutputControl("entity1", null, Set.of()), new EntityOutputControl("entity1", null, null), true),
+                Arguments.of(new EntityOutputControl("entity1", null, Set.of()), new EntityOutputControl("entity2", null, Set.of()), false),
+                Arguments.of(new EntityOutputControl("entity1", "abc", Set.of()), "string", false)
         );
     }
 

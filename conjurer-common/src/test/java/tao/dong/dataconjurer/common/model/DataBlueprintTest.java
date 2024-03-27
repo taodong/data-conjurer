@@ -62,7 +62,7 @@ class DataBlueprintTest {
         assertEquals(4, results.size());
         assertEquals("t4", results.get(0).getEntityName());
         assertEquals(1, results.get(0).getValues().size());
-        assertEquals("t2", results.get(1).getEntityName());
+        assertEquals("t2-alias", results.get(1).getEntityName());
         assertEquals(1, results.get(1).getPropertyTypes().size());
         assertEquals("id", results.get(1).getProperties().get(0));
         assertEquals(1, results.get(1).getValues().size());

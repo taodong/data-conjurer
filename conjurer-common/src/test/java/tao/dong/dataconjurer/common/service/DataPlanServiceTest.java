@@ -34,7 +34,7 @@ class DataPlanServiceTest {
                 .maxIndexCollision(3)
                 .build();
         var output = new DataOutputControl("control", Set.of(
-                new EntityOutputControl("t1", Set.of(
+                new EntityOutputControl("t1", null, Set.of(
                         new PropertyOutputControl("t1p1", false, "id"),
                         new PropertyOutputControl("t2p4", true, null)
                 ))

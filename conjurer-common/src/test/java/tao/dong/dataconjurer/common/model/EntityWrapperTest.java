@@ -32,7 +32,7 @@ class EntityWrapperTest {
     void testConstruct() {
         var entity = TEST_HELPER.createEntityT5();
         var plan = TEST_HELPER.createSimpleData("t5", 5L);
-        var outputControl = new EntityOutputControl("t5",
+        var outputControl = new EntityOutputControl("t5", null,
                 Set.of(
                         new PropertyOutputControl("t5p1", true, null),
                         new PropertyOutputControl("t5p2", false, "p2")
@@ -279,6 +279,8 @@ class EntityWrapperTest {
         assertEquals(3, wrapper.getRefStrategy().size());
         assertEquals(1, wrapper.getEntries().size());
         assertEquals(1, wrapper.getCorrelated().size());
+        assertEquals("t6-alias", wrapper.getEntityOutputName());
+        assertEquals("t6", wrapper.getEntityName());
     }
 
 }

@@ -17,7 +17,7 @@ class DataOutputControlTest {
     private static Stream<Arguments> testDeserialization() {
         return Stream.of(
                 Arguments.of("{\"name\":\"abc\"}", new DataOutputControl("abc", null)),
-                Arguments.of("{\"name\":\"abc\", \"entities\": [{\"name\": \"t1\"}]}", new DataOutputControl("abc", Set.of(new EntityOutputControl("t1", null))))
+                Arguments.of("{\"name\":\"abc\", \"entities\": [{\"name\": \"t1\"}]}", new DataOutputControl("abc", Set.of(new EntityOutputControl("t1", null, null))))
         );
     }
 
