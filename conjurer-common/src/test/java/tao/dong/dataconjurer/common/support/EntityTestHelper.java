@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import tao.dong.dataconjurer.common.model.StringFormat;
 import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.CharacterGroup;
 import tao.dong.dataconjurer.common.model.Constraint;
@@ -156,10 +157,11 @@ public class EntityTestHelper {
                         new ValueCategory("name", null, Locale.JAPAN, 1)
                 )).build(),
                 entityPropertyBuilder().name("id1").type(TEXT).constraints(List.of(
-                        new ValueCategory("id", "uuid", null, 0)
+                        new ValueCategory("id", null, null, 0)
                 )).build(),
                 entityPropertyBuilder().name("id2").type(TEXT).constraints(List.of(
-                        new ValueCategory("id", "####", null, 1)
+                        new ValueCategory("id", null, null, 1),
+                        new StringFormat("####")
                 )).build()
         ));
     }

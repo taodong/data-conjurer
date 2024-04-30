@@ -68,7 +68,7 @@ public class EntityWrapper {
     private final Map<String, Integer> provided = new HashMap<>();
     @Setter
     private String msg;
-    private String entityOutputName;
+    private final String entityOutputName;
 
     @Getter(AccessLevel.PRIVATE)
     private final Map<String, PropertyType> typeMap = new HashMap<>();

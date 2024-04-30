@@ -27,12 +27,6 @@ public class ChainedValue implements Constraint<Double> {
         this.style = style;
     }
 
-    // short circuit and always return true
-    @Override
-    public boolean isMet(Double val) {
-        return true;
-    }
-
     @Override
     public ConstraintType getType() {
         return CHAIN;

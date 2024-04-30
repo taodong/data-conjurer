@@ -85,8 +85,9 @@ entities:
         constraints:
           - type: "category"
             name: "id"
-            qualifier: "ref-##?##"
             compoundId: 1
+          - type: "format"
+            format: "ref-##?##"
       - name: "oos"
         type: "time"
         constraints:

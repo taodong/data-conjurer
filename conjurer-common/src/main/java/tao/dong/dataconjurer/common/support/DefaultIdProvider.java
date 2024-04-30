@@ -1,8 +1,10 @@
 package tao.dong.dataconjurer.common.support;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.MapUtils;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.Constraint;
+import tao.dong.dataconjurer.common.model.ConstraintType;
+import tao.dong.dataconjurer.common.model.StringFormat;
 import tao.dong.dataconjurer.common.model.TextId;
 
 import java.util.List;
@@ -10,8 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
-
-import static tao.dong.dataconjurer.common.support.CompoundValuePropertyRetriever.DEFAULT_QUALIFIER;
 
 public class DefaultIdProvider implements CategorizedValueProvider{
 
@@ -24,9 +24,12 @@ public class DefaultIdProvider implements CategorizedValueProvider{
 
     @Override
     public List<? extends CompoundValue> fetch(int count, @SuppressWarnings("unused") Locale locale, Map<String, List<Constraint<?>>> constraints) {
-        var qualifier = constraints.isEmpty() ? null : constraints.keySet().iterator().next();
-        var isUuid = qualifier == null || StringUtils.equalsAnyIgnoreCase(qualifier, "uuid", DEFAULT_QUALIFIER);
-        return isUuid ? generateUuid(count) : provider.generateExpressionValues(count, qualifier);
+        String format = null;
+        if (MapUtils.isNotEmpty(constraints)) {
+            var cs = constraints.values().stream().findFirst().orElse(List.of());
+            format = cs.stream().filter(c -> c.getType() == ConstraintType.FORMAT).findFirst().map(c -> ((StringFormat)c).format()).orElse(null);
+        }
+        return format == null ? generateUuid(count) : provider.generateExpressionValues(count, format);
     }
 
     private List<TextId> generateUuid(int count) {

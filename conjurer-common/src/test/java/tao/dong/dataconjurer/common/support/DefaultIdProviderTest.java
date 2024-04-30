@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.Length;
+import tao.dong.dataconjurer.common.model.StringFormat;
 import tao.dong.dataconjurer.common.model.TextId;
 
 import java.util.Collections;
@@ -47,7 +48,7 @@ class DefaultIdProviderTest {
 
     @Test
     void testGenerateRegexIds() {
-        var ids = provider.fetch(9, null, Map.of("id-###", List.of(new Length(6L))));
+        var ids = provider.fetch(9, null, Map.of("value", List.of(new Length(6L), new StringFormat("id-###"))));
         assertEquals(9, ids.size());
         for (var id : ids) {
             String idStr = ((TextId)id).value();
