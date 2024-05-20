@@ -29,7 +29,7 @@ class TimeGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerate")
     void testGenerate(NumberRange range) {
         var generator = new TimeGenerator(Set.of(range));
         for (var i = 0; i < 10; i++) {

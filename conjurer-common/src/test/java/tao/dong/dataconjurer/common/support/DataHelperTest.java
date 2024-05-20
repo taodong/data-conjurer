@@ -83,7 +83,7 @@ class DataHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConvertTimeStringToSecond")
     void testConvertTimeStringToSecond(String str, long expected) {
         assertEquals(expected, DataHelper.convertTimeStringToSecond(str));
     }
@@ -108,7 +108,7 @@ class DataHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testFormatTimeInSeconds")
     void testFormatTimeInSeconds(long seconds, String expected) {
         assertEquals(expected, DataHelper.formatTimeInSeconds(seconds, "%02d:%02d:%02d"));
     }
@@ -127,7 +127,7 @@ class DataHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testOutputLongValue")
     void testOutputLongValue(Object val, Long expected) {
         assertEquals(expected, DataHelper.outputLongValue(val));
     }

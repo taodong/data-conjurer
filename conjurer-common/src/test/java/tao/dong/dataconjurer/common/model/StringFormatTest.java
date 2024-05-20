@@ -45,7 +45,7 @@ class StringFormatTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testYamlCreator")
     void testYamlCreator(String input, StringFormat expected) throws Exception {
         var actual = objectMapper.readValue(input, Constraint.class);
         assertEquals(expected, actual);
