@@ -41,8 +41,8 @@ class CompoundValuePropertyRetrieverTest {
 
     @Test
     void testLoadCompoundValueConfiguration() {
-        CompoundValuePropertyRetriever retriever = new CompoundValuePropertyRetriever();
-        retriever.loadCompoundValueConfiguration(Map.of("extra", Map.of("p1", "test")));
-        assertEquals(3, retriever.getSupported().size());
+        CompoundValuePropertyRetriever retriever2 = new CompoundValuePropertyRetriever();
+        retriever2.loadCompoundValueConfiguration(Map.of("extra", Map.of("p1", "test")));
+        assertEquals(3, retriever2.getSupported().size());
     }
 }
