@@ -38,7 +38,7 @@ class DataEntityTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testValidate")
     void testValidate(DataEntity entity, boolean passed) {
         var violations = validator.validate(entity);
         assertEquals(passed, violations.isEmpty());

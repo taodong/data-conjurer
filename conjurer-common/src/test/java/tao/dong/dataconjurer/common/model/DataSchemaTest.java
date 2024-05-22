@@ -41,7 +41,7 @@ class DataSchemaTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testValidate")
     void testValidate(DataSchema schema, boolean passed) {
         var violations = validator.validate(schema);
         assertEquals(passed, violations.isEmpty());

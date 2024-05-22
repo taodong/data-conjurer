@@ -104,7 +104,7 @@ class TypedValueGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testMatchDefaultGeneratorByType")
     void testMatchDefaultGeneratorByType(EntityProperty property, Class<?> expected) {
         var result = generator.matchDefaultGeneratorByType(property, null);
         assertTrue(expected.isInstance(result));

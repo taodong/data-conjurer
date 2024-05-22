@@ -29,7 +29,7 @@ class BigDecimalGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConstruct")
     void testConstruct(Set<Constraint<?>> constraints, Long min, Long max, int precision) {
         var decorator = new BigDecimalGenerator(constraints);
         assertEquals(min, ((RandomNumberGenerator)decorator.getGenerator()).getMinInclusive());
@@ -46,7 +46,7 @@ class BigDecimalGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConstruct_ChainedBigDecimal")
     void testConstruct_ChainedBigDecimal(Set<Constraint<?>> constraints) {
         var decorator = new BigDecimalGenerator(constraints);
         assertTrue(decorator.getGenerator() instanceof ChainedBigDecimalGenerator);
@@ -61,7 +61,7 @@ class BigDecimalGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testTestConstraints")
     void testTestConstraints(BigDecimal val) {
         var decorator = new BigDecimalGenerator(
           Set.of(new NumberRange(5L, 80L), new Precision(2))
@@ -79,7 +79,7 @@ class BigDecimalGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testTestConstraints_Failed")
     void testTestConstraints_Failed(BigDecimal val) {
         var decorator = new BigDecimalGenerator(
                 Set.of(new NumberRange(5L, 80L), new Precision(2))

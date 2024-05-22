@@ -91,7 +91,7 @@ class DataBlueprintTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testVerifyCompletion")
     void testVerifyCompletion(List<EntityDataOutput> results) {
         var blueprint = createTestBlueprint();
         assertThrows(DataGenerateException.class,

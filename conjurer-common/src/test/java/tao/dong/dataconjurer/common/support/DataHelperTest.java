@@ -39,7 +39,7 @@ class DataHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testFormatMilliseconds")
     void testFormatMilliseconds(long milliseconds, String pattern, String expected) {
         assertEquals(expected, DataHelper.formatMilliseconds(milliseconds, pattern));
     }
@@ -65,7 +65,7 @@ class DataHelperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testStreamNullableCollection")
     void testStreamNullableCollection(Collection<Integer> col, int expected) {
         Set<Integer> res = DataHelper.streamNullableCollection(col).collect(Collectors.toSet());
         assertEquals(expected, res.size());

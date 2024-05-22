@@ -22,7 +22,7 @@ class ReferenceStrategyTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGetByName")
     void testGetByName(String name, ReferenceStrategy expected) {
         assertEquals(expected, ReferenceStrategy.getByName(name));
     }

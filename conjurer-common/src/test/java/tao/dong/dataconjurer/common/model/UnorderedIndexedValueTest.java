@@ -27,7 +27,7 @@ class UnorderedIndexedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddValue")
     void testAddValue(List<Object> entry, boolean expected) {
         UnorderedIndexedValue indexes = new UnorderedIndexedValue(new int[] {0, 3, 4});
         indexes.addValue(List.of("A", "SX", "BI", "D", "E"));

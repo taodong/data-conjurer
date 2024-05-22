@@ -20,7 +20,7 @@ class ChainedLongGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerate_Fixed")
     void testGenerate_Fixed(int direction, BiFunction<Long, Long, Boolean> checkFun) {
         var generator = new ChainedLongGenerator(direction, 10, 0, 100L);
         long prev = generator.generate();

@@ -25,7 +25,7 @@ class ChainedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testDeserialize")
     void testDeserialize(String json, double seed, int direction, int style) throws JsonProcessingException {
         ChainedValue rs = objectMapper.readerFor(ChainedValue.class).readValue(json);
         assertEquals(seed, rs.getSeed());

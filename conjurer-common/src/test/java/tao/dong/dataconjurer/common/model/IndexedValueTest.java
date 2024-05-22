@@ -25,7 +25,7 @@ class IndexedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddValue")
     void testAddValue(List<Object> values, boolean expected) {
         IndexedValue indexes = new IndexedValue(new int[]{0, 3, 4});
         indexes.addValue(List.of("A", "SX", "BI", "D", "E"));

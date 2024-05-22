@@ -69,7 +69,7 @@ class EntityWrapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testFailProcess")
     void testFailProcess(int[] sequence, int expected) {
         var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderService, 0);
         for (var status : sequence) {
@@ -100,7 +100,7 @@ class EntityWrapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testEquals")
     void testEquals(EntityWrapper obj1, Object obj2, boolean expected) {
         assertEquals(expected, obj1.equals(obj2));
     }
@@ -114,7 +114,7 @@ class EntityWrapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testCreateReferenced")
     void testCreateReferenced(String[] props, int expected) {
         var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderService, 0);
         test.createReferenced(new PropertyLink("t1p1", null), new PropertyLink("t1p2", null));
@@ -244,7 +244,7 @@ class EntityWrapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testCreateIndex")
     void testCreateIndex(Map<Integer, EntityIndex> indexDefs, Class<UniqueIndex<?>> expected) {
         var wrapper = TEST_HELPER.getSimpleEntityWrapper();
         var rs = wrapper.createIndex(indexDefs);
@@ -259,7 +259,7 @@ class EntityWrapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testCreateIndex_HandleErrors")
     void testCreateIndex_HandleErrors(Map<Integer, EntityIndex> indexDefs) {
         var wrapper = TEST_HELPER.getSimpleEntityWrapper();
         assertThrows(DataGenerateException.class, () -> wrapper.createIndex(indexDefs));

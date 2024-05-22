@@ -26,7 +26,7 @@ class CircularDependencyCheckerTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testHasCircular")
     void testHasCircular(Map<String, Set<String>> nodes, boolean expected) {
         assertEquals(checker.hasCircular(nodes), expected);
     }

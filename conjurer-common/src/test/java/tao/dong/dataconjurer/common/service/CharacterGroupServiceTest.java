@@ -39,7 +39,7 @@ class CharacterGroupServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testLookupCharacterGroups")
     void testLookupCharacterGroups(Collection<String> names, int expected, Set<CharacterPredicate> expectedValues) {
         var result = service.lookupCharacterGroups(names);
         assertEquals(expected, result.length);

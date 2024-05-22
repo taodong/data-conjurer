@@ -86,7 +86,7 @@ class EntityDataTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testValidate_Entries")
     void testValidate_Entries(EntityData entityData) {
         var violations = validator.validate(entityData);
         assertEquals(1, violations.size());

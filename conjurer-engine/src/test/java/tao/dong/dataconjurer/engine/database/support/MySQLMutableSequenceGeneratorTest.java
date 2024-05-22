@@ -22,7 +22,7 @@ class MySQLMutableSequenceGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConstructor")
     void testConstructor(Set<Constraint<?>> constraints, Long expectedBase, Long expectedLeap) {
         var generator = new MySQLMutableSequenceGenerator(constraints);
         assertEquals(expectedBase, generator.getSequenceGenerator().getCurrent());

@@ -31,7 +31,7 @@ class UnicodeCharacterPredicateTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsInUnicodeRange")
     void testIsInUnicodeRange(int val, boolean expected) {
         assertEquals(expected, toTest.test(val));
     }

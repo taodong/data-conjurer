@@ -22,7 +22,7 @@ class RandomIndexGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerate")
     void testGenerate(RandomIndexGenerator generator, int size) {
         for (var i = 0; i < 10; i++) {
             assertTrue(generator.generate() < size);

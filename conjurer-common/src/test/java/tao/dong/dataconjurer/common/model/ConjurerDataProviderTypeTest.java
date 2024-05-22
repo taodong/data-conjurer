@@ -26,7 +26,7 @@ class ConjurerDataProviderTypeTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGetByTypeName")
     void testGetByTypeName(String type, ConjurerDataProviderType expected) {
         assertEquals(expected, ConjurerDataProviderType.getByTypeName(type));
     }

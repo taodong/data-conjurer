@@ -23,7 +23,7 @@ class RationRangeTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testValidation")
     void testValidation(double min, double max) {
         assertThrows(IllegalArgumentException.class, () -> new RatioRange(min, max));
     }
@@ -40,7 +40,7 @@ class RationRangeTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsMet")
     void testIsMet(double min, double max, double val, boolean expected) {
         var ratioRange = new RatioRange(min, max);
         assertEquals(expected, ratioRange.isMet(val));

@@ -30,7 +30,7 @@ class JFakerValueProviderTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerateAddresses")
     void testGenerateAddresses(int count, Locale locale) {
         var result = provider.generateAddresses(count, locale);
         assertEquals(count, result.size());
@@ -51,7 +51,7 @@ class JFakerValueProviderTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerateNames")
     void testGenerateNames(int count, Locale locale) {
         assertEquals(count, provider.generateNames(count, locale).size());
     }

@@ -29,7 +29,7 @@ class DurationTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testJsonCreator")
     void testJsonCreator(String json, int startYear, int endYear) throws JsonProcessingException {
         Duration duration = objectMapper.readerFor(Duration.class).readValue(json);
         assertEquals(startYear, getYear(duration.getMin()));

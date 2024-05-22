@@ -26,7 +26,7 @@ class DistinctElementIndexedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddValue")
     void testAddValue(List<Object> properties, boolean expected) {
         var index = new DistinctElementIndexedValue(new int[]{1, 2, 3}, new int[]{2, 3});
         index.addValue(List.of(0, 1, 3, 6, "B"));

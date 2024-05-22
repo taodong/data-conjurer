@@ -23,7 +23,7 @@ class RandomNumberGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsDoubleType")
     void testIsDoubleType(int precision, boolean expected) {
         var generator = RandomNumberGenerator.builder()
                 .precision(precision)

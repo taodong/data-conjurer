@@ -26,7 +26,7 @@ class ValueCategoryTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testJacksonDeserialize")
     void testJacksonDeserialize(String json, String name, String qualifier, Locale locale) throws JsonProcessingException {
         ValueCategory category = objectMapper.readerFor(ValueCategory.class).readValue(json);
         assertEquals(new ValueCategory(name, qualifier, locale, 0), category);

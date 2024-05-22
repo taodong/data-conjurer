@@ -29,7 +29,7 @@ class CompoundValuePropertyRetrieverTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGetValue")
     void testGetValue(CompoundValue obj, String compound, String property, Object expected) {
         assertEquals(expected, retriever.getValue(obj, compound, property));
     }

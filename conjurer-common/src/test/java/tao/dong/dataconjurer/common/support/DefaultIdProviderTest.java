@@ -31,7 +31,7 @@ class DefaultIdProviderTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerateUUIDs")
     void testGenerateUUIDs(Map<String, List<Constraint<?>>> constraints) {
         var ids = provider.fetch(10, null, constraints);
         assertEquals(10, ids.size());

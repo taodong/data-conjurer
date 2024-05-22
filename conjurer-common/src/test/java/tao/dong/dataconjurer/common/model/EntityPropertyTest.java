@@ -48,7 +48,7 @@ class EntityPropertyTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testValidate")
     void testValidate(EntityProperty property, boolean passed) {
         var violations = validator.validate(property);
         assertEquals(passed, violations.isEmpty());
@@ -63,7 +63,7 @@ class EntityPropertyTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddConstraints")
     void testAddConstraints(EntityProperty property, List<Constraint<?>> extra, int expected) {
         var cloned = property.addConstraints(extra);
         assertEquals(property.name(), cloned.name());
@@ -93,7 +93,7 @@ class EntityPropertyTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testDeserialization")
     void testDeserialization(String json, EntityProperty expected) throws JsonProcessingException {
         assertEquals(expected, objectMapper.readerFor(EntityProperty.class).readValue(json));
     }
@@ -106,7 +106,7 @@ class EntityPropertyTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGetPropertyConstraints")
     void testGetPropertyConstraints(EntityProperty ep, int size) {
         assertEquals(size, ep.getPropertyConstraints().size());
     }

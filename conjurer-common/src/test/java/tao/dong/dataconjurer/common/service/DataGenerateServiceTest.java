@@ -198,7 +198,7 @@ class DataGenerateServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerateData_FastFail")
     @SuppressWarnings({"unchecked", "unused"})
     void testGenerateData_FastFail(Exception ex) throws ExecutionException, InterruptedException {
         Map<EntityWrapperId, EntityWrapper> entityMap = new HashMap<>();

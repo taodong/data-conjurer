@@ -81,7 +81,7 @@ class DefaultStringPropertyValueConverterTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConvertValues")
     void testConvertValues(List<String> inputs, PropertyType type, Consumer<List<Object>> verification) {
         verification.accept(converter.convertValues(inputs, type));
     }

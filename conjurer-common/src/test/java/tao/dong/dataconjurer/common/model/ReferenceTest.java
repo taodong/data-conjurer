@@ -32,7 +32,7 @@ class ReferenceTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testNotBlank")
     void testNotBlank(String entity, String property) {
         var ref = new Reference(entity, property, null);
 

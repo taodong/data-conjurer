@@ -31,7 +31,7 @@ class RationBucketsIndexGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testMatchBucket")
     void testMatchBucket(RatioBucketsIndexGenerator generator, double key, int expected) {
         assertEquals(expected, generator.matchBucket(key));
     }

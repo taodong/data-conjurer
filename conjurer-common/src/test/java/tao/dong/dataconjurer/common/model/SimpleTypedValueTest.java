@@ -22,7 +22,7 @@ class SimpleTypedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddValue")
     void testAddValue(SimpleTypedValue tv, Object[] values, int size) {
         for (var val : values) {
             tv.addValue(val);
@@ -56,7 +56,7 @@ class SimpleTypedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testJoin_MismatchedType")
     void testJoin_MismatchedType(TypedValue tv2) {
         var tv1 = new SimpleTypedValue(TEXT);
         assertThrows(IllegalArgumentException.class, () -> tv1.join(tv2));

@@ -21,7 +21,7 @@ class LinkedTypedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddLinkedValue")
     void testAddLinkedValue(String key, Object val, int count) {
         var test = new LinkedTypedValue(PropertyType.TEXT, "abc");
         test.addLinkedValue("k1", "v1");
@@ -69,7 +69,7 @@ class LinkedTypedValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGetKeyedValues")
     void testGetKeyedValues(String key, int size) {
         var ltv1 = new LinkedTypedValue(PropertyType.TEXT, "ef");
         ltv1.addLinkedValue("k1", "v1");

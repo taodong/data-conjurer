@@ -24,7 +24,7 @@ class KeyWordTest {
 
     // test the matcher function
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("getMatcher")
     void getMatcher(String input, boolean expected) {
         KeyWord keyWord = KeyWord.NULL_KEY;
         assertEquals(expected, keyWord.getMatcher().apply(input));

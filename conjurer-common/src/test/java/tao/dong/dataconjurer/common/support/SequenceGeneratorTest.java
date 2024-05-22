@@ -23,7 +23,7 @@ class SequenceGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerate")
     void testGenerate(long start, long leap, int counts, long expected) {
         var generator = new SequenceGenerator(start, leap);
         long rs = 0L;

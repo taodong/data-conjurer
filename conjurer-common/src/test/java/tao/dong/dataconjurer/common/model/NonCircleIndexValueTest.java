@@ -30,7 +30,7 @@ class NonCircleIndexValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddValue")
     void testAddValue(List<Object> entry, boolean expected) {
         UniqueIndex<?> indexes = new NonCircleIndexValue(new int[] {0, 3, 4}, 3, 4, false);
         indexes.addValue(List.of("A", "SX", "BI", "D", "E"));
@@ -61,7 +61,7 @@ class NonCircleIndexValueTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testAddValue_OrderedIndex")
     void testAddValue_OrderedIndex(List<Object> entry, Object parent, Object child) {
         var index = new NonCircleIndexValue(new int[] {1, 2}, 1, 2, true);
         index.addValue(entry);

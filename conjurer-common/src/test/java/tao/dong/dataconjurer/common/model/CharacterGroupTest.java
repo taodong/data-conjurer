@@ -23,7 +23,7 @@ class CharacterGroupTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testJsonCreator")
     void testJsonCreator(String json, int expected) throws JsonProcessingException {
         CharacterGroup group = objectMapper.readerFor(CharacterGroup.class).readValue(json);
         assertEquals(expected, group.groups().size());
@@ -39,7 +39,7 @@ class CharacterGroupTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsMet")
     void testIsMet(CharacterGroup group, String groupName, boolean expected) {
         assertEquals(expected, group.isMet(groupName));
     }

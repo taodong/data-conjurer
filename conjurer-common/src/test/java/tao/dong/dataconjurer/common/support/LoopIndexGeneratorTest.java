@@ -21,7 +21,7 @@ class LoopIndexGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerate")
     void testGenerate(LoopIndexGenerator generator, int expected) {
         generator.generate();
         var rs = generator.generate();
@@ -50,7 +50,7 @@ class LoopIndexGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testInvalidConstructor")
     void testInvalidConstructor(int size, int next) {
         assertThrows(IllegalArgumentException.class, () -> new LoopIndexGenerator(size, next));
     }

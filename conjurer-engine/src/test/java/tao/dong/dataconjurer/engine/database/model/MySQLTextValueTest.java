@@ -18,7 +18,7 @@ class MySQLTextValueTest {
         );
     }
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGet")
     void testGet(String input, String expected) {
         assertEquals(expected, new MySQLTextValue(input).get());
     }

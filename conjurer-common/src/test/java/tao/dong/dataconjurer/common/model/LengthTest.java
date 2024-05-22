@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LengthTest {
 
@@ -28,7 +27,7 @@ class LengthTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsMet")
     void testIsMet(long length, long val, boolean expected) {
         var l = new Length(length);
         assertEquals(expected, l.isMet(val));

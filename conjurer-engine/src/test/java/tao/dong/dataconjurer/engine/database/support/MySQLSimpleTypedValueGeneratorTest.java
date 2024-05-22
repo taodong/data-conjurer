@@ -30,7 +30,7 @@ class MySQLSimpleTypedValueGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testMatchDefaultGeneratorByType")
     void testMatchDefaultGeneratorByType(EntityProperty property, long expected) {
         var matcher = new MySQLTypedValueGenerator();
         var result = matcher.matchDefaultGeneratorByType(property, dataProviderApi);

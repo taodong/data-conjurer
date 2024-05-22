@@ -24,7 +24,7 @@ class NumberCalculatorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testCalculate")
     void testCalculate(String formula, Set<String> params, Map<String, Object> inputs, BigDecimal expected) {
         var calculator = new NumberCalculator(formula, params);
         var result = calculator.calculate(inputs);
@@ -39,7 +39,7 @@ class NumberCalculatorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testExceptions")
     void testExceptions(String formula, Set<String> params, Map<String, Object> inputs) {
         var calculator = new NumberCalculator(formula, params);
         assertThrows(DataGenerateException.class, () -> calculator.calculate(inputs));

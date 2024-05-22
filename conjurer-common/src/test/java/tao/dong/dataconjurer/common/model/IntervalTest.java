@@ -25,7 +25,7 @@ class IntervalTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsMet")
     void testIsMet(long leap, Long base, Long val, boolean expected) {
         var interval = new Interval(leap, base);
         assertEquals(expected, interval.isMet(val));
@@ -39,7 +39,7 @@ class IntervalTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("tessDeserialize")
     void tessDeserialize(String json, long base, long leap) throws JsonProcessingException {
         Interval rs = objectMapper.readerFor(Interval.class).readValue(json);
         assertEquals(base, rs.getBase());

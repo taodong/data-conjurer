@@ -41,7 +41,7 @@ class DataPlanTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testValidate")
     void testValidate(DataPlan plan, boolean passed, String errMsg) {
         var violations = validator.validate(plan);
         assertEquals(passed, violations.isEmpty());

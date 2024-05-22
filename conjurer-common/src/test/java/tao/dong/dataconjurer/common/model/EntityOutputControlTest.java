@@ -20,7 +20,7 @@ class EntityOutputControlTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testEquals")
     void testEquals(EntityOutputControl control1, Object control2, boolean expected) {
         assertEquals(expected, control1.equals(control2));
     }

@@ -31,7 +31,7 @@ class PrecisionTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsMet")
     void testIsMet(int max, int val, boolean expected) {
         var precision = new Precision(max);
         assertEquals(expected, precision.isMet(val));

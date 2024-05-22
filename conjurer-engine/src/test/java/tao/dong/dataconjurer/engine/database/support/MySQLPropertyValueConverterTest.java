@@ -36,7 +36,7 @@ class MySQLPropertyValueConverterTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConvert")
     void testConvert(Object value, PropertyType type, String expected) {
         var textSupplier = converter.convert(value, type);
         assertEquals(expected, textSupplier.getValue());

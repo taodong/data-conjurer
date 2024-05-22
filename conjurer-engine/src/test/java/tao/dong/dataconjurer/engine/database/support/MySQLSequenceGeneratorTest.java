@@ -21,7 +21,7 @@ class MySQLSequenceGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testInvalidSetting")
     void testInvalidSetting(Long current, Long leap) {
         assertThrows(IllegalArgumentException.class, () -> new MySQLSequenceGenerator(current, leap));
     }

@@ -63,7 +63,7 @@ class PropertyValueConverterTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConvertRecords_Exception")
     @SuppressWarnings("unchecked")
     void testConvertRecords_Exception(Exception ex) throws ExecutionException, InterruptedException {
         var converter = new PropertyValueConverter<>((o, type) -> type == TEXT ? (String) o : String.valueOf(o)){};

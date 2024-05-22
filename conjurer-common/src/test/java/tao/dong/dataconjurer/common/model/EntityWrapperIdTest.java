@@ -27,7 +27,7 @@ class EntityWrapperIdTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testCompareTo")
     void testCompareTo(EntityWrapperId id1, EntityWrapperId id2, int expected) {
         assertEquals(expected, id1.compareTo(id2));
     }

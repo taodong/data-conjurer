@@ -22,7 +22,7 @@ class DataOutputControlTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testDeserialization")
     void testDeserialization(String json, DataOutputControl expected) throws JsonProcessingException {
         var result = objectMapper.readerFor(DataOutputControl.class).readValue(json);
         assertEquals(expected, result);

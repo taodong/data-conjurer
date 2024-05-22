@@ -43,7 +43,7 @@ class NumberCorrelationTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testDeserialization")
     void testDeserialization(String json, NumberCorrelation expected) throws JsonProcessingException {
         assertEquals(expected, objectMapper.readerFor(NumberCorrelation.class).readValue(json));
     }

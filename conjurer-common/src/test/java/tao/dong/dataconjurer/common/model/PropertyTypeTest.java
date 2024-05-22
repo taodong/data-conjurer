@@ -28,7 +28,7 @@ class PropertyTypeTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testIsSupport")
     void testIsSupport(PropertyType type, Dialect dialect, boolean expected) {
         assertEquals(expected, type.getSupport().test(dialect));
     }

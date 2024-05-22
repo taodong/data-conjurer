@@ -24,7 +24,7 @@ class MutableSequenceGeneratorTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testConstructor")
     void testConstructor(Set<Constraint<?>> constraints, long expectedBase, long expectedLeap) {
         var generator = new MutableSequenceGenerator(constraints);
         var internalGen = generator.getSequenceGenerator();

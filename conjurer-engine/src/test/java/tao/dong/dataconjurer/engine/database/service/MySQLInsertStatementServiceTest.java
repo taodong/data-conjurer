@@ -38,7 +38,7 @@ class MySQLInsertStatementServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource("testGenerateInsertStatement")
     void testGenerateInsertStatement(String entity, List<String> properties, List<List<StringValueSupplier<String>>> values, String expected) {
         assertEquals(expected, service.generateInsertStatement(entity, properties, values).toString());
     }
