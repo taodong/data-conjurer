@@ -14,13 +14,27 @@ public class JFakerValueProvider implements LocaleValueCollector {
 
     public List<CompoundValue> generateNames(@Min(1) int count, Locale locale) {
         final var faker = createFaker(locale);
-        return collect(count, () -> new PersonName(faker.name().name(), faker.name().firstName(), faker.name().lastName()));
+        return collect(count, () -> {
+            var name = faker.name();
+            return new PersonName(name.name(), name.firstName(), name.lastName());
+        });
     }
 
     public List<CompoundValue> generateAddresses(@Min(1) int count, Locale locale) {
         final var faker = createFaker(locale);
-        return collect(count, () -> new Address(faker.address().fullAddress(), faker.address().streetAddress(), faker.address().city(),
-                faker.address().state(), faker.address().zipCode(), locale == null ? faker.address().country() : locale.getDisplayCountry(locale)));
+
+        return collect(count, () -> {
+            var address = faker.address();
+            String stateZip = null;
+            try {
+                var stateAbbr = address.stateAbbr();
+                stateZip = address.zipCodeByState(stateAbbr);
+            } catch (Exception e) {
+                // Ignore runtime exception
+            }
+            return new Address(address.fullAddress(), address.streetAddress(true), address.city(),
+                address.state(), stateZip == null ? address.zipCode() : stateZip, locale == null ? address.country() : locale.getDisplayCountry(locale));
+        });
     }
 
     public List<CompoundValue> generateExpressionValues(@Min(1) int count, String template) {

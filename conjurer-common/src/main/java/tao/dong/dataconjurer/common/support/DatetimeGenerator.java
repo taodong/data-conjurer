@@ -38,14 +38,19 @@ public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
         }
 
         if (chainedValue != null) {
+            var seed = calculateSeed(chainedValue.getSeed());
             return switch (Integer.compare(chainedValue.getDirection(), 0)) {
-                case 1 -> new ChainedLongGenerator(1, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(min, min + (long) (chainedValue.getSeed() * 2)).generate());
-                case -1 -> new ChainedLongGenerator(-1, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(max - (long) (2 * chainedValue.getSeed()), max).generate());
-                default -> new ChainedLongGenerator(0, chainedValue.getSeed(), chainedValue.getStyle(), createRandomLongGenerator(min, max).generate());
+                case 1 -> new ChainedLongGenerator(1, seed, chainedValue.getStyle(), createRandomLongGenerator(min, min + (long) (seed * 2)).generate());
+                case -1 -> new ChainedLongGenerator(-1, seed, chainedValue.getStyle(), createRandomLongGenerator(max - (long) (2 * seed), max).generate());
+                default -> new ChainedLongGenerator(0, seed, chainedValue.getStyle(), createRandomLongGenerator(min, max).generate());
             };
         } else {
             return createRandomLongGenerator(min, max);
         }
+    }
+
+    protected double calculateSeed(double seed) {
+        return seed;
     }
 
     @Override

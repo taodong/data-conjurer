@@ -30,10 +30,6 @@ public abstract class ChainedValueGenerator<T> implements ValueGenerator<T> {
     protected abstract T getNextValue();
 
     protected double generateLeap() {
-        var d = direction;
-        if (d == 0) {
-            d = random.nextDouble() > 0.5 ? -1 : 1;
-        }
         return seed * generateChangeRatio() * getValueChangeDirection();
     }
 

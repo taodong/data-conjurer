@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.support.BigDecimalGenerator;
+import tao.dong.dataconjurer.common.support.DateGenerator;
 import tao.dong.dataconjurer.common.support.DatetimeGenerator;
 import tao.dong.dataconjurer.common.support.ElectedValueSelector;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
@@ -58,7 +59,7 @@ class TypedValueGeneratorTest {
                         EntityTestHelper.entityPropertyBuilder()
                                 .type(PropertyType.DATE)
                                 .build(),
-                        DatetimeGenerator.class
+                        DateGenerator.class
                 ),
                 Arguments.of(
                         EntityTestHelper.entityPropertyBuilder()
