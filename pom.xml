@@ -57,6 +57,7 @@
 		<maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
 		<maven.jacoco.plugin.version>0.8.11</maven.jacoco.plugin.version>
 		<maven.central.publish.plugin.version>0.3.0</maven.central.publish.plugin.version>
+		<spring.security.version>6.3.0</spring.security.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -84,6 +85,11 @@
 				<groupId>info.picocli</groupId>
 				<artifactId>picocli-spring-boot-starter</artifactId>
 				<version>${picocli.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.security.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.projectlombok</groupId>
