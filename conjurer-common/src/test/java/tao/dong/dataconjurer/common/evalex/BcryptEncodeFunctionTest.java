@@ -1,4 +1,4 @@
-package tao.dong.dataconjurer.common.support;
+package tao.dong.dataconjurer.common.evalex;
 
 import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.Expression;
@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import tao.dong.dataconjurer.common.evalex.BcryptEncodeFunction;
 
 import java.util.Map;
 import java.util.stream.Stream;

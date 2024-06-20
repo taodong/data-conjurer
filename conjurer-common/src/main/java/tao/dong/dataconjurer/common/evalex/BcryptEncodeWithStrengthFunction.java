@@ -1,13 +1,14 @@
-package tao.dong.dataconjurer.common.support;
+package tao.dong.dataconjurer.common.evalex;
 
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
+import tao.dong.dataconjurer.common.evalex.BcryptEncodeFunction;
 
 @FunctionParameter(name = "rawPassword")
 @FunctionParameter(name = "strength")
-public class BcryptEncodeWithStrengthFunction extends BcryptEncodeFunction{
+public class BcryptEncodeWithStrengthFunction extends BcryptEncodeFunction {
     @Override
     public EvaluationValue evaluate(Expression expression, Token token, EvaluationValue... evaluationValues) {
         var rawPassword = evaluationValues[0].getStringValue();
