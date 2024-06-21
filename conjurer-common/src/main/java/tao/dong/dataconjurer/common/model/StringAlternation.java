@@ -5,17 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import tao.dong.dataconjurer.common.validation.FormulaVariableCheck;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
-import static tao.dong.dataconjurer.common.model.ConstraintType.CORRELATION;
-
-@JsonTypeName("correlation")
+@JsonTypeName("alternation")
 @FormulaVariableCheck
-public record NumberCorrelation(@NotEmpty Set<@NotBlank String> properties, @NotBlank String formula)
-        implements Constraint<BigDecimal>, FormulaConstraint {
+public record StringAlternation(@NotEmpty Set<@NotBlank String> properties, @NotBlank String formula)
+        implements Constraint<String>, FormulaConstraint {
     @Override
     public ConstraintType getType() {
-        return CORRELATION;
+        return ConstraintType.ALTERNATION;
     }
 }

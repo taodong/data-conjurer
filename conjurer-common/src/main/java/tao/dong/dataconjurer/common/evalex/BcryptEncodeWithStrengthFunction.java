@@ -4,7 +4,6 @@ import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
-import tao.dong.dataconjurer.common.evalex.BcryptEncodeFunction;
 
 @FunctionParameter(name = "rawPassword")
 @FunctionParameter(name = "strength")

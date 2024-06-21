@@ -4,16 +4,16 @@ import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.parser.ParseException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import tao.dong.dataconjurer.common.evalex.BcryptEncodeWithStrengthFunction;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BcryptEncodeWithStrengthFunctionTest {
     private static final ExpressionConfiguration EXPRESSION_CONFIGURATION = ExpressionConfiguration.defaultConfiguration()
@@ -41,5 +41,14 @@ class BcryptEncodeWithStrengthFunctionTest {
         var encoder = new BCryptPasswordEncoder(strength);
         var result = epr.with("rawPassword", rawPassword).with("strength", strength).evaluate().getStringValue();
         assertTrue(encoder.matches(rawPassword, result), "Failed to encode password with strength " + strength);
+    }
+
+    @Test
+    void testEvaluate_predefinedStrength() throws EvaluationException, ParseException {
+        var epr = new Expression("BCRYPT2(p1, 10)", EXPRESSION_CONFIGURATION);
+        var encoder = new BCryptPasswordEncoder(10);
+        var variables = Map.of("p1", "password");
+        var result = epr.withValues(variables).evaluate().getStringValue();
+        assertTrue(encoder.matches("password", result), "Failed to encode password with strength 10");
     }
 }

@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = FormulaVariableValidator.class)
 @Documented
 @ReportAsSingleViolation
+@SuppressWarnings("unused")
 public @interface FormulaVariableCheck {
     String message() default "Formula doesn't contain all listed properties";
     Class<?>[] groups() default {};

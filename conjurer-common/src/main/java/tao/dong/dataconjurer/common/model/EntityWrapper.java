@@ -17,6 +17,7 @@ import tao.dong.dataconjurer.common.support.ElectedValueSelector;
 import tao.dong.dataconjurer.common.support.NumberCalculator;
 import tao.dong.dataconjurer.common.support.PropertyCategorySupplier;
 import tao.dong.dataconjurer.common.support.StringPropertyValueConverter;
+import tao.dong.dataconjurer.common.support.StringTransformer;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 import tao.dong.dataconjurer.common.support.ValueGenerator;
 import tao.dong.dataconjurer.common.support.WeightedValueGenerator;
@@ -281,7 +282,7 @@ public class EntityWrapper {
     }
 
     private <T> void handleCorrelation(ValueGenerator<T> generator, String propertyName) {
-        if (generator instanceof NumberCalculator) {
+        if (generator instanceof NumberCalculator || generator instanceof StringTransformer) {
             correlated.add(propertyName);
         }
     }
