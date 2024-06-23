@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import tao.dong.dataconjurer.common.evalex.EvalExOperation;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.DeferredPropertyType;
 import tao.dong.dataconjurer.common.model.EntityProcessResult;
@@ -123,27 +124,48 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         if (CollectionUtils.isNotEmpty(deferredProperties.get(DeferredPropertyType.INDEX))) {
             generateDeferredIndexProperties(dataRow, referenceIndexTracker, deferredProperties.get(DeferredPropertyType.INDEX));
         }
-        if (CollectionUtils.isNotEmpty(deferredProperties.get(DeferredPropertyType.CORRELATION))) {
-            generateCorrelatedProperties(dataRow, deferredProperties.get(DeferredPropertyType.CORRELATION));
+        if (CollectionUtils.isNotEmpty(deferredProperties.get(DeferredPropertyType.FORMULA))) {
+            generateCorrelatedProperties(dataRow, deferredProperties.get(DeferredPropertyType.FORMULA));
         }
     }
 
     @SuppressWarnings(" java:S1301") // Temporarily allow switch for only two conditions. New cases are on the roadmap
     private void generateCorrelatedProperties(List<Object> dataRow, Collection<String> properties) {
         for (var property : properties) {
-            var generator = (NumberCalculator)entityWrapper.getGenerators().get(property);
-            var dependencies = generator.getParameters();
-            var params = dependencies.stream().collect(Collectors.toMap(
-                    Function.identity(),
-                    prop -> dataRow.get(entityWrapper.getPropertyOrder(prop))
-            ));
-            var val = generator.calculate(params);
-            var propOrder = entityWrapper.getPropertyOrder(property);
-            switch (entityWrapper.getPropertyTypes().get(propOrder)) {
-                case DATETIME, DATE -> dataRow.set(propOrder, val.longValue());
-                default -> dataRow.set(propOrder, val);
+            var generator = entityWrapper.getGenerators().get(property);
+            if (generator instanceof EvalExOperation<?> evalExOperation) {
+                if (evalExOperation.getOperationType() == EvalExOperation.OperationType.STRING) {
+                    performStringTransformation(dataRow, property, (StringTransformer) generator);
+                } else {
+                    generateCorrelationProperties(dataRow, property, (NumberCalculator) generator);
+                }
+            } else {
+                LOG.warn("Unsupported generator type for formula property {} in entity {}", property, entityWrapper.getId());
             }
+        }
+    }
 
+    private void performStringTransformation(List<Object> dataRow, String property, StringTransformer transformer) {
+        var dependencies = transformer.getParameters();
+        var params = dependencies.stream().collect(Collectors.toMap(
+                Function.identity(),
+                prop -> dataRow.get(entityWrapper.getPropertyOrder(prop))
+        ));
+        var val = transformer.calculate(params);
+        dataRow.set(entityWrapper.getPropertyOrder(property), val);
+    }
+
+    private void generateCorrelationProperties(List<Object> dataRow, String property, NumberCalculator calculator) {
+        var dependencies = calculator.getParameters();
+        var params = dependencies.stream().collect(Collectors.toMap(
+                Function.identity(),
+                prop -> dataRow.get(entityWrapper.getPropertyOrder(prop))
+        ));
+        var val = calculator.calculate(params);
+        var propOrder = entityWrapper.getPropertyOrder(property);
+        switch (entityWrapper.getPropertyTypes().get(propOrder)) {
+            case DATETIME, DATE -> dataRow.set(propOrder, val.longValue());
+            default -> dataRow.set(propOrder, val);
         }
     }
 
@@ -205,7 +227,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
 
     private Map<DeferredPropertyType, Collection<String>> getDeferredProperties() {
         Map<DeferredPropertyType, Collection<String>> deferred = new EnumMap<>(DeferredPropertyType.class);
-        deferred.put(DeferredPropertyType.CORRELATION, entityWrapper.getCorrelated());
+        deferred.put(DeferredPropertyType.FORMULA, entityWrapper.getCorrelated());
         var linked = entityWrapper.getReferences().entrySet().stream().filter(entry -> entry.getValue().linked() != null)
                 .map(Map.Entry::getKey).distinct().toList();
         deferred.put(DeferredPropertyType.INDEX, linked);

@@ -31,6 +31,11 @@ public class StringTransformer extends EvalExOperation<String> implements ValueG
     }
 
     @Override
+    public OperationType getOperationType() {
+        return OperationType.STRING;
+    }
+
+    @Override
     public String generate() {
         throw new UnsupportedOperationException("String transformer doesn't support value generation without variables");
     }

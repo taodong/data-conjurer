@@ -33,6 +33,11 @@ public class NumberCalculator extends EvalExOperation<BigDecimal> implements Val
     }
 
     @Override
+    public OperationType getOperationType() {
+        return OperationType.NUMBER;
+    }
+
+    @Override
     public BigDecimal generate() {
         throw new UnsupportedOperationException("Number calculator doesn't support value generation without variables");
     }

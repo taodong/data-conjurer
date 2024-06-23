@@ -1,5 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
+import tao.dong.dataconjurer.common.model.ConstraintType;
+import tao.dong.dataconjurer.common.model.StringAlternation;
 import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.EntityProperty;
@@ -13,15 +15,15 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.CORRELATION;
 
 public interface TypedValueGenerator {
 
-    static NumberCorrelation filterNumberCorrelation(Collection<Constraint<?>> constraints) {
-        return DataHelper.streamNullableCollection(constraints).filter(c -> c.getType() == CORRELATION)
-                .findFirst().map(NumberCorrelation.class::cast).orElse(null);
+    static Constraint<?> filterConstraintByType(Collection<Constraint<?>> constraints, ConstraintType type) {
+        return DataHelper.streamNullableCollection(constraints).filter(c -> c.getType() == type).findFirst().orElse(null);
     }
 
     default ValueGenerator<?> matchDefaultGeneratorByType(EntityProperty property, DataProviderService dataProviderService) {
-        var cor = filterNumberCorrelation(property.getPropertyConstraints());
+        var cor = (NumberCorrelation)filterConstraintByType(property.getPropertyConstraints(), CORRELATION);
+        var alt = (StringAlternation)filterConstraintByType(property.getPropertyConstraints(), ConstraintType.ALTERNATION);
         return switch (property.type()) {
-            case TEXT-> new FormattedTextGenerator(property.getPropertyConstraints(), Optional.ofNullable(dataProviderService).map(DataProviderService::getCharacterGroupLookup).orElse(null));
+            case TEXT-> alt != null ? new StringTransformer(alt.formula(), alt.properties()) : new FormattedTextGenerator(property.getPropertyConstraints(), Optional.ofNullable(dataProviderService).map(DataProviderService::getCharacterGroupLookup).orElse(null));
             case SEQUENCE -> new MutableSequenceGenerator(property.getPropertyConstraints());
             case NUMBER -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new BigDecimalGenerator(property.getPropertyConstraints());
             case DATETIME -> cor != null ? new NumberCalculator(cor.formula(), cor.properties()) : new DatetimeGenerator(property.getPropertyConstraints());

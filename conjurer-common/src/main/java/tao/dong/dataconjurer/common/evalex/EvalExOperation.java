@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Getter
 public abstract class EvalExOperation<T> {
+
     protected static final ExpressionConfiguration EXPRESSION_CONFIGURATION = ExpressionConfiguration.defaultConfiguration()
             .withAdditionalFunctions(
                     Map.entry("BCRYPT", new BcryptEncodeFunction()),
@@ -36,5 +37,11 @@ public abstract class EvalExOperation<T> {
         return values.entrySet().stream()
                 .filter(entry -> parameters.contains(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public abstract OperationType getOperationType();
+
+    public enum OperationType {
+        NUMBER,STRING
     }
 }

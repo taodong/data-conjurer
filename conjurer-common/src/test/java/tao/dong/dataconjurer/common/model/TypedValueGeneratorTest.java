@@ -11,6 +11,7 @@ import tao.dong.dataconjurer.common.support.EntityTestHelper;
 import tao.dong.dataconjurer.common.support.FormattedTextGenerator;
 import tao.dong.dataconjurer.common.support.MutableSequenceGenerator;
 import tao.dong.dataconjurer.common.support.NumberCalculator;
+import tao.dong.dataconjurer.common.support.StringTransformer;
 import tao.dong.dataconjurer.common.support.TypedValueGenerator;
 
 import java.util.List;
@@ -31,6 +32,17 @@ class TypedValueGeneratorTest {
                                 .type(PropertyType.TEXT)
                                 .build(),
                         FormattedTextGenerator.class
+                ),
+                Arguments.of(
+                        EntityTestHelper.entityPropertyBuilder()
+                                .type(PropertyType.TEXT)
+                                .constraints(
+                                        List.of(
+                                                new StringAlternation(Set.of("p1"), "p1")
+                                        )
+                                )
+                                .build(),
+                        StringTransformer.class
                 ),
                 Arguments.of(
                         EntityTestHelper.entityPropertyBuilder()
