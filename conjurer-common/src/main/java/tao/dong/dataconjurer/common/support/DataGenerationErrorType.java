@@ -5,5 +5,6 @@ public enum DataGenerationErrorType {
     INDEX,
     REFERENCE,
     CALCULATION,
-    MISC;
+    PROVIDER,
+    MISC
 }
