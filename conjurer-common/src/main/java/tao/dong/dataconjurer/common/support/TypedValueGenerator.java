@@ -15,7 +15,7 @@ import static tao.dong.dataconjurer.common.model.ConstraintType.CORRELATION;
 
 public interface TypedValueGenerator {
 
-    static Constraint<?> filterConstraintByType(Collection<Constraint<?>> constraints, ConstraintType type) {
+    static <T extends Constraint<?>> T filterConstraintByType(Collection<T> constraints, ConstraintType type) {
         return DataHelper.streamNullableCollection(constraints).filter(c -> c.getType() == type).findFirst().orElse(null);
     }
 

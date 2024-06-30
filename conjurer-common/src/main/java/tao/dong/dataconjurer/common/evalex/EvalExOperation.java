@@ -26,7 +26,7 @@ public abstract class EvalExOperation<T> {
     protected final Set<String> parameters = new HashSet<>();
     protected final Expression formula;
 
-    public EvalExOperation(String formulaStr, Collection<String> parameters) {
+    protected EvalExOperation(String formulaStr, Collection<String> parameters) {
         this.formula = new Expression(formulaStr, EXPRESSION_CONFIGURATION);
         this.parameters.addAll(parameters);
     }
