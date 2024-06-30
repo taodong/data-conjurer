@@ -84,7 +84,7 @@ class DataBlueprintTest {
         );
     }
 
-    static private EntityDataOutput createTestEntityDataOutput(String name, List<PropertyType> propertyTypes, List<String> properties, List<List<Object>> values) {
+    private static EntityDataOutput createTestEntityDataOutput(String name, List<PropertyType> propertyTypes, List<String> properties, List<List<Object>> values) {
         var output = new EntityDataOutput(name, propertyTypes, properties);
         output.addValues(values);
         return output;

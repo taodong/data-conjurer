@@ -18,11 +18,11 @@ class WeightedValueGeneratorTest {
     void testGenerate() {
         var fallbackGen = mock(ValueGenerator.class);
         when(fallbackGen.generate()).thenReturn(10L);
-        Set<Long> vals_1 = Set.of(1L, 2L);
-        Set<Long> vals_2 = Set.of(3L);
+        Set<Long> vals1 = Set.of(1L, 2L);
+        Set<Long> vals2 = Set.of(3L);
         List<WeightedValue> values = List.of(
-                new WeightedValue(new ElectedValueSelector(vals_1), new RatioRange(0D, 0.5)),
-                new WeightedValue(new ElectedValueSelector(vals_2), new RatioRange(0.5, 0.75))
+                new WeightedValue(new ElectedValueSelector(vals1), new RatioRange(0D, 0.5)),
+                new WeightedValue(new ElectedValueSelector(vals2), new RatioRange(0.5, 0.75))
         );
         var test = new WeightedValueGenerator(SEQUENCE, values, fallbackGen);
         for (var i = 0; i < 20; i++) {
