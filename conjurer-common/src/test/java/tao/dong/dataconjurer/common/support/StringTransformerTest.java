@@ -53,6 +53,7 @@ class StringTransformerTest {
     }
 
     @Test
+    @SuppressWarnings("java:S5778") // Suppressing SonarLint warning because the exception message is tested
     void testCalculate_MissParameters() {
         var test = new StringTransformer("p1 + p2", Set.of("p1", "p2"));
         var ex = assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a")));
@@ -60,6 +61,7 @@ class StringTransformerTest {
     }
 
     @Test
+    @SuppressWarnings("java:S5778") // Suppressing SonarLint warning because the exception message is tested
     void testCalculate_InvalidOperator() {
         var test = new StringTransformer("p1 - p2", Set.of("p1", "p2"));
         var ex = assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a", "p2", 1)));
