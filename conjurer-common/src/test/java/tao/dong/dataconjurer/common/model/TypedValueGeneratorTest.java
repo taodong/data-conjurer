@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.model;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -121,5 +122,16 @@ class TypedValueGeneratorTest {
     void testMatchDefaultGeneratorByType(EntityProperty property, Class<?> expected) {
         var result = generator.matchDefaultGeneratorByType(property, null);
         assertTrue(expected.isInstance(result));
+    }
+
+    @Test
+    void testFilterConstraintByType() {
+        var constraints = List.of(
+                new NumberCorrelation(Set.of("p1"), "pow(p1)"),
+                new StringAlternation(Set.of("p1"), "p1"),
+                new Length(10L)
+        );
+        var result = TypedValueGenerator.filterConstraintByType(constraints, ConstraintType.CORRELATION);
+        assertTrue(result instanceof NumberCorrelation);
     }
 }

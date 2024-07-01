@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import tao.dong.dataconjurer.common.evalex.EvalExOperation;
 
 import java.util.Map;
 import java.util.Set;
@@ -43,5 +44,23 @@ class StringTransformerTest {
     void testGenerate() {
         var test = new StringTransformer("p1 + p2", Set.of("p1", "p2"));
         assertThrows(UnsupportedOperationException.class, test::generate);
+    }
+
+    @Test
+    void testGetOperationType() {
+        var test = new StringTransformer("p1 + p2", Set.of("p1", "p2"));
+        assertEquals(EvalExOperation.OperationType.STRING, test.getOperationType());
+    }
+
+    @Test
+    void testCalculate_InvalidFormula() {
+        var test = new StringTransformer("p1 + p2", Set.of("p1", "p2"));
+        assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a")));
+    }
+
+    @Test
+    void testCalculate_InvalidOperator() {
+        var test = new StringTransformer("p1 - p2", Set.of("p1", "p2"));
+        assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a", "p2", 1)));
     }
 }
