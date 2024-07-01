@@ -1,5 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
+import com.ezylang.evalex.EvaluationException;
+import com.ezylang.evalex.parser.ParseException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import tao.dong.dataconjurer.common.evalex.EvalExOperation;
@@ -25,7 +27,7 @@ public class StringTransformer extends EvalExOperation<String> implements ValueG
             }
             var result = formula.withValues(filtered).evaluate();
             return result.getStringValue();
-        } catch (Exception e) {
+        } catch (EvaluationException | ParseException e) {
             throw new DataGenerateException(DataGenerationErrorType.CALCULATION, "Failed to calculate value for " + formula.getExpressionString(), e);
         }
     }

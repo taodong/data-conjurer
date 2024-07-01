@@ -53,14 +53,16 @@ class StringTransformerTest {
     }
 
     @Test
-    void testCalculate_InvalidFormula() {
+    void testCalculate_MissParameters() {
         var test = new StringTransformer("p1 + p2", Set.of("p1", "p2"));
-        assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a")));
+        var ex = assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a")));
+        assertEquals("Missing variable values for p1 + p2", ex.getMessage());
     }
 
     @Test
     void testCalculate_InvalidOperator() {
         var test = new StringTransformer("p1 - p2", Set.of("p1", "p2"));
-        assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a", "p2", 1)));
+        var ex = assertThrows(DataGenerateException.class, () -> test.calculate(Map.of("p1", "a", "p2", 1)));
+        assertEquals("Failed to calculate value for p1 - p2", ex.getMessage());
     }
 }
