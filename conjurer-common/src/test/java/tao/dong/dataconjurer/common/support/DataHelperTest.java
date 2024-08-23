@@ -136,4 +136,24 @@ class DataHelperTest {
     void testOutputLongValueInvalid() {
         assertThrows(NumberFormatException.class, () -> DataHelper.outputLongValue("5"));
     }
+
+    private static Stream<Arguments> testTruncateSecondsToDay() {
+        return Stream.of(
+                Arguments.of(0L, 0L),
+                Arguments.of(86400L, 1L),
+                Arguments.of(86401L, 1L),
+                Arguments.of(172799L, 1L),
+                Arguments.of(172800L, 2L),
+                Arguments.of(-86400L, 1L),
+                Arguments.of(-86401L, 1L),
+                Arguments.of(-172799L, 1L),
+                Arguments.of(-172800L, 2L)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testTruncateSecondsToDay")
+    void testTruncateSecondsToDay(long input, long expected) {
+        assertEquals(expected, DataHelper.truncateSecondsToDay(input));
+    }
 }

@@ -93,4 +93,8 @@ public interface DataHelper {
     static <T> Stream<T> streamNullableCollection(Collection<T> nullable) {
         return Optional.ofNullable(nullable).stream().flatMap(Collection::stream);
     }
+
+    static long truncateSecondsToDay(long seconds) {
+        return Math.abs(seconds) / 86400L;
+    }
 }
