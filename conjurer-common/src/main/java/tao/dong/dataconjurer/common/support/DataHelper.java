@@ -95,6 +95,6 @@ public interface DataHelper {
     }
 
     static long truncateSecondsToDay(long seconds) {
-        return Math.abs(seconds) / 86400L;
+        return Math.abs(seconds) % 86400L;
     }
 }

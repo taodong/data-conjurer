@@ -140,14 +140,11 @@ class DataHelperTest {
     private static Stream<Arguments> testTruncateSecondsToDay() {
         return Stream.of(
                 Arguments.of(0L, 0L),
-                Arguments.of(86400L, 1L),
+                Arguments.of(86400L, 0L),
                 Arguments.of(86401L, 1L),
-                Arguments.of(172799L, 1L),
-                Arguments.of(172800L, 2L),
-                Arguments.of(-86400L, 1L),
-                Arguments.of(-86401L, 1L),
-                Arguments.of(-172799L, 1L),
-                Arguments.of(-172800L, 2L)
+                Arguments.of(86400L + 3601L, 3601L),
+                Arguments.of(-3601L, 3601L),
+                Arguments.of((-86400L * 10) - 3601L, 3601L)
         );
     }
 
