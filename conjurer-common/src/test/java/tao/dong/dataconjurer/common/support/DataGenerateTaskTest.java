@@ -58,7 +58,7 @@ class DataGenerateTaskTest {
         var result = task.call();
         assertEquals(2, result.status());
         assertEquals(10, wrapper.getValues().size());
-        assertFalse(((SimpleTypedValue)wrapper.getReferenced().get("p1")).getValues().isEmpty());
+        assertFalse(((SimpleTypedValue)wrapper.getReferenced().get(new PropertyLink("p1", null))).getValues().isEmpty());
     }
 
     private EntityWrapper createTestEntityWrapper(EntityData data) {

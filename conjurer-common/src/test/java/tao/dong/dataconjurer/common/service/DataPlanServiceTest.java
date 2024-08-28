@@ -113,6 +113,14 @@ class DataPlanServiceTest {
                 )
         );
 
+        var t3 = new DataEntity("t3",
+                Set.of(
+                        entityPropertyBuilder().name("t3p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
+                        entityPropertyBuilder().name("t3p1").index(entityIndexBuilder().id(1).build()).reference(new Reference("t2", "t2p0", "t2p0")).build(),
+                        entityPropertyBuilder().name("t3p2").type(TEXT).index(entityIndexBuilder().id(1).build()).reference(new Reference("t2", "t2p1", "t2p0")).build()
+                )
+        );
+
         var t5 = new DataEntity("t5",
                 Set.of(
                         entityPropertyBuilder().name("t5p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
@@ -129,13 +137,16 @@ class DataPlanServiceTest {
 
         var wrapperT1 = new EntityWrapper(t1, new EntityData("t1", 5L, null, null), null, dataProviderService, 0);
         var wrapperT2 = new EntityWrapper(t2, new EntityData("t2", 5L, null, null), null, dataProviderService, 0);
+        var wrapperT3 = new EntityWrapper(t3, new EntityData("t3", 5L, null, null), null, dataProviderService, 0);
         var wrapperT5 = new EntityWrapper(t5, new EntityData("t5", 5L, null, null), null, dataProviderService, 0);
 
         data.put(wrapperT1.getId(), wrapperT1);
         data.put(wrapperT2.getId(), wrapperT2);
+        data.put(wrapperT3.getId(), wrapperT3);
         data.put(wrapperT5.getId(), wrapperT5);
         DataHelper.appendToSetValueInMap(idMap, wrapperT1.getEntityName(), wrapperT1.getId());
         DataHelper.appendToSetValueInMap(idMap, wrapperT2.getEntityName(), wrapperT2.getId());
+        DataHelper.appendToSetValueInMap(idMap, wrapperT3.getEntityName(), wrapperT3.getId());
         DataHelper.appendToSetValueInMap(idMap, wrapperT5.getEntityName(), wrapperT5.getId());
 
         var service = new DataPlanService(dataProviderService);
@@ -145,7 +156,7 @@ class DataPlanServiceTest {
 
         service.enableReferences(blueprint);
         assertEquals(2,  blueprint.getEntities().get(TEST_HELPER.createEntityWrapperIdNoOrder("t1")).getReferenced().size());
-        assertEquals(1, blueprint.getEntities().get(TEST_HELPER.createEntityWrapperIdNoOrder("t2")).getReferenced().size());
+        assertEquals(3, blueprint.getEntities().get(TEST_HELPER.createEntityWrapperIdNoOrder("t2")).getReferenced().size());
 
     }
 }

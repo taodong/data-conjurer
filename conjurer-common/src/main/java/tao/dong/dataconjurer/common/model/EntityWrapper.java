@@ -51,7 +51,7 @@ public class EntityWrapper {
     private final long count;
     private final int bufferSize;
 
-    private final Map<String, TypedValue> referenced = new HashMap<>();
+    private final Map<PropertyLink, TypedValue> referenced = new HashMap<>();
     private final Map<String, Reference> references = new HashMap<>();
     private final List<List<Object>> values = new ArrayList<>();
     private final Map<String, ValueGenerator<?>> generators = new HashMap<>();
@@ -361,7 +361,7 @@ public class EntityWrapper {
     public void createReferenced(PropertyLink... properties) {
         if (properties != null) {
             for (var prop : properties) {
-                referenced.compute(prop.name(), (k, v) -> computeTypedValue(prop, v));
+                referenced.compute(prop, this::computeTypedValue);
             }
         }
     }
@@ -386,17 +386,13 @@ public class EntityWrapper {
         }
     }
 
-    public Map<Reference, TypedValue> getReferencedByProperties(String... properties) {
+    public Map<Reference, TypedValue> getReferencedByProperties(PropertyLink... properties) {
         Map<Reference, TypedValue> rs = new HashMap<>();
         if (properties != null) {
             for (var prop : properties) {
                 if (referenced.containsKey(prop)) {
                     var tv = referenced.get(prop);
-                    String linked = null;
-                    if (tv instanceof LinkedTypedValue ltv) {
-                        linked = ltv.getLinked();
-                    }
-                    rs.put(new Reference(id.entityName(), prop, linked), tv);
+                    rs.put(new Reference(id.entityName(), prop.name(), prop.linked()), tv);
                 }
             }
         }

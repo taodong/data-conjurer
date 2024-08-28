@@ -157,8 +157,8 @@ class DataGenerateServiceTest {
         t3.updateStatus(2);
         t3.createReferenced(new PropertyLink("t3p0", null));
         for (var i = 0; i < 5; i++) {
-            ((SimpleTypedValue)t2.getReferenced().get("t2p0")).addValue((long)i);
-            ((SimpleTypedValue)t3.getReferenced().get("t3p0")).addValue((long)i);
+            ((SimpleTypedValue)t2.getReferenced().get(new PropertyLink("t2p0", null))).addValue((long)i);
+            ((SimpleTypedValue)t3.getReferenced().get(new PropertyLink("t3p0", null))).addValue((long)i);
         }
     }
 

@@ -28,6 +28,12 @@ public class LinkedTypedValue extends TypedValue {
         this.linked = linked;
     }
 
+    /**
+     * Add linked value, for example if the reference is defined as Reference("entity1", "property1", "property2"),
+     * when add a linked value, the input should be (String.valueOf(entity1.property2), entity1.property1))
+     * @param key - the string value of the property used to link the value
+     * @param value - the value of the actual property
+     */
     public void addLinkedValue(String key, Object value) {
         if (type.getTargetClass().isInstance(value)) {
             DataHelper.appendToSetValueInMap(values, key, value);

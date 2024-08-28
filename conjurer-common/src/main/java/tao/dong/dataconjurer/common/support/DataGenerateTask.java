@@ -105,15 +105,15 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     private void populateReferencedValues(List<Object> dataRow) {
         Function<String, Object> getPropValue = propName -> dataRow.get(entityWrapper.getPropertyOrder(propName));
         for (var entry : entityWrapper.getReferenced().entrySet()) {
-            var propertyName = entry.getKey();
+            var propertyLink = entry.getKey();
             var typedValue = entry.getValue();
             if (typedValue instanceof SimpleTypedValue stv) {
-                stv.addValue(getPropValue.apply(propertyName));
+                stv.addValue(getPropValue.apply(propertyLink.name()));
             } else if (typedValue instanceof LinkedTypedValue ltv) {
                 var linked = ltv.getLinked();
                 ltv.addLinkedValue(
                         String.valueOf(getPropValue.apply(linked)),
-                        getPropValue.apply(propertyName)
+                        getPropValue.apply(propertyLink.name())
                 );
             }
         }

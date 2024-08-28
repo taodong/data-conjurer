@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import tao.dong.dataconjurer.common.model.DataBlueprint;
 import tao.dong.dataconjurer.common.model.EntityWrapper;
 import tao.dong.dataconjurer.common.model.EntityWrapperId;
+import tao.dong.dataconjurer.common.model.PropertyLink;
 import tao.dong.dataconjurer.common.model.Reference;
 import tao.dong.dataconjurer.common.model.TypedValue;
 import tao.dong.dataconjurer.common.support.DataGenerateConfig;
@@ -162,15 +163,15 @@ public class DataGenerateService {
     private Map<Reference, TypedValue> getReferencedValues(EntityWrapper target, Map<EntityWrapperId, EntityWrapper> data,
                                                            Map<String, Set<EntityWrapperId>> entityIdMap) {
         Map<Reference, TypedValue> referencedValues = new HashMap<>();
-        Map<String, Set<String>> references = new HashMap<>();
+        Map<String, Set<PropertyLink>> references = new HashMap<>();
         for (var ref : target.getReferences().values()) {
-            DataHelper.appendToSetValueInMap(references, ref.entity(), ref.property());
+            DataHelper.appendToSetValueInMap(references, ref.entity(), new PropertyLink(ref.property(), ref.linked()));
         }
         if (!references.isEmpty()) {
             for (var entry : references.entrySet()) {
                 var entities = findWrapperWithEntityName(entry.getKey(), data, entityIdMap);
                 for (var entity : entities) {
-                    var reffed = entity.getReferencedByProperties(entry.getValue().toArray(String[]::new));
+                    var reffed = entity.getReferencedByProperties(entry.getValue().toArray(PropertyLink[]::new));
                     joinReferencedValues(referencedValues, reffed);
                 }
             }

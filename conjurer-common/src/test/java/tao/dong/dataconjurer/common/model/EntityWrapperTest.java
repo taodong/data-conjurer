@@ -107,15 +107,15 @@ class EntityWrapperTest {
 
     private static Stream<Arguments> testCreateReferenced() {
         return Stream.of(
-                Arguments.of(new String[]{"t1p1"}, 1),
-                Arguments.of(new String[]{"t1p2"}, 1),
-                Arguments.of(new String[]{"t1p1", "t1p2"}, 2)
+                Arguments.of(new PropertyLink[]{new PropertyLink("t1p1", null)}, 1),
+                Arguments.of(new PropertyLink[]{new PropertyLink("t1p2", null)}, 1),
+                Arguments.of(new PropertyLink[]{new PropertyLink("t1p1", null), new PropertyLink("t1p2", null)}, 2)
         );
     }
 
     @ParameterizedTest
     @MethodSource("testCreateReferenced")
-    void testCreateReferenced(String[] props, int expected) {
+    void testCreateReferenced(PropertyLink[] props, int expected) {
         var test = new EntityWrapper(TEST_HELPER.createEntityT1(), TEST_HELPER.createSimpleData(null, null), null, dataProviderService, 0);
         test.createReferenced(new PropertyLink("t1p1", null), new PropertyLink("t1p2", null));
         var res = test.getReferencedByProperties(props);
