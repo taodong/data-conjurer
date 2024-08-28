@@ -305,7 +305,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
     }
 
     private boolean isReferenceReady(Reference key) {
-        return CollectionUtils.isNotEmpty(referenced.get(key).getOrderedValues());
+        return referenced.get(key) != null && CollectionUtils.isNotEmpty(referenced.get(key).getOrderedValues());
     }
 
     record LinkedPair(String key, Object value){}

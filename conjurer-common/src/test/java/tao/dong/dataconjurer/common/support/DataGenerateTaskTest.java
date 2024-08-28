@@ -1,6 +1,7 @@
 package tao.dong.dataconjurer.common.support;
 
 import org.junit.jupiter.api.Test;
+import tao.dong.dataconjurer.common.model.LinkedTypedValue;
 import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
@@ -27,6 +28,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static tao.dong.dataconjurer.common.model.PropertyType.SEQUENCE;
 import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
+import static tao.dong.dataconjurer.common.support.EntityTestHelper.entityIndexBuilder;
+import static tao.dong.dataconjurer.common.support.EntityTestHelper.entityPropertyBuilder;
 
 class DataGenerateTaskTest {
     private static final EntityTestHelper TEST_HELPER = new EntityTestHelper();
@@ -143,5 +146,53 @@ class DataGenerateTaskTest {
             assertEquals(UUID.fromString(id1).toString(), id1);
             assertTrue(id2.matches("[0-9]+"));
         }
+    }
+
+    @Test
+    void testCall_MultipleEntityReference() {
+        var countDownLatch = new CountDownLatch(1);
+        var config = DataGenerateConfig.builder().build();
+        var data = new DataEntity("t5",
+                Set.of(
+                        entityPropertyBuilder().name("t5p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
+                        entityPropertyBuilder().name("t5p1").index(entityIndexBuilder().id(2).build()).constraints(List.of(new Interval(1L, 0L)))
+                                .reference(new Reference("t1", "t1p1", "t1p1"))
+                                .build(),
+                        entityPropertyBuilder().name("t5p2").index(entityIndexBuilder().id(2).build()).constraints(List.of(new Interval(1L, 0L)))
+                                .reference(new Reference("t1", "t1p2", "t1p1")).build(),
+                        entityPropertyBuilder().name("t5p3").type(TEXT).index(entityIndexBuilder().id(2).build())
+                                .reference(new Reference("t2", "t2p1", null))
+                                .build()
+                )
+        );
+        var wrapper = new EntityWrapper(data, new EntityData("t5", 5L, null, null), null, dataProviderService, 0);
+        Map<Reference, TypedValue> referenced = getReferenceTypedValueMap();
+        var task = DataGenerateTask.builder()
+                .countDownLatch(countDownLatch)
+                .entityWrapper(wrapper)
+                .config(config)
+                .referenced(referenced)
+                .build();
+        var result = task.call();
+        assertEquals(2, result.status());
+        assertEquals(5, wrapper.getValues().size());
+    }
+
+    private static Map<Reference, TypedValue> getReferenceTypedValueMap() {
+        SimpleTypedValue ref1 = new SimpleTypedValue(TEXT);
+        LinkedTypedValue ref2 = new LinkedTypedValue(SEQUENCE, "t1p1");
+        LinkedTypedValue ref3 = new LinkedTypedValue(SEQUENCE, "t1p1");
+        for (long l = 1L; l < 6L; l++) {
+            ref1.addValue("abc");
+            ref2.addLinkedValue("t1p1", l);
+            ref2.addLinkedValue("t1p2", l);
+            ref3.addLinkedValue("t1p1", l);
+            ref3.addLinkedValue("t1p2", l);
+        }
+        return Map.of(
+                new Reference("t2", "t2p1", null), ref1,
+                new Reference("t1", "t1p1", "t1p1"), ref2,
+                new Reference("t1", "t1p2", "t1p1"), ref3
+        );
     }
 }
