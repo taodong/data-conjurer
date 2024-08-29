@@ -13,14 +13,17 @@ import java.util.stream.Collectors;
 @Getter
 public abstract class EvalExOperation<T> {
 
-    protected static final ExpressionConfiguration EXPRESSION_CONFIGURATION = ExpressionConfiguration.defaultConfiguration()
+    protected static final ExpressionConfiguration EXPRESSION_CONFIGURATION = ExpressionConfiguration.builder()
+            .singleQuoteStringLiteralsAllowed(true)
+            .build()
             .withAdditionalFunctions(
                     Map.entry("BCRYPT", new BcryptEncodeFunction()),
                     Map.entry("BCRYPT_STRENGTH", new BcryptEncodeWithStrengthFunction()),
                     Map.entry("PBKDF2_SHA1", new Pbkdf2EncodeFunction()),
                     Map.entry("TIME_AFTER", new TimeAfterFunction()),
                     Map.entry("PAST_TIME_AFTER", new PastTimeAfterFunction()),
-                    Map.entry("TIME_BETWEEN", new TimeBetweenFunction())
+                    Map.entry("TIME_BETWEEN", new TimeBetweenFunction()),
+                    Map.entry("STRING_CASE", new StringCaseFunction())
             );
 
     protected final Set<String> parameters = new HashSet<>();
