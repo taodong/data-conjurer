@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.evalex.EvalExOperation;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.DeferredPropertyType;
@@ -36,6 +37,8 @@ import static tao.dong.dataconjurer.common.support.DataGenerationErrorType.REFER
 @Builder
 @Slf4j
 public class DataGenerateTask implements Callable<EntityProcessResult> {
+
+    private static final String MAIN_REF_INDEX_DELIMITER = "->";
 
     private final EntityWrapper entityWrapper;
     private final CountDownLatch countDownLatch;
@@ -92,7 +95,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
             }
         }
 
-        if (collision >= config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
+        if (collision > config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
             entityWrapper.setMsg("Collision limits reached.");
             throw new DataGenerateException(INDEX,
                                             String.format("Failed to generate unique index for %s. Collision number: %d, row number: %d",
@@ -177,14 +180,14 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
             try {
                 for (var propertyName : deferredProperties) {
                     var reference = entityWrapper.getReferences().get(propertyName);
-                    var linkedProp = reference.entity() + '_' + reference.linked();
-                    if (!pillars.containsKey(linkedProp)) {
-                        var pillarVal = getPillarValue(referenceIndexTracker, propertyName, linkedProp, reference);
-                        pillars.put(linkedProp, pillarVal);
+                    var pillarKeyGenName = reference.entity() + MAIN_REF_INDEX_DELIMITER + reference.linked();
+                    if (!pillars.containsKey(pillarKeyGenName)) {
+                        var pillarVal = getPillarValue(referenceIndexTracker, propertyName, pillarKeyGenName, reference);
+                        pillars.put(pillarKeyGenName, pillarVal);
                         propVals.put(propertyName, pillarVal.value());
                     } else {
-                        var key = pillars.get(linkedProp).key();
-                        var pillarVal = pillars.get(linkedProp).value();
+                        var key = pillars.get(pillarKeyGenName).key();
+                        var pillarVal = pillars.get(pillarKeyGenName).value();
                         var val = getLinkedValue(referenceIndexTracker, propertyName, reference, key, pillarVal);
                         propVals.put(propertyName, val);
                     }
@@ -215,14 +218,20 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         return located;
     }
 
-    private LinkedPair getPillarValue(Map<String, IndexValueGenerator> referenceIndexTracker, String propertyName, String linkedProp, Reference reference) {
+    private LinkedPair getPillarValue(Map<String, IndexValueGenerator> referenceIndexTracker, String propertyName, String pillarKeyGenName, Reference reference) {
         var typedValue = (LinkedTypedValue)referenced.get(reference);
-        var strategy = entityWrapper.getRefStrategy().get(propertyName);
-        var keyIndexGen = getIndexValueGenerator(referenceIndexTracker, propertyName + '_' + linkedProp, strategy, typedValue.getOrderedKeys().size());
+        var linked = StringUtils.substringAfterLast(pillarKeyGenName, MAIN_REF_INDEX_DELIMITER);
+        var pillarProp = matchPillarProperty(linked, entityWrapper.getReferences());
+        var strategy = pillarProp != null ? entityWrapper.getRefStrategy().get(pillarProp) : null;
+        var keyIndexGen = getIndexValueGenerator(referenceIndexTracker,  pillarKeyGenName, strategy, typedValue.getOrderedKeys().size());
         var key = typedValue.getOrderedKeys().get(keyIndexGen.generate());
         var valIndexGen = getIndexValueGenerator(referenceIndexTracker, propertyName + ':' + key, strategy, typedValue.getKeyedValues(key).size());
         var val= typedValue.getKeyedValues(key).get(valIndexGen.generate());
         return new LinkedPair(key, val);
+    }
+
+    private String matchPillarProperty(String linked, Map<String, Reference> referenceMap) {
+        return referenceMap.entrySet().stream().filter(entry -> entry.getValue().property().equals(linked)).map(Map.Entry::getKey).findFirst().orElse(null);
     }
 
     private Map<DeferredPropertyType, Collection<String>> getDeferredProperties() {

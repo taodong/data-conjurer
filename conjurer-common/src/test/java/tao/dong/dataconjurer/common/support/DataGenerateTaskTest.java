@@ -2,6 +2,7 @@ package tao.dong.dataconjurer.common.support;
 
 import org.junit.jupiter.api.Test;
 import tao.dong.dataconjurer.common.model.LinkedTypedValue;
+import tao.dong.dataconjurer.common.model.PropertyInputControl;
 import tao.dong.dataconjurer.common.service.DataProviderService;
 import tao.dong.dataconjurer.common.model.DataEntity;
 import tao.dong.dataconjurer.common.model.EntityData;
@@ -101,7 +102,7 @@ class DataGenerateTaskTest {
     void testCall_MaxCollision() {
         when(dataProviderService.getValueProviderByType("name")).thenReturn(new DefaultNameProvider());
         var countDownLatch = new CountDownLatch(1);
-        var config = DataGenerateConfig.builder().maxIndexCollision(1).build();
+        var config = DataGenerateConfig.builder().maxIndexCollision(0).build();
         var entity = TEST_HELPER.createEntityT6();
         var data = TEST_HELPER.createDataT6();
         var output = TEST_HELPER.createOutputControlT6();
@@ -166,7 +167,7 @@ class DataGenerateTaskTest {
                 )
         );
         var wrapper = new EntityWrapper(data, new EntityData("t5", 5L, null, null), null, dataProviderService, 0);
-        Map<Reference, TypedValue> referenced = getReferenceTypedValueMap();
+        Map<Reference, TypedValue> referenced = getReferenceTypedValueMap_MultipleEntityReference();
         var task = DataGenerateTask.builder()
                 .countDownLatch(countDownLatch)
                 .entityWrapper(wrapper)
@@ -178,7 +179,7 @@ class DataGenerateTaskTest {
         assertEquals(5, wrapper.getValues().size());
     }
 
-    private static Map<Reference, TypedValue> getReferenceTypedValueMap() {
+    private static Map<Reference, TypedValue> getReferenceTypedValueMap_MultipleEntityReference() {
         SimpleTypedValue ref1 = new SimpleTypedValue(TEXT);
         LinkedTypedValue ref2 = new LinkedTypedValue(SEQUENCE, "t1p1");
         LinkedTypedValue ref3 = new LinkedTypedValue(SEQUENCE, "t1p1");
@@ -193,6 +194,58 @@ class DataGenerateTaskTest {
                 new Reference("t2", "t2p1", null), ref1,
                 new Reference("t1", "t1p1", "t1p1"), ref2,
                 new Reference("t1", "t1p2", "t1p1"), ref3
+        );
+    }
+
+    @Test
+    void testCall_LinkedReferenceLoopStrategy() {
+        var countDownLatch = new CountDownLatch(1);
+        var config = DataGenerateConfig.builder()
+                .maxIndexCollision(1)
+                .build();
+        var data = new DataEntity("t5",
+                Set.of(
+                        entityPropertyBuilder().name("t5p0").index(entityIndexBuilder().build()).constraints(List.of(new Interval(1L, 0L))).build(),
+                        entityPropertyBuilder().name("t5p1").index(entityIndexBuilder().id(2).build()).constraints(List.of(new Interval(1L, 0L)))
+                                .reference(new Reference("t1", "t1p1", "t1p1"))
+                                .build(),
+                        entityPropertyBuilder().name("t5p2").index(entityIndexBuilder().id(2).build()).constraints(List.of(new Interval(1L, 0L)))
+                                .reference(new Reference("t1", "t1p2", "t1p1")).build(),
+                        entityPropertyBuilder().name("t5p3").index(entityIndexBuilder().id(2).build())
+                                .reference(new Reference("t1", "t1p3", "t1p1"))
+                                .build()
+                )
+        );
+        var wrapper = new EntityWrapper(data,
+                new EntityData("t5", 50L,
+                        Set.of(
+                              new PropertyInputControl("t5p1", null, null, "loop", null)
+                        ), null), null, dataProviderService, 0);
+        Map<Reference, TypedValue> referenced = getReferenceTypedValueMap_LinkedReferenceLoopStrategy();
+        var task = DataGenerateTask.builder()
+                .countDownLatch(countDownLatch)
+                .entityWrapper(wrapper)
+                .config(config)
+                .referenced(referenced)
+                .build();
+        var result = task.call();
+        assertEquals(2, result.status());
+        assertEquals(50, wrapper.getValues().size());
+    }
+
+    private static Map<Reference, TypedValue> getReferenceTypedValueMap_LinkedReferenceLoopStrategy() {
+        LinkedTypedValue ref1 = new LinkedTypedValue(SEQUENCE, "t1p1");
+        LinkedTypedValue ref2 = new LinkedTypedValue(SEQUENCE, "t1p1");
+        LinkedTypedValue ref3 = new LinkedTypedValue(SEQUENCE, "t1p1");
+        for (long l = 1L; l <= 50L; l++) {
+            ref1.addLinkedValue(String.valueOf(l), l);
+            ref2.addLinkedValue(String.valueOf(l), l + 50);
+            ref3.addLinkedValue(String.valueOf(l), l + 100);
+        }
+        return Map.of(
+                new Reference("t1", "t1p1", "t1p1"), ref1,
+                new Reference("t1", "t1p2", "t1p1"), ref2,
+                new Reference("t1", "t1p3", "t1p1"), ref3
         );
     }
 }
