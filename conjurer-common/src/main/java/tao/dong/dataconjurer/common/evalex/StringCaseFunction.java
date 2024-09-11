@@ -7,6 +7,9 @@ import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 @FunctionParameter(name= "str")
 @FunctionParameter(name = "case")
 public class StringCaseFunction extends AbstractFunction {
@@ -18,9 +21,17 @@ public class StringCaseFunction extends AbstractFunction {
             var result = switch (StringUtils.trim(StringUtils.lowerCase(caseType))) {
                 case "upper" -> StringUtils.upperCase(str);
                 case "lower" -> StringUtils.lowerCase(str);
+                case "pascal" -> toPascalCase(str);
+                case "title" -> StringUtils.capitalize(StringUtils.lowerCase(str));
                 default -> str;
             };
 
             return EvaluationValue.stringValue(result);
+        }
+
+        private String toPascalCase(String str) {
+            return Arrays.stream(str.split(" "))
+                    .map(value -> StringUtils.capitalize(StringUtils.lowerCase(value)))
+                    .collect(Collectors.joining(" "));
         }
 }

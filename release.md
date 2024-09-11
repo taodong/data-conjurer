@@ -7,3 +7,5 @@
 6. Bug fix: looped strategy was ignored when using linked reference
 7. Add `extra` field to DataOutputControl
 8. Add FULL_EMAIL_ADDRESS function for alternation
+9. Add STRING_TEMPLATE function for alternation
+10. Add "pascal" and "title" case to STRING_CASE function

@@ -26,7 +26,11 @@ class StringCaseFunctionTest {
                 Arguments.of("HELLO", "lower", "hello"),
                 Arguments.of("Hello", "LOWER", "hello"),
                 Arguments.of("Hello", "UPper", "HELLO"),
-                Arguments.of("Hello", "unknown", "Hello")
+                Arguments.of("Hello", "unknown", "Hello"),
+                Arguments.of("hello", "pascal", "Hello"),
+                Arguments.of("HELLO world 2 yOu", "pascal", "Hello World 2 You"),
+                Arguments.of("hello world", "title", "Hello world"),
+                Arguments.of("HELLO WORLD", "title", "Hello world")
         );
     }
 
