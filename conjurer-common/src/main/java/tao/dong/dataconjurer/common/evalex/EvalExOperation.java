@@ -23,7 +23,8 @@ public abstract class EvalExOperation<T> {
                     Map.entry("TIME_AFTER", new TimeAfterFunction()),
                     Map.entry("PAST_TIME_AFTER", new PastTimeAfterFunction()),
                     Map.entry("TIME_BETWEEN", new TimeBetweenFunction()),
-                    Map.entry("STRING_CASE", new StringCaseFunction())
+                    Map.entry("STRING_CASE", new StringCaseFunction()),
+                    Map.entry("FULL_EMAIL_ADDRESS", new FullEmailAddressFunction())
             );
 
     protected final Set<String> parameters = new HashSet<>();
