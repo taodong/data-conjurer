@@ -4,6 +4,7 @@ import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.parser.ParseException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -27,6 +28,7 @@ class StringTemplateFunctionTest {
                 Arguments.of("Hello, ${name}!", new String[]{"name", "world"}, "Hello, world!"),
                 Arguments.of("Hello, ${name}! How are you ${name}?", new String[]{"name", "world"}, "Hello, world! How are you world?"),
                 Arguments.of("Hello, ${name}! How are you ${name1}?", new String[]{"name", "world", "name1", "today"}, "Hello, world! How are you today?"),
+                Arguments.of("Hello, ${name}! How are you ${Name}?", new String[]{"name", "world"}, "Hello, world! How are you ?"),
                 Arguments.of("Hello, ${name}! How are you ${name1}?", new String[]{"name", "world", "name2", "today"}, "Hello, world! How are you ?"),
                 Arguments.of("Hello, ${name}! How are you ${name1}?", new String[]{}, "Hello, ! How are you ?"),
                 Arguments.of("Hello, ${name}! How are you $${name1}?", new String[]{"name", "world", "name1", "today"}, "Hello, world! How are you ${name1}?"),
@@ -40,6 +42,12 @@ class StringTemplateFunctionTest {
         var expr = new Expression("STRING_TEMPLATE(template, values)", EXPRESSION_CONFIGURATION);
         var result = expr.with("template", template).with("values", values).evaluate().getStringValue();
         assertEquals(expected, result);
+    }
+
+    @Test
+    void evaluate_ParamSizeMismatched() {
+        var expr = new Expression("STRING_TEMPLATE(template, values)", EXPRESSION_CONFIGURATION);
+        assertThrows(EvaluationException.class, () -> expr.with("template", "Hello, ${name}! How are you ${name1}?").with("values", new String[]{"a", "b", "c"}).evaluate());
     }
 
 }

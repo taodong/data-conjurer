@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.evalex;
 
+import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.functions.AbstractFunction;
@@ -21,14 +22,15 @@ public class StringTemplateFunction extends AbstractFunction {
     private static final String DOLLAR = "$";
 
     @Override
-    public EvaluationValue evaluate(Expression expression, Token token, EvaluationValue... evaluationValues) {
+    public EvaluationValue evaluate(Expression expression, Token token, EvaluationValue... evaluationValues) throws EvaluationException {
         var template = evaluationValues[0].getStringValue();
-        var modifiedTemplate = StringUtils.replace(template, DOUBLE_DOLLAR, INTERNAL_REPLACE);
+
         var values = evaluationValues[1].getArrayValue();
         if (values.size() % 2 != 0) {
-            throw new IllegalArgumentException("Invalid number of arguments for function STRING_TEMPLATE");
+            throw new EvaluationException(token, "Invalid number of arguments for function STRING_TEMPLATE");
         }
 
+        var modifiedTemplate = StringUtils.replace(template, DOUBLE_DOLLAR, INTERNAL_REPLACE);
         final var valueMap = createValueMap(values);
         var substitutor = new StringSubstitutor(key -> valueMap.getOrDefault(key, ""));
         substitutor.setEnableUndefinedVariableException(false);
