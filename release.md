@@ -9,3 +9,4 @@
 8. Add FULL_EMAIL_ADDRESS function for alternation
 9. Add STRING_TEMPLATE function for alternation
 10. Add "pascal" and "title" case to STRING_CASE function
+11. Update default email generator to create lowercase email only

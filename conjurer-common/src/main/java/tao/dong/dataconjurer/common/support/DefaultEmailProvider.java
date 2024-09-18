@@ -1,5 +1,6 @@
 package tao.dong.dataconjurer.common.support;
 
+import org.apache.commons.lang3.StringUtils;
 import tao.dong.dataconjurer.common.model.CompoundValue;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.Email;
@@ -19,6 +20,6 @@ public class DefaultEmailProvider implements CategorizedValueProvider, LocaleVal
     @Override
     public List<CompoundValue> fetch(int count, @SuppressWarnings("unused") Locale locale,
                                      @SuppressWarnings("unused") Map<String, List<Constraint<?>>> constraints) {
-        return collect(count, () -> new Email(generator.generate()));
+        return collect(count, () -> new Email(StringUtils.lowerCase(generator.generate())));
     }
 }
