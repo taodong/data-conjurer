@@ -46,7 +46,7 @@
 		<maven.compiler.release>21</maven.compiler.release>
 		<picocli.version>4.7.6</picocli.version>
 		<jackson.version>2.17.2</jackson.version>
-		<lombok.version>1.18.34</lombok.version>
+		<lombok.version>1.18.36</lombok.version>
 		<commons.text.version>1.10.0</commons.text.version>
 		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
@@ -57,7 +57,7 @@
 		<maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
 		<maven.jacoco.plugin.version>0.8.11</maven.jacoco.plugin.version>
 		<maven.central.publish.plugin.version>0.3.0</maven.central.publish.plugin.version>
-		<spring.security.version>6.3.3</spring.security.version>
+		<spring.security.version>6.4.1</spring.security.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
