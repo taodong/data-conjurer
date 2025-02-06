@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class SimpleTypedValue extends TypedValue {
-    private final Set<Object> values = new HashSet<>();
+    private final Set<Object> values = ConcurrentHashMap.newKeySet();
     @Setter(AccessLevel.NONE)
     private final List<Object> orderedValues = new ArrayList<>();
 

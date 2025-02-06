@@ -7,19 +7,19 @@ import tao.dong.dataconjurer.common.support.DataHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Getter
 public class LinkedTypedValue extends TypedValue {
-    private final Map<String, Set<Object>> values = new HashMap<>();
+    private final Map<String, Set<Object>> values = new ConcurrentHashMap<>();
     private final String linked;
     @Getter(AccessLevel.NONE)
-    private final Map<String, List<Object>> orderedValues = new HashMap<>();
+    private final Map<String, List<Object>> orderedValues = new ConcurrentHashMap<>();
     private final List<String> orderedKeys = new ArrayList<>();
     private final List<Object> allValues = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class LinkedTypedValue extends TypedValue {
         }
     }
 
-    public List<Object> getKeyedValues(String key) {
+    public synchronized List<Object> getKeyedValues(String key) {
         return orderedValues.computeIfAbsent(key, k -> new ArrayList<>(values.computeIfAbsent(k, k1 -> Collections.emptySet())));
     }
 
