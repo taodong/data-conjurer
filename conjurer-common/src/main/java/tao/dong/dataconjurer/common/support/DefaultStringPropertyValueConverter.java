@@ -1,16 +1,10 @@
 package tao.dong.dataconjurer.common.support;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.BooleanUtils;
 import tao.dong.dataconjurer.common.model.ConvertError;
 import tao.dong.dataconjurer.common.model.PropertyType;
 
-import java.math.BigDecimal;
 import java.util.function.BiFunction;
-
-import static tao.dong.dataconjurer.common.model.DefaultStringValueFormat.DATETIME_FORMAT;
-import static tao.dong.dataconjurer.common.model.DefaultStringValueFormat.DATE_FORMAT;
-import static tao.dong.dataconjurer.common.model.KeyWord.NULL_KEY;
 
 @Slf4j
 public class DefaultStringPropertyValueConverter extends StringPropertyValueConverter<Object>{
