@@ -36,4 +36,54 @@ class KeyWordTest {
         KeyWord keyWord = KeyWord.NULL_KEY;
         assertEquals("<?null?>", keyWord.getKeyString());
     }
+
+    // Provider and tests for CURRENT_DATETIME_KEY (timestamp-like)
+    private static Stream<Arguments> getCurrentDatetimeMatcher() {
+        return Stream.of(
+                Arguments.of("<?current_datetime?>", true),
+                Arguments.of("<?CURRENT_DATETIME?>", true),
+                Arguments.of(" <?Current_Datetime?> ", true),
+                Arguments.of("<?current_datetime?> ", true),
+                Arguments.of("current_datetime", false),
+                Arguments.of("<?current_date?>", false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getCurrentDatetimeMatcher")
+    void currentDatetimeMatcher(String input, boolean expected) {
+        KeyWord keyWord = KeyWord.CURRENT_DATETIME_KEY;
+        assertEquals(expected, keyWord.getMatcher().apply(input));
+    }
+
+    @Test
+    void getCurrentDatetimeKeyString() {
+        KeyWord keyWord = KeyWord.CURRENT_DATETIME_KEY;
+        assertEquals("<?current_datetime?>", keyWord.getKeyString());
+    }
+
+    // Provider and tests for CURRENT_DATE_KEY
+    private static Stream<Arguments> getCurrentDateMatcher() {
+        return Stream.of(
+                Arguments.of("<?current_date?>", true),
+                Arguments.of("<?CURRENT_DATE?>", true),
+                Arguments.of(" <?Current_Date?> ", true),
+                Arguments.of("<?current_date?> ", true),
+                Arguments.of("current_date", false),
+                Arguments.of("<?current_datetime?>", false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getCurrentDateMatcher")
+    void currentDateMatcher(String input, boolean expected) {
+        KeyWord keyWord = KeyWord.CURRENT_DATE_KEY;
+        assertEquals(expected, keyWord.getMatcher().apply(input));
+    }
+
+    @Test
+    void getCurrentDateKeyString() {
+        KeyWord keyWord = KeyWord.CURRENT_DATE_KEY;
+        assertEquals("<?current_date?>", keyWord.getKeyString());
+    }
 }

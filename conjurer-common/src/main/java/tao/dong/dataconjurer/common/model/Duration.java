@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import static tao.dong.dataconjurer.common.model.ConstraintType.DURATION;
 
@@ -35,14 +35,16 @@ public class Duration implements Constraint<Long> {
         return valueRange.getMax();
     }
 
-    @SuppressWarnings({"MagicConstant"})
+    // Java
     private Long extractMilliseconds(SecondMark mark, boolean isMin) {
         if (mark == null) {
             return isMin ? OLDEST_TIME : System.currentTimeMillis();
         }
-        var cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        cal.set(mark.getYear(), mark.getMonth() - 1, mark.getDay(), mark.getHour(), mark.getMinute(), mark.getSecond());
-        return cal.getTimeInMillis();
+        var zdt = ZonedDateTime.of(
+                mark.getYear(), mark.getMonth(), mark.getDay(),
+                mark.getHour(), mark.getMinute(), mark.getSecond(), 0,
+                ZoneOffset.UTC);
+        return zdt.toInstant().toEpochMilli();
     }
 
     @Override

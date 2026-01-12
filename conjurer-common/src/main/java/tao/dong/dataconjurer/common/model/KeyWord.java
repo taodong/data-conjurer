@@ -7,7 +7,9 @@ import java.util.function.Function;
 
 @Getter
 public enum KeyWord {
-    NULL_KEY((v) -> StringUtils.equalsIgnoreCase(StringUtils.trim(v), "<?null?>"), "<?null?>");
+    NULL_KEY((v) -> StringUtils.equalsIgnoreCase(StringUtils.trim(v), "<?null?>"), "<?null?>"),
+    CURRENT_DATETIME_KEY((v) -> StringUtils.equalsIgnoreCase(StringUtils.trim(v), "<?current_datetime?>"), "<?current_datetime?>"),
+    CURRENT_DATE_KEY((v) -> StringUtils.equalsIgnoreCase(StringUtils.trim(v), "<?current_date?>"), "<?current_date?>");
 
     private final Function<String, Boolean> matcher;
     private final String keyString;

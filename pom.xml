@@ -47,17 +47,18 @@
 		<picocli.version>4.7.6</picocli.version>
 		<jackson.version>2.17.2</jackson.version>
 		<lombok.version>1.18.36</lombok.version>
-		<commons.text.version>1.10.0</commons.text.version>
+		<commons.text.version>1.15.0</commons.text.version>
 		<commons.collections.version>4.4</commons.collections.version>
 		<unified.el.version>5.0.0</unified.el.version>
 		<jgrapht.version>1.5.2</jgrapht.version>
 		<data.faker.version>2.3.1</data.faker.version>
 		<snakeyaml.version>2.2</snakeyaml.version>
-		<evalex.version>3.3.0</evalex.version>
+		<evalex.version>3.6.0</evalex.version>
 		<maven.gpg.plugin.version>3.1.0</maven.gpg.plugin.version>
 		<maven.jacoco.plugin.version>0.8.13</maven.jacoco.plugin.version>
 		<maven.central.publish.plugin.version>0.3.0</maven.central.publish.plugin.version>
-		<spring.security.version>[6.5.2,)</spring.security.version>
+        <maven.apache.javadoc.plugin.version>3.12.0</maven.apache.javadoc.plugin.version>
+		<spring.security.version>[6.5.7,)</spring.security.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -171,9 +172,11 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven.apache.javadoc.plugin.version}</version>
 					<configuration>
 						<detectJavaApiLink>false</detectJavaApiLink>
 						<doclint>-missing</doclint>
+                        <source>${java.version}</source>
 					</configuration>
 					<executions>
 						<execution>
