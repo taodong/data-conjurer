@@ -37,53 +37,28 @@ class KeyWordTest {
         assertEquals("<?null?>", keyWord.getKeyString());
     }
 
-    // Provider and tests for CURRENT_DATETIME_KEY (timestamp-like)
-    private static Stream<Arguments> getCurrentDatetimeMatcher() {
+    // Provider and tests for NOW
+    private static Stream<Arguments> getNowMatcher() {
         return Stream.of(
-                Arguments.of("<?current_datetime?>", true),
-                Arguments.of("<?CURRENT_DATETIME?>", true),
-                Arguments.of(" <?Current_Datetime?> ", true),
-                Arguments.of("<?current_datetime?> ", true),
-                Arguments.of("current_datetime", false),
-                Arguments.of("<?current_date?>", false)
+                Arguments.of("<?now?>", true),
+                Arguments.of("<?NOW?>", true),
+                Arguments.of(" <?Now?> ", true),
+                Arguments.of("<?now?> ", true),
+                Arguments.of("now", false),
+                Arguments.of("<?null?>", false)
         );
     }
 
     @ParameterizedTest
-    @MethodSource("getCurrentDatetimeMatcher")
-    void currentDatetimeMatcher(String input, boolean expected) {
-        KeyWord keyWord = KeyWord.CURRENT_DATETIME_KEY;
+    @MethodSource("getNowMatcher")
+    void nowMatcher(String input, boolean expected) {
+        KeyWord keyWord = KeyWord.NOW_KEY;
         assertEquals(expected, keyWord.getMatcher().apply(input));
     }
 
     @Test
-    void getCurrentDatetimeKeyString() {
-        KeyWord keyWord = KeyWord.CURRENT_DATETIME_KEY;
-        assertEquals("<?current_datetime?>", keyWord.getKeyString());
-    }
-
-    // Provider and tests for CURRENT_DATE_KEY
-    private static Stream<Arguments> getCurrentDateMatcher() {
-        return Stream.of(
-                Arguments.of("<?current_date?>", true),
-                Arguments.of("<?CURRENT_DATE?>", true),
-                Arguments.of(" <?Current_Date?> ", true),
-                Arguments.of("<?current_date?> ", true),
-                Arguments.of("current_date", false),
-                Arguments.of("<?current_datetime?>", false)
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("getCurrentDateMatcher")
-    void currentDateMatcher(String input, boolean expected) {
-        KeyWord keyWord = KeyWord.CURRENT_DATE_KEY;
-        assertEquals(expected, keyWord.getMatcher().apply(input));
-    }
-
-    @Test
-    void getCurrentDateKeyString() {
-        KeyWord keyWord = KeyWord.CURRENT_DATE_KEY;
-        assertEquals("<?current_date?>", keyWord.getKeyString());
+    void getNowKeyString() {
+        KeyWord keyWord = KeyWord.NOW_KEY;
+        assertEquals("<?now?>", keyWord.getKeyString());
     }
 }

@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import static tao.dong.dataconjurer.common.model.DefaultStringValueFormat.DATETIME_FORMAT;
 import static tao.dong.dataconjurer.common.model.DefaultStringValueFormat.DATE_FORMAT;
+import static tao.dong.dataconjurer.common.model.KeyWord.NOW_KEY;
 import static tao.dong.dataconjurer.common.model.KeyWord.NULL_KEY;
 
 @Slf4j
@@ -27,6 +28,8 @@ public class PropertyRowSerializer {
     public static Object deserializeProperty(String value, PropertyType type) throws ParseException {
         if (NULL_KEY.getMatcher().apply(value)) {
             return null;
+        } else if (NOW_KEY.getMatcher().apply(value)) {
+            return System.currentTimeMillis();
         }
 
         return switch (type) {

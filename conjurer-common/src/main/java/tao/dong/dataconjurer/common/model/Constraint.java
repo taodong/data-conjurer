@@ -16,7 +16,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Interval.class, name="interval"),
         @JsonSubTypes.Type(value = ChainedValue.class, name = "chain"),
         @JsonSubTypes.Type(value = StringFormat.class, name = "format"),
-        @JsonSubTypes.Type(value = StringAlternation.class, name = "alternation")
+        @JsonSubTypes.Type(value = StringAlternation.class, name = "alternation"),
+        @JsonSubTypes.Type(value = TimeSpan.class, name = "span")
 })
 public interface Constraint<T> {
     // By default, isMet is not enforced
