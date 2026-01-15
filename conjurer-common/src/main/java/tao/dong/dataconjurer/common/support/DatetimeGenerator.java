@@ -4,14 +4,16 @@ import tao.dong.dataconjurer.common.model.ChainedValue;
 import tao.dong.dataconjurer.common.model.Constraint;
 import tao.dong.dataconjurer.common.model.ConstraintType;
 import tao.dong.dataconjurer.common.model.Duration;
+import tao.dong.dataconjurer.common.model.TimeSpan;
 
 import java.util.Set;
 
 import static tao.dong.dataconjurer.common.model.ConstraintType.CHAIN;
 import static tao.dong.dataconjurer.common.model.ConstraintType.DURATION;
+import static tao.dong.dataconjurer.common.model.ConstraintType.TIME_SPAN;
 
 public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
-    private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(DURATION, CHAIN);
+    private static final Set<ConstraintType> CONSTRAINT_TYPES  = Set.of(DURATION, CHAIN, TIME_SPAN);
 
     public DatetimeGenerator(Set<Constraint<?>> constraints) {
         super(constraints);
@@ -32,6 +34,10 @@ public class DatetimeGenerator extends ValueGeneratorDecorator<Long>{
                 var duration = (Duration) constraint;
                 min = Math.max(min, duration.getMin());
                 max = Math.min(max, duration.getMax());
+            } else if (constraint.getType() == TIME_SPAN) {
+                var timeSpan = (TimeSpan) constraint;
+                min = Math.max(min, timeSpan.getMin());
+                max = timeSpan.getMax();
             } else if (constraint.getType() == CHAIN) {
                 chainedValue = (ChainedValue)  constraint;
             }
