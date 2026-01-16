@@ -106,7 +106,7 @@ public class EntityWrapper {
             var converted = convertEntryVal(propertyValueConverter, ps, rc);
             var error = converted.stream().filter(v -> v instanceof ConvertError).findFirst();
             if (error.isPresent()) {
-                LOG.warn("Failed to process entity entry value, record skipped: " + ((ConvertError)(error.get())).message());
+                LOG.warn("Failed to process entity entry value, record skipped: {}", ((ConvertError)(error.get())).message());
                 break;
             }
             for (var i = 0; i < converted.size(); i++) {

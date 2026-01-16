@@ -100,4 +100,11 @@ entities:
           - type: "correlation"
             properties: ["oos"]
             formula: "oos + 3600"
+      - name: "updated_at"
+        type: "date"
+        constraints:
+          - type: "span"
+            anchor: "<?now?>"
+            leap:
+              days: -30
 
