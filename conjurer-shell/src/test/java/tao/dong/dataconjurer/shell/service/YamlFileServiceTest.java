@@ -36,7 +36,7 @@ class YamlFileServiceTest {
     private YAMLMapper yamlMapper;
 
     @Test
-    void testParseSchemaFile() throws IOException {
+    void testParseSchemaFile() {
         DataSchema expected = new DataSchema("schema1", Set.of(new DataEntity("table1", Set.of(new EntityProperty("col1", PropertyType.SEQUENCE, null, null, null)))));
         var content = yamlMapper.writerFor(DataSchema.class).writeValueAsString(expected);
         var rs = yamlFileService.parseSchemaFile(content);
@@ -44,7 +44,7 @@ class YamlFileServiceTest {
     }
 
     @Test
-    void testParsePlanFile() throws IOException {
+    void testParsePlanFile() {
         MySQLDataPlan expected = new MySQLDataPlan();
         expected.setPlan(new DataPlan("test", "test", Dialect.MYSQL, List.of(
                 new EntityData("entity1", 0, 1L, null, null)
