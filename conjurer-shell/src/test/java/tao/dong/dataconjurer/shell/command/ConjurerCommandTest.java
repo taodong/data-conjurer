@@ -44,7 +44,7 @@ class ConjurerCommandTest {
     private final FileOutputService fileOutputService = mock(FileOutputService.class);
 
     @Test
-    void testConjureCommand() throws URISyntaxException, IOException {
+    void testConjureCommand() throws URISyntaxException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
 
         var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
@@ -67,7 +67,7 @@ class ConjurerCommandTest {
     }
 
     @Test
-    void testConjureCommand_GenerationFailed() throws URISyntaxException, IOException {
+    void testConjureCommand_GenerationFailed() throws URISyntaxException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
 
         var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
@@ -89,13 +89,13 @@ class ConjurerCommandTest {
     }
 
     @Test
-    void testConjureCommand_IOException() throws URISyntaxException, IOException {
+    void testConjureCommand_RuntimeException() throws URISyntaxException {
         YamlFileService yamlFileService = mock(YamlFileService.class);
 
         var conjureCommand = new ConjurerCommand(yamlFileService, validator, sqlService, dataGenerateConfig, fileOutputService);
         var mysqlPlan = new MySQLDataPlan();
         mysqlPlan.setPlan(new DataPlan("test", "test", null, Collections.emptyList()));
-        when(yamlFileService.parsePlanFile(anyString())).thenThrow(new IOException("error"));
+        when(yamlFileService.parsePlanFile(anyString())).thenThrow(new IllegalArgumentException("error"));
         var cmd = new CommandLine(conjureCommand);
         cmd.setOut(new PrintWriter(printWriter));
 
@@ -105,7 +105,7 @@ class ConjurerCommandTest {
         when(validator.validate(any(DataSchema.class))).thenReturn(Collections.emptySet());
 
         int exitCode = cmd.execute(schema, plan);
-        assertEquals(2, exitCode);
+        assertEquals(1, exitCode);
     }
 
     @Test

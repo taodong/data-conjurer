@@ -33,7 +33,7 @@ public class TimeSpan implements Constraint<Long>{
 
         try {
             return DataHelper.convertFormattedStringToMillisecond(anchor, DATETIME_FORMAT.getFormat());
-        } catch (Exception e) {
+        } catch (Exception _) {
             LOG.warn("Failed to parse anchor time string {}, applying current time.", anchor);
             return System.currentTimeMillis();
         }

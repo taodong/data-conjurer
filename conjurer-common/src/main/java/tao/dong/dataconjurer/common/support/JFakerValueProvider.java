@@ -29,7 +29,7 @@ public class JFakerValueProvider implements LocaleValueCollector {
             try {
                 var stateAbbr = address.stateAbbr();
                 stateZip = address.zipCodeByState(stateAbbr);
-            } catch (Exception e) {
+            } catch (Exception _) {
                 // Ignore runtime exception
             }
             return new Address(address.fullAddress(), address.streetAddress(true), address.city(),
