@@ -1,10 +1,10 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.JacksonException;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -24,7 +24,7 @@ class CharacterGroupTest {
 
     @ParameterizedTest
     @MethodSource("testJsonCreator")
-    void testJsonCreator(String json, int expected) throws JsonProcessingException {
+    void testJsonCreator(String json, int expected) throws JacksonException {
         CharacterGroup group = objectMapper.readerFor(CharacterGroup.class).readValue(json);
         assertEquals(expected, group.groups().size());
     }

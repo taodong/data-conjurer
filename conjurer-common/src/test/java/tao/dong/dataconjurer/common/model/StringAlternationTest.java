@@ -1,7 +1,6 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.JacksonException;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -43,19 +43,19 @@ class StringAlternationTest {
 
     @ParameterizedTest
     @MethodSource("testDeserialization")
-    void testDeserialization(String json, StringAlternation expected) throws JsonProcessingException {
+    void testDeserialization(String json, StringAlternation expected) throws JacksonException {
         assertEquals(expected, objectMapper.readerFor(StringAlternation.class).readValue(json));
     }
 
     @Test
-    void testValidation() throws JsonProcessingException {
+    void testValidation() throws JacksonException {
         var nc = objectMapper.readerFor(StringAlternation.class).readValue("{\"type\": \"alternation\", \"properties\": [\"prop1\", \"prop2\"], \"formula\": \"prop1 + prop2\"}");
         var violations = validator.validate(nc);
         assertTrue(violations.isEmpty());
     }
 
     @Test
-    void testValidation_FormulaVariableCheck() throws JsonProcessingException {
+    void testValidation_FormulaVariableCheck() throws JacksonException {
         var nc = objectMapper.readerFor(StringAlternation.class).readValue("{\"type\": \"alternation\", \"properties\": [\"prop1\", \"prop2\"], \"formula\": \"prop3 + prop2\"}");
         var violations = validator.validate(nc);
         assertEquals(1, violations.size());

@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 
@@ -143,7 +142,7 @@ class ConjurerCommandTest {
         ConstraintViolation<String> violation = mock(ConstraintViolation.class);
         when(violation.getMessage()).thenReturn("error");
         when(validator.validate("Error")).thenReturn(Set.of(violation));
-        assertThrows(CommandLine.TypeConversionException.class, () -> conjureCommand.validateInput("Error", "field", Paths.get("test")));
+        assertThrows(CommandLine.TypeConversionException.class, () -> conjureCommand.validateInput("Error", "field", Path.of("test")));
     }
 
 

@@ -9,7 +9,10 @@
 
 A tool to generate insert statements for MySQL Database. The main purpose of this tool is enable data generation for a full relational schema in real time scenarios.
 ## Environment
+### Version below 2.0
 The tool requires java 21. The code is developed using Temurin 21 JDK.
+### Version 2.0 and above
+The tool requires java 25. The minimum maven version is 3.9.2. 
 ## Installation
 The tool is packaged as an executable jar file named as `data-conjurer-<version>.jar`. You can download the latest version either from [maven central](https://repo1.maven.org/maven2/io/github/taodong/data-conjurer/) or [github release](https://github.com/taodong/data-conjurer/releases) page.  
 ## Compile From Source

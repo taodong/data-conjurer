@@ -1,6 +1,6 @@
 package tao.dong.dataconjurer.shell.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +15,7 @@ import tao.dong.dataconjurer.common.model.PropertyType;
 import tao.dong.dataconjurer.shell.model.MySQLDataPlan;
 import tao.dong.dataconjurer.shell.support.AppConfig;
 import tao.dong.dataconjurer.shell.support.DataGenerationProperties;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +33,7 @@ class YamlFileServiceTest {
 
     @SuppressWarnings("unused")
     @Autowired
-    private ObjectMapper yamlMapper;
+    private YAMLMapper yamlMapper;
 
     @Test
     void testParseSchemaFile() throws IOException {

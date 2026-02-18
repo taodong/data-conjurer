@@ -63,7 +63,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
             throw dge;
         } catch (Exception e) {
             entityWrapper.setMsg(e.getMessage());
-            throw new DataGenerateException(MISC, String.format("Failed to generate data for %s", entityWrapper.getId()), entityWrapper.getId().getIdString(), e);
+            throw new DataGenerateException(MISC, "Failed to generate data for %s".formatted(entityWrapper.getId()), entityWrapper.getId().getIdString(), e);
         } finally {
             countDownLatch.countDown();
         }
@@ -98,8 +98,8 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
         if (collision > config.getMaxIndexCollision() - 1 && !config.isPartialResult()) {
             entityWrapper.setMsg("Collision limits reached.");
             throw new DataGenerateException(INDEX,
-                                            String.format("Failed to generate unique index for %s. Collision number: %d, row number: %d",
-                                                          entityWrapper.getId(), collision, recordNum),
+                    "Failed to generate unique index for %s. Collision number: %d, row number: %d".formatted(
+                            entityWrapper.getId(), collision, recordNum),
                                             entityWrapper.getId().getIdString()
             );
         }
@@ -283,7 +283,7 @@ public class DataGenerateTask implements Callable<EntityProcessResult> {
                 var ready = referenceReady.computeIfAbsent(reference, this::isReferenceReady);
                 if (Boolean.FALSE.equals(ready)) {
                     throw new DataGenerateException(REFERENCE,
-                            String.format("No reference is available for %s.%s", entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
+                            "No reference is available for %s.%s".formatted(entityWrapper.getId().entityName(), propertyName), entityWrapper.getId().getIdString());
                 }
                 val = retrieveReferencedValue(referenceIndexTracker, propertyName, reference);
             } else {

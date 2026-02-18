@@ -1,11 +1,11 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.JacksonException;
 
 import java.util.stream.Stream;
 
@@ -26,7 +26,7 @@ class ChainedValueTest {
 
     @ParameterizedTest
     @MethodSource("testDeserialize")
-    void testDeserialize(String json, double seed, int direction, int style) throws JsonProcessingException {
+    void testDeserialize(String json, double seed, int direction, int style) throws JacksonException {
         ChainedValue rs = objectMapper.readerFor(ChainedValue.class).readValue(json);
         assertEquals(seed, rs.getSeed());
         assertEquals(direction, rs.getDirection());

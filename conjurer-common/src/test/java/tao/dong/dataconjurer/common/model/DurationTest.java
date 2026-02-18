@@ -1,11 +1,11 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.JacksonException;
 
 import java.time.Year;
 import java.util.Calendar;
@@ -30,7 +30,7 @@ class DurationTest {
 
     @ParameterizedTest
     @MethodSource("testJsonCreator")
-    void testJsonCreator(String json, int startYear, int endYear) throws JsonProcessingException {
+    void testJsonCreator(String json, int startYear, int endYear) throws JacksonException {
         Duration duration = objectMapper.readerFor(Duration.class).readValue(json);
         assertEquals(startYear, getYear(duration.getMin()));
         assertEquals(endYear, getYear(duration.getMax()));

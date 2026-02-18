@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -32,6 +31,6 @@ public class FileOutputService {
     }
 
     Path getOutputFilePath(EntityQueryOutput eqo) {
-        return Paths.get(eqo.getOrder() + "_" + eqo.getEntity() + ".sql");
+        return Path.of(eqo.getOrder() + "_" + eqo.getEntity() + ".sql");
     }
 }

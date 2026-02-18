@@ -20,11 +20,11 @@ public class ChainedValue implements Constraint<Double> {
 
     @JsonCreator
     public ChainedValue(@JsonProperty("seed") @NotNull Double seed,
-                        @JsonProperty("direction") @Min(-1)  @Max(1) int direction,
-                        @JsonProperty("style") @Min(0) int style) {
+                        @JsonProperty("direction") @Min(-1)  @Max(1) Integer direction,
+                        @JsonProperty("style") @Min(0) Integer style) {
         this.seed = seed;
-        this.direction = direction;
-        this.style = style;
+        this.direction = direction == null ? 0 : direction;
+        this.style = style == null ? 0 : style;
     }
 
     @Override

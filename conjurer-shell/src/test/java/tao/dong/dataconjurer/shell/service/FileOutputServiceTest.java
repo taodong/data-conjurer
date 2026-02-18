@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,7 +65,7 @@ class FileOutputServiceTest {
 
     @Test
     void testGetOutputFilePath() {
-        assertEquals(Paths.get("1_Product.sql"), fileOutputService.getOutputFilePath(eqo1));
-        assertEquals(Paths.get("2_Customer.sql"), fileOutputService.getOutputFilePath(eqo2));
+        assertEquals(Path.of("1_Product.sql"), fileOutputService.getOutputFilePath(eqo1));
+        assertEquals(Path.of("2_Customer.sql"), fileOutputService.getOutputFilePath(eqo2));
     }
 }

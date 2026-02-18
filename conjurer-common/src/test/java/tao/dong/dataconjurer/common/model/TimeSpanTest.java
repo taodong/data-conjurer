@@ -1,10 +1,10 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.JacksonException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
@@ -38,7 +38,7 @@ class TimeSpanTest {
 
     @ParameterizedTest
     @MethodSource("testJsonCreator")
-    void testJsonCreator(String json, int startYear, int endYear) throws JsonProcessingException {
+    void testJsonCreator(String json, int startYear, int endYear) throws JacksonException {
         TimeSpan span = objectMapper.readerFor(TimeSpan.class).readValue(json);
         assertEquals(startYear, getYear(span.getMin()));
         assertEquals(endYear, getYear(span.getMax()));
@@ -51,13 +51,13 @@ class TimeSpanTest {
     }
 
     @Test
-    void testGetType() throws JsonProcessingException {
+    void testGetType() throws JacksonException {
         TimeSpan span = objectMapper.readerFor(TimeSpan.class).readValue("{\"type\":\"span\", \"leap\": {\"seconds\": 1}}");
         assertEquals(TIME_SPAN, span.getType());
     }
 
     @Test
-    void testIsMet() throws JsonProcessingException {
+    void testIsMet() throws JacksonException {
         // anchor at start of 2020, leap +1 year -> should contain a timestamp in April 2020
         var json = "{\"type\":\"span\", \"anchor\": \"2020-01-01 00:00:00\", \"leap\": {\"years\": 1}}";
         TimeSpan span = objectMapper.readerFor(TimeSpan.class).readValue(json);

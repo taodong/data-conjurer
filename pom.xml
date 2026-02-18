@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.5</version>
+        <version>4.0.2</version>
         <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
@@ -46,7 +46,7 @@
         <java.version>25</java.version>
         <maven.compiler.release>25</maven.compiler.release>
         <picocli.version>4.7.6</picocli.version>
-        <jackson.version>2.17.2</jackson.version>
+        <jackson.version>3.0.4</jackson.version>
         <lombok.version>1.18.42</lombok.version>
         <commons.text.version>1.15.0</commons.text.version>
         <commons.collections.version>4.4</commons.collections.version>
@@ -59,30 +59,10 @@
         <maven.jacoco.plugin.version>0.8.14</maven.jacoco.plugin.version>
         <maven.central.publish.plugin.version>0.3.0</maven.central.publish.plugin.version>
         <maven.apache.javadoc.plugin.version>3.12.0</maven.apache.javadoc.plugin.version>
-        <spring.security.version>[6.5.7,)</spring.security.version>
+        <spring.security.version>7.0.3</spring.security.version>
     </properties>
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
             <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli-spring-boot-starter</artifactId>
@@ -92,12 +72,6 @@
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
                 <version>${spring.security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -128,12 +102,6 @@
                 <groupId>net.datafaker</groupId>
                 <artifactId>datafaker</artifactId>
                 <version>${data.faker.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest</artifactId>
-                <version>${hamcrest.version}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -173,7 +141,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven.apache.javadoc.plugin.version}</version>
                     <configuration>
                         <detectJavaApiLink>false</detectJavaApiLink>
                         <doclint>-missing</doclint>
@@ -236,7 +203,7 @@
                             <path>
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
-                                <version>1.18.40</version>
+                                <version>1.18.42</version>
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
@@ -258,24 +225,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.openrewrite.maven</groupId>
-                <artifactId>rewrite-maven-plugin</artifactId>
-                <version>6.29.0</version>
-                <configuration>
-                    <exportDatatables>true</exportDatatables>
-                    <activeRecipes>
-                        <recipe>io.moderne.devcenter.JUnitJupiterUpgrade</recipe>
-                    </activeRecipes>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>io.moderne.recipe</groupId>
-                        <artifactId>rewrite-devcenter</artifactId>
-                        <version>1.16.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

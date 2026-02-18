@@ -1,7 +1,7 @@
 package tao.dong.dataconjurer.common.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -10,6 +10,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import tao.dong.dataconjurer.common.support.EntityTestHelper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +24,9 @@ import static tao.dong.dataconjurer.common.model.PropertyType.TEXT;
 class EntityPropertyTest {
 
     private static Validator validator;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+            .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+            .build();
 
     @BeforeAll
     public static void setUpValidator() {
@@ -94,7 +98,7 @@ class EntityPropertyTest {
 
     @ParameterizedTest
     @MethodSource("testDeserialization")
-    void testDeserialization(String json, EntityProperty expected) throws JsonProcessingException {
+    void testDeserialization(String json, EntityProperty expected) throws JacksonException {
         assertEquals(expected, objectMapper.readerFor(EntityProperty.class).readValue(json));
     }
 

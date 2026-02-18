@@ -1,10 +1,7 @@
 package tao.dong.dataconjurer.shell.support;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.MapperFeature;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;
@@ -23,16 +20,19 @@ import tao.dong.dataconjurer.engine.database.service.InsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.MySQLDataPlanService;
 import tao.dong.dataconjurer.engine.database.service.MySQLInsertStatementService;
 import tao.dong.dataconjurer.engine.database.service.SqlService;
+import tools.jackson.databind.cfg.EnumFeature;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 @Configuration
 @SuppressWarnings("unused")
 public class AppConfig {
 
     @Bean
-    public ObjectMapper yamlMapper() {
-        return JsonMapper.builder(new YAMLFactory())
+    public YAMLMapper yamlMapper() {
+        return YAMLMapper.builder()
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-                .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
+                .enable(EnumFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
+                .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
                 .build();
     }
 
